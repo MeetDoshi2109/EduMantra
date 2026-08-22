@@ -1,307 +1,221 @@
 /* ============================================================
-   EduMantra – API Client
+   EduMantra – API Client & Shared Utilities  v2
    ============================================================ */
-const API_BASE = '/api/v1';
+const API = '/api/v1';
 
+/* ── HTTP client ─────────────────────────────────────────── */
 const Api = (() => {
-  function getToken() {
-    return localStorage.getItem('em_access_token');
-  }
+  const tok = () => localStorage.getItem('em_token');
 
-  async function request(method, path, body = null, opts = {}) {
-    const headers = { 'Content-Type': 'application/json' };
-    const token = getToken();
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-
-    const config = { method, headers, ...opts };
-    if (body) config.body = JSON.stringify(body);
-
-    const res = await fetch(`${API_BASE}${path}`, config);
-
-    if (res.status === 401) {
-      // Try token refresh
-      const refreshed = await tryRefresh();
-      if (refreshed) {
-        headers['Authorization'] = `Bearer ${getToken()}`;
-        const retry = await fetch(`${API_BASE}${path}`, { ...config, headers });
-        if (!retry.ok) {
-          const err = await retry.json().catch(() => ({}));
-          throw new Error(err.error || 'Request failed');
-        }
-        return retry.json();
-      }
-      Auth.logout();
-      return;
-    }
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `HTTP ${res.status}`);
-    }
-
-    if (res.status === 204) return null;
-    return res.json();
-  }
-
-  async function tryRefresh() {
-    const refreshToken = localStorage.getItem('em_refresh_token');
-    if (!refreshToken) return false;
-    try {
-      const res = await fetch(`${API_BASE}/auth/refresh`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh_token: refreshToken }),
-      });
-      if (!res.ok) return false;
-      const data = await res.json();
-      localStorage.setItem('em_access_token', data.access_token);
-      localStorage.setItem('em_refresh_token', data.refresh_token);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  async function upload(path, formData) {
-    const token = getToken();
-    const headers = {};
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    const res = await fetch(`${API_BASE}${path}`, { method: 'POST', headers, body: formData });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || 'Upload failed');
-    }
-    return res.json();
+  async function req(method, path, body, isForm) {
+    const h = {};
+    if (tok()) h['Authorization'] = `Bearer ${tok()}`;
+    if (!isForm) h['Content-Type'] = 'application/json';
+    const cfg = { method, headers: h };
+    if (body) cfg.body = isForm ? body : JSON.stringify(body);
+    const r = await fetch(`${API}${path}`, cfg);
+    if (r.status === 401) { Auth.logout(); return; }
+    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || `HTTP ${r.status}`); }
+    if (r.status === 204) return null;
+    return r.json();
   }
 
   return {
-    get:    (path)         => request('GET', path),
-    post:   (path, body)   => request('POST', path, body),
-    put:    (path, body)   => request('PUT', path, body),
-    del:    (path)         => request('DELETE', path),
-    upload: (path, form)   => upload(path, form),
+    get:    (p)      => req('GET', p),
+    post:   (p, b)   => req('POST', p, b),
+    put:    (p, b)   => req('PUT', p, b),
+    del:    (p)      => req('DELETE', p),
+    upload: (p, f)   => req('POST', p, f, true),
   };
 })();
 
-/* ============================================================
-   Auth helpers
-   ============================================================ */
+/* ── Auth ────────────────────────────────────────────────── */
 const Auth = {
-  save(data) {
-    localStorage.setItem('em_access_token',  data.access_token);
-    localStorage.setItem('em_refresh_token', data.refresh_token);
-    localStorage.setItem('em_user',          JSON.stringify(data.user));
+  save(d) {
+    localStorage.setItem('em_token', d.access_token);
+    localStorage.setItem('em_refresh', d.refresh_token);
+    localStorage.setItem('em_user', JSON.stringify(d.user));
   },
-  getUser() {
-    try { return JSON.parse(localStorage.getItem('em_user') || 'null'); }
-    catch { return null; }
-  },
-  isLoggedIn() { return !!localStorage.getItem('em_access_token'); },
+  user() { try { return JSON.parse(localStorage.getItem('em_user')||'null'); } catch { return null; } },
+  loggedIn() { return !!localStorage.getItem('em_token'); },
   logout() {
-    localStorage.removeItem('em_access_token');
-    localStorage.removeItem('em_refresh_token');
-    localStorage.removeItem('em_user');
-    window.location.href = '/index.html';
+    ['em_token','em_refresh','em_user'].forEach(k => localStorage.removeItem(k));
+    window.location.href = '/login.html';
   },
-  requireAuth() {
-    if (!this.isLoggedIn()) {
-      window.location.href = '/index.html';
-      return null;
-    }
-    return this.getUser();
+  guard() {
+    if (!this.loggedIn()) { window.location.href = '/login.html'; return null; }
+    return this.user();
   },
-  redirectByRole(user) {
-    const routes = {
+  redirect(u) {
+    const map = {
       student:            '/dashboards/student.html',
-      instructor:         '/dashboards/instructor.html',
-      parent:             '/dashboards/parent.html',
+      instructor:         '/dashboards/educator.html',
+      parent:             '/dashboards/supervisor.html',
       organization_admin: '/dashboards/organization.html',
       developer:          '/dashboards/developer.html',
     };
-    window.location.href = routes[user.role] || '/dashboards/student.html';
+    window.location.href = map[u.role] || '/dashboards/student.html';
   },
 };
 
-/* ============================================================
-   Toast notifications
-   ============================================================ */
+/* ── Toast ───────────────────────────────────────────────── */
 const Toast = {
-  container: null,
-  init() {
-    if (!this.container) {
-      this.container = document.createElement('div');
-      this.container.className = 'toast-container';
-      document.body.appendChild(this.container);
+  _el: null,
+  _init() {
+    if (!this._el) {
+      this._el = document.createElement('div');
+      this._el.className = 'toast-wrap';
+      document.body.appendChild(this._el);
     }
   },
-  show(message, type = 'info', duration = 4000) {
-    this.init();
-    const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span>`;
-    this.container.appendChild(toast);
-    setTimeout(() => toast.remove(), duration);
+  show(msg, type = 'info', ms = 4000) {
+    this._init();
+    const icons = { success:'✅', error:'❌', info:'ℹ️', warning:'⚠️' };
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+    this._el.appendChild(t);
+    setTimeout(() => t.remove(), ms);
   },
-  success: (msg) => Toast.show(msg, 'success'),
-  error:   (msg) => Toast.show(msg, 'error'),
-  info:    (msg) => Toast.show(msg, 'info'),
+  success: m => Toast.show(m,'success'),
+  error:   m => Toast.show(m,'error'),
+  info:    m => Toast.show(m,'info'),
+  warn:    m => Toast.show(m,'warning'),
 };
 
-/* ============================================================
-   UI Utilities
-   ============================================================ */
+/* ── UI helpers ──────────────────────────────────────────── */
 const UI = {
-  // Build initials avatar text
-  initials(name = '') {
-    return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || '??';
-  },
+  initials: n => (n||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()||'??',
 
-  // Format date
   date(iso) {
     if (!iso) return '—';
-    return new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(iso));
+    return new Intl.DateTimeFormat('en-IN',{day:'numeric',month:'short',year:'numeric'}).format(new Date(iso));
   },
 
-  // Format hours
   hours(h) {
     if (!h) return '—';
     const n = parseFloat(h);
-    if (n < 1) return `${Math.round(n * 60)}m`;
-    return `${n % 1 === 0 ? n : n.toFixed(1)}h`;
+    return n < 1 ? `${Math.round(n*60)}m` : `${n%1===0?n:n.toFixed(1)}h`;
   },
 
-  // Severity badge
-  severityBadge(severity) {
-    const map = { critical: 'red', high: 'orange', medium: 'blue', low: 'green' };
-    return `<span class="badge badge-${map[severity] || 'gray'}">${severity}</span>`;
+  pct(v) { return `${Math.min(100,Math.max(0,Math.round(parseFloat(v)||0)))}%`; },
+
+  prog(pct, cls='pb-blue') {
+    const v = Math.min(100,Math.max(0,Math.round(parseFloat(pct)||0)));
+    return `<div class="prog-wrap"><div class="prog-bar ${cls}" style="width:${v}%"></div></div>`;
   },
 
-  // Status badge
-  statusBadge(status) {
-    const map = {
-      completed:   ['green',  '✓ Completed'],
-      in_progress: ['blue',   '⏳ In Progress'],
-      not_started: ['gray',   '○ Not Started'],
-      dropped:     ['red',    '✕ Dropped'],
-    };
-    const [color, label] = map[status] || ['gray', status];
-    return `<span class="badge badge-${color}">${label}</span>`;
+  badge(text, cls='b-gray') { return `<span class="badge ${cls}">${text}</span>`; },
+
+  roleBadge(r) {
+    const m = {student:'b-blue',instructor:'b-purple',parent:'b-orange',organization_admin:'b-cyan',developer:'b-red'};
+    const l = {student:'Student',instructor:'Instructor',parent:'Supervisor',organization_admin:'Org Admin',developer:'Developer'};
+    return `<span class="badge ${m[r]||'b-gray'}">${l[r]||r}</span>`;
   },
 
-  // Role badge
-  roleBadge(role) {
-    const map = {
-      student:            ['blue',   'Student'],
-      instructor:         ['purple', 'Instructor'],
-      parent:             ['orange', 'Parent'],
-      organization_admin: ['cyan',   'Org Admin'],
-      developer:          ['red',    'Developer'],
-    };
-    const [color, label] = map[role] || ['gray', role];
-    return `<span class="badge badge-${color}">${label}</span>`;
+  statusBadge(s) {
+    const m = {completed:'b-green',in_progress:'b-blue',not_started:'b-gray',dropped:'b-red'};
+    const l = {completed:'✓ Done',in_progress:'In Progress',not_started:'Not Started',dropped:'Dropped'};
+    return `<span class="badge ${m[s]||'b-gray'}">${l[s]||s}</span>`;
   },
 
-  // Progress bar HTML
-  progress(pct, color = 'blue') {
-    const v = Math.min(100, Math.max(0, parseFloat(pct) || 0));
-    return `
-      <div class="progress-wrap">
-        <div class="progress-bar ${color}" style="width:${v}%"></div>
-      </div>
-      <span class="text-xs text-muted" style="margin-top:.2rem;display:block">${Math.round(v)}%</span>`;
+  severityBadge(s) {
+    const m={critical:'b-red',high:'b-orange',medium:'b-blue',low:'b-green'};
+    return `<span class="badge ${m[s]||'b-gray'}">${s}</span>`;
   },
 
-  // Skeleton placeholder
-  skeleton(h = '18px', w = '100%') {
-    return `<div class="skeleton" style="height:${h};width:${w}"></div>`;
+  levelPips(level) {
+    const order = ['none','beginner','intermediate','advanced','expert'];
+    const idx = order.indexOf(level);
+    return order.slice(1).map((_,i) =>
+      `<div class="comp-pip${i<idx?' filled':''}"></div>`).join('');
   },
 
-  // Setup tabs
-  setupTabs(container) {
-    const tabs = container.querySelectorAll('.tab-btn');
-    const panels = container.querySelectorAll('.tab-panel');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        panels.forEach(p => p.classList.remove('active'));
-        tab.classList.add('active');
-        const target = container.querySelector(`.tab-panel[data-tab="${tab.dataset.tab}"]`);
-        if (target) target.classList.add('active');
+  openModal:  id => document.getElementById(id)?.classList.add('open'),
+  closeModal: id => document.getElementById(id)?.classList.remove('open'),
+
+  setupTabs(root) {
+    root.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        root.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        root.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+        btn.classList.add('active');
+        root.querySelector(`.tab-panel[data-tab="${btn.dataset.tab}"]`)?.classList.add('active');
       });
     });
   },
 
-  // Modal open/close
-  openModal(id) {
-    document.getElementById(id)?.classList.add('open');
+  /* Mini bar chart – data: [{label,value,color}] */
+  barChart(data, maxVal) {
+    const max = maxVal || Math.max(...data.map(d=>d.value), 1);
+    return `<div class="bar-chart">
+      ${data.map(d=>`
+        <div class="bar-col">
+          <span class="text-xs text-muted">${d.value}</span>
+          <div class="bar-fill" style="height:${Math.round((d.value/max)*80)+4}px;background:${d.color||'var(--primary)'}"></div>
+          <span class="bar-label">${d.label}</span>
+        </div>`).join('')}
+    </div>`;
   },
-  closeModal(id) {
-    document.getElementById(id)?.classList.remove('open');
+
+  /* SVG donut – segments: [{value,color,label}] */
+  donut(segments, size=90) {
+    const total = segments.reduce((s,x)=>s+x.value,0)||1;
+    let offset = 0;
+    const r=30, cx=50, cy=50, circ=2*Math.PI*r;
+    const arcs = segments.map(s=>{
+      const dash = (s.value/total)*circ;
+      const arc = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="14"
+        stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"/>`;
+      offset += dash;
+      return arc;
+    }).join('');
+    return `<svg viewBox="0 0 100 100" width="${size}" height="${size}" class="donut">${arcs}</svg>`;
   },
 };
 
-/* ============================================================
-   Sidebar & hamburger setup
-   ============================================================ */
-function setupSidebar(role, userName, avatarUrl) {
-  const user = Auth.getUser();
+/* ── Sidebar & navigation ────────────────────────────────── */
+function initSidebar(role, name, avatarUrl) {
+  const nameEl  = document.querySelector('#sidebarName');
+  const roleEl  = document.querySelector('#sidebarRole');
+  const avEl    = document.querySelector('#sidebarAvatar');
+  const brandR  = document.querySelector('.brand-role');
+  if (nameEl) nameEl.textContent = name || 'User';
+  if (roleEl) roleEl.textContent = role?.replace('_',' ') || '';
+  if (brandR) brandR.textContent = role?.replace('_',' ') || '';
+  if (avEl) { avEl.textContent = ''; if (avatarUrl) avEl.innerHTML=`<img src="${avatarUrl}">`; else avEl.textContent=UI.initials(name); }
 
-  // Set brand role label
-  const brandRole = document.querySelector('.brand-role');
-  if (brandRole) brandRole.textContent = role.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
-
-  // User info in footer
-  const nameEl = document.querySelector('.sidebar-user .name');
-  const roleEl = document.querySelector('.sidebar-user .role');
-  if (nameEl) nameEl.textContent = userName || 'User';
-  if (roleEl) roleEl.textContent = role;
-
-  // Avatar
-  const avatarEl = document.querySelector('.sidebar-user .avatar');
-  if (avatarEl) {
-    if (avatarUrl) avatarEl.innerHTML = `<img src="${avatarUrl}" alt="avatar">`;
-    else avatarEl.textContent = UI.initials(userName);
-  }
-
-  // Hamburger toggle
-  const hamburger = document.querySelector('.hamburger');
-  const sidebar = document.querySelector('.sidebar');
-  if (hamburger && sidebar) {
-    hamburger.addEventListener('click', () => sidebar.classList.toggle('open'));
-    document.addEventListener('click', (e) => {
-      if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
-        sidebar.classList.remove('open');
-      }
-    });
+  // Hamburger
+  const ham = document.querySelector('.hamburger');
+  const sb  = document.querySelector('.sidebar');
+  if (ham && sb) {
+    ham.addEventListener('click', () => sb.classList.toggle('open'));
+    document.addEventListener('click', e => { if (!sb.contains(e.target)&&!ham.contains(e.target)) sb.classList.remove('open'); });
   }
 
   // Logout
-  const logoutBtn = document.querySelector('.sidebar-logout');
-  if (logoutBtn) logoutBtn.addEventListener('click', () => Auth.logout());
-
-  // Active nav item
-  const currentPath = window.location.pathname;
-  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      const page = item.dataset.page;
-      showPage(page);
-    });
-  });
+  document.querySelector('.sidebar-logout')?.addEventListener('click', () => Auth.logout());
 }
 
-// Page visibility controller
+function activateNav(page) {
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+  document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+}
+
 function showPage(pageId) {
-  document.querySelectorAll('.dash-page').forEach(p => p.classList.add('hidden'));
-  const target = document.getElementById(`page-${pageId}`);
-  if (target) {
-    target.classList.remove('hidden');
-    const topbarTitle = document.querySelector('.topbar-title');
-    if (topbarTitle) {
-      const navItem = document.querySelector(`.nav-item[data-page="${pageId}"]`);
-      if (navItem) topbarTitle.textContent = navItem.querySelector('.nav-label')?.textContent || pageId;
-    }
-  }
+  document.querySelectorAll('.dash-page').forEach(p=>p.classList.add('hidden'));
+  document.getElementById(`page-${pageId}`)?.classList.remove('hidden');
+  const lbl = document.querySelector(`.nav-item[data-page="${pageId}"] .nav-label`)?.textContent;
+  const tt = document.querySelector('.topbar-title');
+  if (tt && lbl) tt.textContent = lbl;
+  activateNav(pageId);
+}
+
+function setupNav(handlers = {}) {
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    item.addEventListener('click', () => {
+      showPage(item.dataset.page);
+      handlers[item.dataset.page]?.();
+    });
+  });
 }

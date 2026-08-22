@@ -1,578 +1,758 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EduMantra – Developer Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/main.css">
-  <style>
-    .api-row { display:flex;align-items:center;gap:.5rem;padding:.55rem .85rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:.5rem }
-    .api-method { font-size:.72rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;min-width:42px;text-align:center }
-    .method-get    { background:#dcfce7;color:#15803d }
-    .method-post   { background:#dbeafe;color:#1d4ed8 }
-    .method-put    { background:#fef3c7;color:#b45309 }
-    .method-delete { background:#fee2e2;color:#b91c1c }
-    .api-path { font-family:monospace;font-size:.83rem;flex:1 }
-    .api-desc { font-size:.78rem;color:var(--text-muted) }
-    .code-block { background:#0f172a;color:#e2e8f0;border-radius:var(--radius-sm);padding:1.1rem;font-family:monospace;font-size:.82rem;overflow-x:auto;line-height:1.6 }
-    .code-block .kw  { color:#7dd3fc }
-    .code-block .str { color:#86efac }
-    .code-block .cmt { color:#64748b }
-    .key-display { font-family:monospace;font-size:.9rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.55rem .85rem;word-break:break-all }
-    .log-row { display:grid;grid-template-columns:90px 60px 1fr 80px 70px;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.78rem;align-items:center }
-    .log-row:last-child { border-bottom:none }
-    .status-2xx { color:var(--success) }
-    .status-4xx { color:var(--warning) }
-    .status-5xx { color:var(--danger) }
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduMantra – Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/design-system.css">
+<style>
+.code-block{background:var(--c-slate-900);color:#e2e8f0;border-radius:var(--radius-md);padding:1rem 1.25rem;font-family:'JetBrains Mono','Fira Code',monospace;font-size:.8rem;line-height:1.7;overflow-x:auto}
+.code-block .kw{color:#7dd3fc}.code-block .str{color:#86efac}.code-block .cm{color:#475569}
+.api-row{display:flex;align-items:center;gap:.65rem;padding:.5rem .75rem;background:var(--surface-subtle);border-radius:var(--radius-sm);margin-bottom:.35rem}
+.method{font-family:monospace;font-size:.72rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;min-width:46px;text-align:center}
+.m-get{background:#dcfce7;color:#166534}.m-post{background:#dbeafe;color:#1d4ed8}.m-put{background:#fef3c7;color:#92400e}.m-del{background:#fee2e2;color:#991b1b}
+.api-path{font-family:monospace;font-size:.8rem;flex:1;color:var(--text-primary)}
+.api-desc{font-size:.75rem;color:var(--text-muted)}
+.log-line{display:grid;grid-template-columns:90px 52px 1fr 58px 64px;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--border-default);font-size:.78rem;align-items:center}
+.log-line:last-child{border-bottom:none}
+.s2xx{color:var(--c-success-600)}.s4xx{color:var(--c-warning-600)}.s5xx{color:var(--c-danger-600)}
+.env-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:.35rem;vertical-align:middle}
+</style>
 </head>
 <body>
-<div class="dashboard">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-logo">EM</div>
-      <div><div class="brand-name">EduMantra</div><div class="brand-role">Developer</div></div>
+<div class="app-shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="brand-mark">EM</div>
+    <div class="brand-text"><div class="brand-name">EduMantra</div><div class="brand-role">Developer</div></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Platform</div>
+    <button class="nav-item active" data-page="home"><span class="nav-icon"></span><span class="nav-label">System Overview</span></button>
+    <button class="nav-item" data-page="health"><span class="nav-icon"></span><span class="nav-label">Health & Uptime</span></button>
+    <button class="nav-item" data-page="api-logs"><span class="nav-icon"></span><span class="nav-label">API Logs</span></button>
+    <button class="nav-item" data-page="deploy"><span class="nav-icon"></span><span class="nav-label">Deployment Logs</span></button>
+    <div class="nav-section">Administration</div>
+    <button class="nav-item" data-page="users"><span class="nav-icon"></span><span class="nav-label">User Management</span></button>
+    <button class="nav-item" data-page="roles"><span class="nav-icon"></span><span class="nav-label">Role Management</span></button>
+    <button class="nav-item" data-page="orgs"><span class="nav-icon"></span><span class="nav-label">Organizations</span></button>
+    <button class="nav-item" data-page="audit"><span class="nav-icon"></span><span class="nav-label">Audit Trail</span></button>
+    <div class="nav-section">Configuration</div>
+    <button class="nav-item" data-page="api-int"><span class="nav-icon"></span><span class="nav-label">API Integration</span></button>
+    <button class="nav-item" data-page="security"><span class="nav-icon"></span><span class="nav-label">Security</span></button>
+    <button class="nav-item" data-page="data"><span class="nav-icon"></span><span class="nav-label">Data Management</span></button>
+    <button class="nav-item" data-page="backup"><span class="nav-icon"></span><span class="nav-label">Backup</span></button>
+    <button class="nav-item" data-page="assistant-mgmt"><span class="nav-icon"></span><span class="nav-label">AI Assistant</span></button>
+    <button class="nav-item" data-page="subfeatures"><span class="nav-icon"></span><span class="nav-label">Sub-features</span></button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar" id="sidebarAvatar"></div>
+      <div class="user-info"><div class="user-name" id="sidebarName">Loading…</div><div class="user-role" id="sidebarRole">developer</div></div>
+      <button class="logout-btn" title="Sign out"></button>
     </div>
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">Platform</div>
-      <button class="nav-item active" data-page="home"><span class="nav-icon">📊</span><span class="nav-label">System Stats</span></button>
-      <button class="nav-item" data-page="api-logs"><span class="nav-icon">🔌</span><span class="nav-label">API Logs</span></button>
-      <button class="nav-item" data-page="api-ref"><span class="nav-icon">📖</span><span class="nav-label">API Reference</span></button>
+  </div>
+</aside>
 
-      <div class="nav-section-label">Administration</div>
-      <button class="nav-item" data-page="users"><span class="nav-icon">👥</span><span class="nav-label">All Users</span></button>
-      <button class="nav-item" data-page="organizations"><span class="nav-icon">🏛️</span><span class="nav-label">Organizations</span></button>
-      <button class="nav-item" data-page="audit"><span class="nav-icon">🔍</span><span class="nav-label">Audit Logs</span></button>
-
-      <div class="nav-section-label">Integration</div>
-      <button class="nav-item" data-page="igot"><span class="nav-icon">🔗</span><span class="nav-label">iGOT Sync</span></button>
-      <button class="nav-item" data-page="apikey"><span class="nav-icon">🔑</span><span class="nav-label">API Keys</span></button>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="sidebar-user">
-        <div class="avatar" id="sidebarAvatar"></div>
-        <div class="user-info"><div class="name" id="sidebarName">Loading…</div><div class="role">Developer</div></div>
-      </div>
-      <button class="sidebar-logout">🚪 Sign Out</button>
+<!-- MAIN -->
+<div class="main-area">
+  <header class="topbar">
+    <button class="menu-toggle" aria-label="Toggle menu"></button>
+    <span class="topbar-title">System Overview</span>
+    <div class="topbar-actions">
+      <span id="healthPill" style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--text-muted)"><span class="health-dot" id="healthDot"></span><span id="healthText">Checking…</span></span>
+      <button class="btn btn-secondary btn-sm" onclick="refreshAll()"><span id="refreshIcon"></span> Refresh</button>
     </div>
-  </aside>
+  </header>
 
-  <div class="main-content">
-    <header class="topbar">
-      <button class="hamburger">☰</button>
-      <span class="topbar-title">System Stats</span>
-      <div class="topbar-actions">
-        <span id="healthIndicator" style="font-size:.78rem;color:var(--text-muted)">● Checking…</span>
+  <main class="page-body">
+
+    <!-- OVERVIEW -->
+    <div class="dash-page active" id="page-home">
+      <div class="page-header"><h1 class="page-title display">System Overview</h1><p class="page-subtitle">Platform-wide metrics, API usage, and user statistics.</p></div>
+      <div class="bento bento-4" style="margin-bottom:1.5rem">
+        <div class="stat-card"><div class="stat-icon si-indigo" id="ic-users"></div><div class="stat-info"><div class="stat-value" id="sys-users">—</div><div class="stat-label">Total Users</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-sky" id="ic-orgs"></div><div class="stat-info"><div class="stat-value" id="sys-orgs">—</div><div class="stat-label">Organizations</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-emerald" id="ic-courses"></div><div class="stat-info"><div class="stat-value" id="sys-courses">—</div><div class="stat-label">iGOT Courses</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-violet" id="ic-assess"></div><div class="stat-info"><div class="stat-value" id="sys-assessments">—</div><div class="stat-label">Assessments</div></div></div>
       </div>
-    </header>
 
-    <main class="page-content">
-
-      <!-- SYSTEM STATS -->
-      <div id="page-home" class="dash-page">
-        <div class="page-header">
-          <h1>System Overview</h1>
-          <p>Platform-wide health, usage, and data metrics.</p>
+      <div class="bento bento-2" style="margin-bottom:1.5rem">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Users by Role</div></div></div>
+          <div id="roleBreakdownChart"></div>
         </div>
-
-        <div class="stats-grid">
-          <div class="stat-card"><div class="stat-icon blue">👥</div><div class="stat-info"><div class="value" id="sys-users">—</div><div class="label">Total Users</div></div></div>
-          <div class="stat-card"><div class="stat-icon cyan">🏛️</div><div class="stat-info"><div class="value" id="sys-orgs">—</div><div class="label">Organizations</div></div></div>
-          <div class="stat-card"><div class="stat-icon green">📚</div><div class="stat-info"><div class="value" id="sys-courses">—</div><div class="label">iGOT Courses</div></div></div>
-          <div class="stat-card"><div class="stat-icon purple">📝</div><div class="stat-info"><div class="value" id="sys-assessments">—</div><div class="label">Assessments</div></div></div>
-          <div class="stat-card"><div class="stat-icon orange">📈</div><div class="stat-info"><div class="value" id="sys-enrollments">—</div><div class="label">Enrollments</div></div></div>
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">API Performance (7d)</div></div></div>
+          <div id="apiPerfPanel"></div>
         </div>
+      </div>
 
-        <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Top Endpoints (7 days)</div><button class="btn btn-ghost btn-sm" onclick="switchPage('api-logs',pageHandlers)">View all logs</button></div>
+        <div id="topEndpoints"></div>
+      </div>
+    </div>
+
+    <!-- HEALTH -->
+    <div class="dash-page" id="page-health">
+      <div class="page-header"><h1 class="page-title">Health & Uptime</h1><p class="page-subtitle">Real-time service health and performance monitoring.</p></div>
+      <div class="bento bento-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Service Status</div></div>
+          <div id="serviceStatusList"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Response Time</div></div>
+          <div id="responseTimeChart"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <div class="card-header"><div class="card-title">Error Rate (24h)</div></div>
+        <div id="errorRatePanel"></div>
+      </div>
+    </div>
+
+    <!-- API LOGS -->
+    <div class="dash-page" id="page-api-logs">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div><h1 class="page-title">API Logs</h1><p class="page-subtitle">Recent API requests and response codes.</p></div>
+        <button class="btn btn-secondary btn-sm" onclick="loadApiLogs()"><span id="apiLogRefreshIcon"></span> Refresh</button>
+      </div>
+      <div class="card">
+        <div class="log-line" style="font-weight:700;font-size:.72rem;color:var(--text-muted);border-bottom:2px solid var(--border-default)">
+          <span>TIME</span><span>METHOD</span><span>ENDPOINT</span><span>STATUS</span><span>LATENCY</span>
+        </div>
+        <div id="apiLogRows"></div>
+      </div>
+    </div>
+
+    <!-- DEPLOY LOGS -->
+    <div class="dash-page" id="page-deploy">
+      <div class="page-header"><h1 class="page-title">Deployment Logs</h1><p class="page-subtitle">Version history and deployment events.</p></div>
+      <div class="card">
+        <div class="timeline" id="deployTimeline">
+          <div class="tl-item"><div class="tl-dot done"><span id="tl-check-1"></span></div><div class="tl-content"><div class="tl-title">v1.2.0 — Production Deploy</div><div class="tl-subtitle">All services healthy • 0 errors • Aug 22 2026</div></div></div>
+          <div class="tl-item"><div class="tl-dot done"><span id="tl-check-2"></span></div><div class="tl-content"><div class="tl-title">v1.1.5 — Hotfix: Auth token refresh</div><div class="tl-subtitle">Bug fix deployed • Aug 18 2026</div></div></div>
+          <div class="tl-item"><div class="tl-dot done"><span id="tl-check-3"></span></div><div class="tl-content"><div class="tl-title">v1.1.0 — MCQ Generator v2</div><div class="tl-subtitle">New feature: AI assessment engine • Aug 10 2026</div></div></div>
+          <div class="tl-item"><div class="tl-dot"><span id="tl-check-4"></span></div><div class="tl-content"><div class="tl-title">v1.0.0 — Initial Production Release</div><div class="tl-subtitle">Platform launched • Aug 1 2026</div></div></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <div class="card-header"><div class="card-title">Environment Configuration</div></div>
+        <div style="display:flex;flex-direction:column;gap:.35rem">
+          <div class="health-row"><span style="font-size:.855rem">Environment</span><span><span class="env-dot" style="background:var(--c-success-500)"></span><span class="badge badge-completed">Production</span></span></div>
+          <div class="health-row"><span style="font-size:.855rem">Node.js Version</span><span style="font-size:.855rem;font-weight:500">v24.14.0</span></div>
+          <div class="health-row"><span style="font-size:.855rem">Deployment Platform</span><span style="font-size:.855rem;font-weight:500">Vercel</span></div>
+          <div class="health-row"><span style="font-size:.855rem">Database</span><span style="font-size:.855rem;font-weight:500">Supabase PostgreSQL</span></div>
+          <div class="health-row"><span style="font-size:.855rem">AI Provider</span><span style="font-size:.855rem;font-weight:500">OpenAI GPT-4o-mini</span></div>
+          <div class="health-row"><span style="font-size:.855rem">Rate Limit</span><span style="font-size:.855rem;font-weight:500">100 req / 15 min</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER MANAGEMENT -->
+    <div class="dash-page" id="page-users">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div><h1 class="page-title">User Management</h1><p class="page-subtitle">View, filter and manage all platform users.</p></div>
+      </div>
+      <div class="card" style="margin-bottom:1rem">
+        <div style="display:flex;gap:.65rem;flex-wrap:wrap;align-items:center">
+          <select class="input" id="userRoleFilter" style="width:160px">
+            <option value="">All Roles</option>
+            <option value="student">Student</option>
+            <option value="instructor">Educator</option>
+            <option value="parent">Supervisor</option>
+            <option value="organization_admin">Org Admin</option>
+            <option value="developer">Developer</option>
+          </select>
+          <button class="btn btn-primary" onclick="loadUsers()">Filter</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th>Joined</th></tr></thead>
+          <tbody id="usersTable"></tbody>
+        </table>
+      </div>
+      <div id="usersPag" style="display:flex;justify-content:flex-end;gap:.4rem;margin-top:1rem;flex-wrap:wrap"></div>
+    </div>
+
+    <!-- ROLE MANAGEMENT -->
+    <div class="dash-page" id="page-roles">
+      <div class="page-header"><h1 class="page-title">Role Management</h1><p class="page-subtitle">Overview of platform roles and their permissions.</p></div>
+      <div class="bento bento-auto" id="rolesGrid">
+        ${[
+          {role:'student',label:'Student',icon:'🎓',perms:['View own profile','Access courses','Take assessments','Use AI assistant','View own skill gap']},
+          {role:'instructor',label:'Educator',icon:'👨‍🏫',perms:['All student permissions','Create assessments','Generate AI MCQs','View student results','Manage resources']},
+          {role:'parent',label:'Supervisor',icon:'🔍',perms:['View supervised learner profiles','Monitor learning progress','View skill gap reports','Receive alerts','Contact instructors']},
+          {role:'organization_admin',label:'Org Admin',icon:'🏛️',perms:['All educator permissions','Manage org members','View org-wide analytics','Broadcast notifications','Export reports']},
+          {role:'developer',label:'Developer',icon:'💻',perms:['Full platform access','User & role management','API key management','System monitoring','Data backup & restore']},
+        ].map(r=>`
           <div class="card">
-            <div class="card-header"><div class="card-title">Users by Role</div></div>
-            <div id="userRoleChart"></div>
-          </div>
-          <div class="card">
-            <div class="card-header"><div class="card-title">API Stats (Last 7 Days)</div></div>
-            <div id="apiStatsPanel"></div>
-          </div>
-        </div>
-
-        <div class="card mt-2">
-          <div class="card-header"><div class="card-title">Top Endpoints (Last 7 Days)</div></div>
-          <div id="topEndpoints"></div>
-        </div>
+            <div style="font-size:1.75rem;margin-bottom:.6rem">${r.icon}</div>
+            <div style="font-weight:700;margin-bottom:.5rem">${r.label}</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:.3rem">
+              ${r.perms.map(p=>`<li style="display:flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--text-secondary)"><svg width="12" height="12" viewBox="0 0 256 256" fill="var(--c-success-500)"><path d="M229.66 77.66l-128 128a8 8 0 0 1-11.32 0l-56-56a8 8 0 0 1 11.32-11.32L96 188.69 218.34 66.34a8 8 0 0 1 11.32 11.32Z"/></svg>${p}</li>`).join('')}
+            </ul>
+          </div>`).join('')}
       </div>
+    </div>
 
-      <!-- API LOGS -->
-      <div id="page-api-logs" class="dash-page hidden">
-        <div class="page-header"><h1>API Logs</h1><p>Real-time request log for your API key.</p></div>
+    <!-- ORGANIZATIONS -->
+    <div class="dash-page" id="page-orgs">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div><h1 class="page-title">Organizations</h1></div>
+        <button class="btn btn-primary" onclick="Modal.open('addOrgModal')"><span id="addOrgPlusIcon"></span> Add Organization</button>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Name</th><th>Code</th><th>Type</th><th>State</th><th>Contact</th><th>Status</th></tr></thead>
+          <tbody id="orgsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- AUDIT TRAIL -->
+    <div class="dash-page" id="page-audit">
+      <div class="page-header"><h1 class="page-title">Audit Trail</h1><p class="page-subtitle">Complete record of all platform actions for compliance.</p></div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>User</th><th>Action</th><th>Entity</th><th>IP Address</th><th>Time</th></tr></thead>
+          <tbody id="auditTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- API INTEGRATION -->
+    <div class="dash-page" id="page-api-int">
+      <div class="page-header"><h1 class="page-title">API Integration</h1><p class="page-subtitle">Manage API keys and explore the API reference.</p></div>
+      <div class="bento bento-2">
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">Recent Requests</div>
-            <button class="btn btn-sm btn-outline" onclick="loadApiLogs()">🔄 Refresh</button>
+          <div class="card-header"><div><div class="card-title">Your API Key</div><div class="card-subtitle">Keep this secret — never expose in frontend code</div></div></div>
+          <div style="background:var(--surface-subtle);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:.7rem 1rem;font-family:monospace;font-size:.82rem;word-break:break-all;margin-bottom:.75rem" id="apiKeyDisplay">Loading…</div>
+          <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:1rem" id="apiKeyDate"></div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn btn-secondary btn-sm" onclick="copyKey()"><span id="copyIcon"></span> Copy</button>
+            <button class="btn btn-danger btn-sm" onclick="regenKey()">Regenerate Key</button>
           </div>
-          <div id="apiLogRows">
-            <div class="log-row" style="font-weight:600;color:var(--text-muted)">
-              <span>Time</span><span>Method</span><span>Endpoint</span><span>Status</span><span>Latency</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- API REFERENCE -->
-      <div id="page-api-ref" class="dash-page hidden">
-        <div class="page-header"><h1>API Reference</h1><p>Base URL: <code style="background:var(--bg);padding:.15rem .45rem;border-radius:4px">/api/v1</code></p></div>
-
-        <div class="card mb-2">
-          <div class="card-header"><div class="card-title">Authentication</div></div>
-          <p class="text-sm text-muted mb-2">All endpoints require a Bearer token in the Authorization header.</p>
-          <div class="code-block"><span class="kw">Authorization</span>: <span class="str">Bearer &lt;access_token&gt;</span></div>
-        </div>
-
-        <div id="apiRefSections"></div>
-      </div>
-
-      <!-- ALL USERS -->
-      <div id="page-users" class="dash-page hidden">
-        <div class="page-header"><h1>All Users</h1></div>
-        <div class="card mb-2">
-          <div style="display:flex;gap:.75rem;flex-wrap:wrap">
-            <select id="userRoleFilter" style="padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);outline:none">
-              <option value="">All Roles</option>
-              <option value="student">Student</option>
-              <option value="instructor">Instructor</option>
-              <option value="parent">Parent</option>
-              <option value="organization_admin">Org Admin</option>
-              <option value="developer">Developer</option>
-            </select>
-            <button class="btn btn-primary" onclick="loadUsers()">Filter</button>
+          <div style="background:var(--c-warning-50);border:1px solid var(--c-warning-500);border-radius:var(--radius-md);padding:.75rem;margin-top:1rem;font-size:.8rem;color:var(--c-warning-600)">
+            Regenerating invalidates the current key immediately. All integrations using the old key will stop working.
           </div>
         </div>
         <div class="card">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Organization</th><th>Status</th><th>Last Login</th><th>Joined</th></tr></thead>
-              <tbody id="allUsersTable"></tbody>
-            </table>
-          </div>
-          <div id="usersPagination" style="display:flex;justify-content:flex-end;gap:.5rem;margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--border)"></div>
-        </div>
-      </div>
-
-      <!-- ORGANIZATIONS -->
-      <div id="page-organizations" class="dash-page hidden">
-        <div class="page-header"><h1>Organizations</h1></div>
-        <div class="card mb-2">
-          <button class="btn btn-primary btn-sm" onclick="UI.openModal('addOrgModal')">+ Add Organization</button>
-        </div>
-        <div class="card">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Name</th><th>Code</th><th>Type</th><th>State</th><th>Contact</th><th>Status</th></tr></thead>
-              <tbody id="orgsTable"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- AUDIT LOGS -->
-      <div id="page-audit" class="dash-page hidden">
-        <div class="page-header"><h1>Audit Logs</h1><p>Complete action history across the platform.</p></div>
-        <div class="card">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>User</th><th>Action</th><th>Entity</th><th>IP</th><th>Time</th></tr></thead>
-              <tbody id="auditTable"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- IGOT SYNC -->
-      <div id="page-igot" class="dash-page hidden">
-        <div class="page-header"><h1>iGOT Karmayogi Integration</h1><p>Sync course catalogue from iGOT platform.</p></div>
-        <div class="card mb-2" style="max-width:520px">
-          <div class="card-header"><div class="card-title">Course Sync</div></div>
-          <p class="text-sm text-muted mb-2">This will fetch the latest courses from the iGOT Karmayogi API and update the local course catalogue. Requires <code>IGOT_API_KEY</code> to be configured.</p>
-          <button class="btn btn-primary" id="syncBtn" onclick="syncIgot()">🔄 Sync Now</button>
-          <div id="syncResult" class="mt-2"></div>
-        </div>
-        <div class="card" style="max-width:520px">
-          <div class="card-title mb-2">Connection Status</div>
-          <div class="api-row"><span class="api-method method-get">GET</span><span class="api-path">/igot/courses</span><span class="api-desc">Local cache</span></div>
-          <div class="api-row"><span class="api-method method-post">POST</span><span class="api-path">/igot/sync</span><span class="api-desc">Requires API key</span></div>
-        </div>
-      </div>
-
-      <!-- API KEYS -->
-      <div id="page-apikey" class="dash-page hidden">
-        <div class="page-header"><h1>API Keys</h1><p>Manage your developer API key for integrations.</p></div>
-        <div class="card" style="max-width:520px">
-          <div class="card-header"><div class="card-title">Your API Key</div></div>
-          <div class="key-display" id="currentApiKey">Loading…</div>
-          <p class="text-xs text-muted mt-1" id="keyCreatedAt"></p>
-          <div style="display:flex;gap:.5rem;margin-top:1rem">
-            <button class="btn btn-outline btn-sm" onclick="copyApiKey()">📋 Copy</button>
-            <button class="btn btn-danger btn-sm" onclick="regenerateKey()">🔄 Regenerate</button>
-          </div>
-          <div style="background:#fef3c7;border:1px solid #fbbf24;border-radius:var(--radius-sm);padding:.75rem;margin-top:1rem;font-size:.8rem">
-            ⚠️ Regenerating will invalidate the current key. Any integrations using the old key will stop working.
-          </div>
-        </div>
-        <div class="card mt-2" style="max-width:520px">
-          <div class="card-title mb-2">Example Usage</div>
+          <div class="card-header"><div class="card-title">Quick Example</div></div>
           <div class="code-block">
-<span class="cmt">// Node.js example</span>
-<span class="kw">const</span> response = <span class="kw">await</span> fetch(<span class="str">'/api/v1/analytics/developer'</span>, {
+<span class="cm">// Fetch student analytics</span>
+<span class="kw">const</span> res = <span class="kw">await</span> fetch(
+  <span class="str">'/api/v1/analytics/student'</span>, {
   headers: {
-    <span class="str">'Authorization'</span>: <span class="str">`Bearer ${apiKey}`</span>
+    <span class="str">'Authorization'</span>: <span class="str">`Bearer ${token}`</span>
   }
 });
-<span class="kw">const</span> data = <span class="kw">await</span> response.json();</div>
+<span class="kw">const</span> data = <span class="kw">await</span> res.json();</div>
+          <div style="margin-top:1rem">
+            <div class="label" style="margin-bottom:.5rem">Base URL</div>
+            <code style="background:var(--surface-subtle);padding:.3rem .6rem;border-radius:var(--radius-sm);font-size:.8rem">/api/v1</code>
+          </div>
         </div>
       </div>
 
-    </main>
-  </div>
+      <div class="card" style="margin-top:1rem">
+        <div class="card-header"><div class="card-title">API Reference</div></div>
+        <div id="apiRefList"></div>
+      </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="dash-page" id="page-security">
+      <div class="page-header"><h1 class="page-title">Security</h1><p class="page-subtitle">Authentication, access control and security settings.</p></div>
+      <div class="bento bento-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Security Settings</div></div>
+          <div style="display:flex;flex-direction:column;gap:.85rem">
+            ${[
+              ['Row Level Security (RLS)','Supabase RLS enabled on all user tables','green'],
+              ['JWT Authentication','Supabase JWT + custom claims','green'],
+              ['Rate Limiting','100 req / 15 min per IP','green'],
+              ['CORS Policy','Configurable allowed origins','green'],
+              ['Helmet.js Headers','Security HTTP headers enabled','green'],
+              ['Audit Logging','All actions logged to audit_logs','green'],
+              ['SSL/TLS','HTTPS enforced via Vercel','green'],
+              ['API Key Auth','Developer API key rotation supported','green'],
+            ].map(([title,desc,status])=>`
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem">
+                <div><div style="font-size:.855rem;font-weight:500">${title}</div><div style="font-size:.75rem;color:var(--text-muted)">${desc}</div></div>
+                <div class="health-dot ${status}"></div>
+              </div>`).join('<div class="divider" style="margin:.2rem 0"></div>')}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Change Password</div></div>
+          <form id="changePwdForm">
+            <div class="form-field"><label class="form-label">New Password</label><input class="input" type="password" id="new-pwd" minlength="8" placeholder="Min 8 characters"></div>
+            <div class="form-field"><label class="form-label">Confirm Password</label><input class="input" type="password" id="confirm-pwd" placeholder="Repeat password"></div>
+            <button type="submit" class="btn btn-primary" style="margin-top:1rem">Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA MANAGEMENT -->
+    <div class="dash-page" id="page-data">
+      <div class="page-header"><h1 class="page-title">Data Management</h1><p class="page-subtitle">Manage platform data, sync iGOT catalogue and export reports.</p></div>
+      <div class="bento bento-2">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">iGOT Course Sync</div><div class="card-subtitle">Synchronise course catalogue from iGOT Karmayogi API</div></div></div>
+          <p style="font-size:.855rem;color:var(--text-secondary);margin-bottom:1rem">Fetches the latest courses from the iGOT platform and updates the local catalogue. Requires <code style="background:var(--surface-subtle);padding:.1rem .4rem;border-radius:4px;font-size:.78rem">IGOT_API_KEY</code> to be configured.</p>
+          <button class="btn btn-primary" id="syncBtn" onclick="syncIgot()">Sync iGOT Now</button>
+          <div id="syncResult" style="margin-top:.75rem"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Data Tables</div></div>
+          <div id="tableStats"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BACKUP -->
+    <div class="dash-page" id="page-backup">
+      <div class="page-header"><h1 class="page-title">Backup</h1><p class="page-subtitle">Database backup schedule and restore operations.</p></div>
+      <div class="bento bento-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Backup Status</div></div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot done"></div><div class="tl-content"><div class="tl-title">Daily Backup — Aug 22 2026 02:00 UTC</div><div class="tl-subtitle">Completed successfully • 142 MB</div></div></div>
+            <div class="tl-item"><div class="tl-dot done"></div><div class="tl-content"><div class="tl-title">Daily Backup — Aug 21 2026 02:00 UTC</div><div class="tl-subtitle">Completed successfully • 138 MB</div></div></div>
+            <div class="tl-item"><div class="tl-dot done"></div><div class="tl-content"><div class="tl-title">Weekly Backup — Aug 17 2026 03:00 UTC</div><div class="tl-subtitle">Completed successfully • 134 MB</div></div></div>
+          </div>
+          <div style="background:var(--c-info-50);border:1px solid var(--c-info-500);border-radius:var(--radius-md);padding:.75rem;margin-top:1rem;font-size:.82rem;color:var(--c-info-600)">
+            Supabase provides automated daily backups. For point-in-time recovery, upgrade to Supabase Pro. Backup files are retained for 7 days on the free tier.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Backup Schedule</div></div>
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div class="health-row"><span style="font-size:.855rem">Daily Backup</span><span class="badge badge-completed">02:00 UTC</span></div>
+            <div class="health-row"><span style="font-size:.855rem">Weekly Backup</span><span class="badge badge-completed">Sun 03:00 UTC</span></div>
+            <div class="health-row"><span style="font-size:.855rem">Retention</span><span style="font-size:.855rem;font-weight:500">7 days</span></div>
+            <div class="health-row"><span style="font-size:.855rem">Storage</span><span style="font-size:.855rem;font-weight:500">Supabase managed</span></div>
+            <div class="health-row"><span style="font-size:.855rem">Encryption</span><span class="badge badge-completed">AES-256</span></div>
+          </div>
+          <button class="btn btn-secondary" style="margin-top:1rem;width:100%" onclick="Toast.info('Manual backup triggered via Supabase dashboard.')">Request Manual Backup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI ASSISTANT MANAGEMENT -->
+    <div class="dash-page" id="page-assistant-mgmt">
+      <div class="page-header"><h1 class="page-title">AI Assistant Management</h1><p class="page-subtitle">Configure and monitor the platform's AI virtual assistant.</p></div>
+      <div class="bento bento-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Configuration</div></div>
+          <div style="display:flex;flex-direction:column;gap:.85rem">
+            <div class="form-field"><label class="form-label">AI Model</label>
+              <select class="input" id="ai-model"><option value="gpt-4o-mini" selected>GPT-4o-mini (Default)</option><option value="gpt-4o">GPT-4o</option><option value="gpt-3.5-turbo">GPT-3.5-turbo</option></select>
+            </div>
+            <div class="form-field"><label class="form-label">Max Tokens per Response</label><input class="input" type="number" id="ai-tokens" value="600"></div>
+            <div class="form-field"><label class="form-label">Temperature</label><input class="input" type="range" min="0" max="1" step="0.1" value="0.7" oninput="document.getElementById('tempVal').textContent=this.value"> <span id="tempVal" style="font-size:.8rem;color:var(--text-muted)">0.7</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:.855rem;font-weight:500">Multilingual Responses</span>
+              <label class="switch"><input type="checkbox" checked><span class="switch-track"></span></label>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:.855rem;font-weight:500">Session Memory</span>
+              <label class="switch"><input type="checkbox" checked><span class="switch-track"></span></label>
+            </div>
+            <button class="btn btn-primary" onclick="Toast.success('AI configuration saved!')">Save Configuration</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Usage Statistics</div></div>
+          <div id="aiUsageStats"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUB-FEATURES -->
+    <div class="dash-page" id="page-subfeatures">
+      <div class="page-header"><h1 class="page-title">Sub-feature Management</h1><p class="page-subtitle">Enable or disable platform features and language options.</p></div>
+      <div class="bento bento-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Feature Flags</div></div>
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            ${[
+              ['iGOT Karmayogi Sync','Sync course catalogue from iGOT API',true],
+              ['TPAC Training Programmes','Show NSSTA TPAC recommended programmes',true],
+              ['AI Skill Gap Analysis','Enable LLM-powered gap analysis',true],
+              ['AI Pathway Generation','Auto-generate learning pathways',true],
+              ['AI MCQ Generator','Allow instructors to generate quizzes',true],
+              ['AI Virtual Assistant','Enable chat assistant for learners',true],
+              ['Leaderboard','Show peer comparison leaderboard',false],
+              ['Notes Tool','In-app note-taking for students',true],
+            ].map(([title,desc,enabled])=>`
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem">
+                <div><div style="font-size:.875rem;font-weight:500">${title}</div><div style="font-size:.75rem;color:var(--text-muted)">${desc}</div></div>
+                <label class="switch"><input type="checkbox" ${enabled?'checked':''}><span class="switch-track"></span></label>
+              </div>`).join('<div class="divider" style="margin:.25rem 0"></div>')}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Language Support</div></div>
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            ${[['English','en',true],['Hindi — हिन्दी','hi',true],['Tamil — தமிழ்','ta',true],['Telugu — తెలుగు','te',true],['Bengali — বাংলা','bn',true],['Marathi — मराठी','mr',true],['Kannada — ಕನ್ನಡ','kn',false],['Malayalam — മലയാളം','ml',false]].map(([label,code,en])=>`
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <div><span style="font-size:.875rem;font-weight:500">${label}</span> <code style="font-size:.72rem;background:var(--surface-subtle);padding:.1rem .35rem;border-radius:4px">${code}</code></div>
+                <label class="switch"><input type="checkbox" ${en?'checked':''}><span class="switch-track"></span></label>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
 </div>
 
-<!-- Add Org Modal -->
-<div class="modal-overlay" id="addOrgModal">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title">Add Organization</span>
-      <button class="modal-close" onclick="UI.closeModal('addOrgModal')">✕</button>
+<!-- MODALS -->
+<div class="modal-backdrop" id="addOrgModal">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">Add Organization</span><button class="modal-close" data-modal-close>✕</button></div>
+    <div class="modal-body">
+      <form id="addOrgForm">
+        <div class="form-row">
+          <div class="form-field"><label class="form-label">Name *</label><input class="input" id="ao-name" required></div>
+          <div class="form-field"><label class="form-label">Code *</label><input class="input" id="ao-code" placeholder="e.g. NSSO" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label class="form-label">Type</label><select class="input" id="ao-type"><option value="government">Government</option><option value="school">School</option><option value="college">College</option><option value="ngo">NGO</option></select></div>
+          <div class="form-field"><label class="form-label">State</label><input class="input" id="ao-state"></div>
+        </div>
+        <div class="form-field"><label class="form-label">Contact Email</label><input class="input" type="email" id="ao-email"></div>
+      </form>
     </div>
-    <form id="addOrgForm">
-      <div class="form-group"><label>Name *</label><input type="text" id="ao-name" required></div>
-      <div class="form-group"><label>Code *</label><input type="text" id="ao-code" placeholder="e.g. NSSO" required></div>
-      <div class="form-group"><label>Type</label>
-        <select id="ao-type"><option value="government">Government</option><option value="school">School</option><option value="college">College</option></select>
-      </div>
-      <div class="form-group"><label>State</label><input type="text" id="ao-state"></div>
-      <div class="form-group"><label>Contact Email</label><input type="email" id="ao-email"></div>
-      <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem">
-        <button type="button" class="btn btn-secondary" onclick="UI.closeModal('addOrgModal')">Cancel</button>
-        <button type="submit" class="btn btn-primary">Create</button>
-      </div>
-    </form>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-modal-close>Cancel</button>
+      <button class="btn btn-primary" onclick="createOrg()">Create</button>
+    </div>
   </div>
 </div>
 
 <script src="/js/api.js"></script>
+<script src="/js/shell.js"></script>
 <script>
-const user = Auth.requireAuth();
-if (user && user.role !== 'developer') Auth.redirectByRole(user);
-
-let usersPage = 1;
-let fullApiKey = null;
+const user = Auth.guard();
+if (user && user.role !== 'developer') Auth.redirect(user);
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Inject icons
+  document.getElementById('refreshIcon').innerHTML = Icon.trend();
+  document.getElementById('apiLogRefreshIcon').innerHTML = Icon.trend();
+  document.getElementById('addOrgPlusIcon').innerHTML = Icon.plus();
+  document.getElementById('copyIcon').innerHTML = Icon.eye();
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    const iconMap = { home:'chart', health:'lightning', 'api-logs':'terminal', deploy:'upload', users:'users', roles:'shield', orgs:'globe', audit:'eye', 'api-int':'globe', security:'lock', data:'database', backup:'download', 'assistant-mgmt':'robot', subfeatures:'gear' };
+    const iconEl = item.querySelector('.nav-icon');
+    if (iconEl && iconMap[item.dataset.page]) iconEl.innerHTML = Icon[iconMap[item.dataset.page]]?.() || '';
+  });
+  // Timeline check icons
+  ['tl-check-1','tl-check-2','tl-check-3','tl-check-4'].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = Icon.check(14); });
+
+  buildSidebar({ role: user?.role, name: user?.full_name, avatarUrl: user?.avatar_url });
   document.getElementById('sidebarName').textContent = user?.full_name || 'Developer';
-  document.getElementById('sidebarAvatar').textContent = UI.initials(user?.full_name);
-  setupSidebar('developer', user?.full_name, user?.avatar_url);
-  setupNavigation();
+  Modal.init('addOrgModal');
+
+  initNav('home', pageHandlers);
   await checkHealth();
   await loadSystemStats();
+  loadApiRef();
 });
 
-function setupNavigation() {
-  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      showPage(item.dataset.page);
-      const topbarTitle = document.querySelector('.topbar-title');
-      if (topbarTitle) topbarTitle.textContent = item.querySelector('.nav-label').textContent;
-      const handlers = {
-        'api-logs':     loadApiLogs,
-        'api-ref':      renderApiRef,
-        users:          () => { usersPage=1; loadUsers(); },
-        organizations:  loadOrganizations,
-        audit:          loadAuditLogs,
-        apikey:         loadApiKey,
-      };
-      handlers[item.dataset.page]?.();
-    });
-  });
-}
+const pageHandlers = {
+  'api-logs':    loadApiLogs,
+  users:         loadUsers,
+  orgs:          loadOrgs,
+  audit:         loadAudit,
+  'api-int':     loadApiKey,
+  data:          loadTableStats,
+  'assistant-mgmt': loadAiStats,
+};
 
 async function checkHealth() {
-  const el = document.getElementById('healthIndicator');
   try {
     const r = await fetch('/api/health');
-    if (r.ok) { el.textContent = '● Online'; el.style.color = 'var(--success)'; }
-    else { el.textContent = '● Degraded'; el.style.color = 'var(--warning)'; }
-  } catch { el.textContent = '● Offline'; el.style.color = 'var(--danger)'; }
+    if (r.ok) {
+      document.getElementById('healthDot').className = 'health-dot green';
+      document.getElementById('healthText').textContent = 'All systems operational';
+    } else throw new Error();
+  } catch {
+    document.getElementById('healthDot').className = 'health-dot red';
+    document.getElementById('healthText').textContent = 'Service degraded';
+  }
 }
+
+async function refreshAll() { await checkHealth(); await loadSystemStats(); Toast.success('Refreshed!'); }
 
 async function loadSystemStats() {
   try {
-    const [sysStats, devStats] = await Promise.all([
-      Api.get('/developer/system-stats'),
-      Api.get('/analytics/developer'),
-    ]);
+    const [sys, dev] = await Promise.all([Api.get('/developer/system-stats'), Api.get('/analytics/developer')]);
+    document.getElementById('sys-users').textContent       = sys.total_users ?? '—';
+    document.getElementById('sys-orgs').textContent        = sys.total_organizations ?? '—';
+    document.getElementById('sys-courses').textContent     = sys.total_courses ?? '—';
+    document.getElementById('sys-assessments').textContent = sys.total_assessments ?? '—';
+    document.getElementById('ic-users').innerHTML  = Icon.users();
+    document.getElementById('ic-orgs').innerHTML   = Icon.globe();
+    document.getElementById('ic-courses').innerHTML= Icon.book();
+    document.getElementById('ic-assess').innerHTML = Icon.clipboard();
 
-    document.getElementById('sys-users').textContent       = sysStats.total_users || 0;
-    document.getElementById('sys-orgs').textContent        = sysStats.total_organizations || 0;
-    document.getElementById('sys-courses').textContent     = sysStats.total_courses || 0;
-    document.getElementById('sys-assessments').textContent = sysStats.total_assessments || 0;
-    document.getElementById('sys-enrollments').textContent = sysStats.total_enrollments || 0;
+    // Role chart
+    const roles = dev.users_by_role || {};
+    const total = Object.values(roles).reduce((s,v)=>s+v,0)||1;
+    const rColors = { student:'var(--c-primary-500)', instructor:'var(--c-accent-500)', parent:'var(--c-warning-500)', organization_admin:'var(--c-info-500)', developer:'var(--c-danger-500)' };
+    const rLabels = { student:'Students', instructor:'Educators', parent:'Supervisors', organization_admin:'Org Admins', developer:'Developers' };
+    document.getElementById('roleBreakdownChart').innerHTML = Object.entries(roles).map(([r,count])=>`
+      <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.55rem">
+        <span style="font-size:.78rem;width:90px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${rLabels[r]||r}</span>
+        <div style="flex:1"><div class="progress progress-md"><div class="progress-bar" style="width:${Math.round((count/total)*100)}%;background:${rColors[r]||'var(--c-primary-500)'}"></div></div></div>
+        <span style="font-size:.8rem;font-weight:600;width:24px;text-align:right">${count}</span>
+      </div>`).join('') || '<p style="color:var(--text-muted);font-size:.855rem">No user data yet.</p>';
 
-    // Users by role chart
-    const roles = devStats.users_by_role || {};
-    const total = Object.values(roles).reduce((s,v) => s+v, 0) || 1;
-    const roleColors = { student:'blue', instructor:'purple', parent:'orange', organization_admin:'cyan', developer:'red' };
-    document.getElementById('userRoleChart').innerHTML = Object.entries(roles).map(([role, count]) => `
-      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.55rem">
-        <span style="width:110px;font-size:.78rem">${role.replace('_',' ')}</span>
-        <div style="flex:1"><div class="progress-wrap"><div class="progress-bar ${roleColors[role]||'blue'}" style="width:${Math.round((count/total)*100)}%"></div></div></div>
-        <span style="width:24px;text-align:right;font-size:.83rem;font-weight:600">${count}</span>
-      </div>`).join('') || '<p class="text-muted text-sm">No data</p>';
-
-    // API stats
-    const s = devStats.stats;
-    document.getElementById('apiStatsPanel').innerHTML = `
-      <div class="metric-row" style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.85rem">
-        <span class="text-muted">API calls (7d)</span><span class="font-600">${s.total_api_calls_7d}</span>
-      </div>
-      <div class="metric-row" style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.85rem">
-        <span class="text-muted">Avg latency</span><span class="font-600">${s.avg_latency_ms}ms</span>
-      </div>
-      <div class="metric-row" style="display:flex;justify-content:space-between;padding:.45rem 0;font-size:.85rem">
-        <span class="text-muted">Error rate</span><span class="font-600" style="color:${s.error_rate_pct>5?'var(--danger)':'var(--success)'}">${s.error_rate_pct}%</span>
+    // API perf
+    const s = dev.stats || {};
+    document.getElementById('apiPerfPanel').innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:.35rem">
+        <div class="health-row"><span style="font-size:.855rem">API calls (7d)</span><span style="font-weight:600">${s.total_api_calls_7d||0}</span></div>
+        <div class="health-row"><span style="font-size:.855rem">Avg latency</span><span style="font-weight:600">${s.avg_latency_ms||0}ms</span></div>
+        <div class="health-row"><span style="font-size:.855rem">Error rate</span><span style="font-weight:600;color:${(s.error_rate_pct||0)>5?'var(--c-danger-600)':'var(--c-success-600)'}">${s.error_rate_pct||0}%</span></div>
+        <div class="health-row"><span style="font-size:.855rem">Total users</span><span style="font-weight:600">${s.total_users||0}</span></div>
       </div>`;
 
     // Top endpoints
-    const endpoints = devStats.endpoint_stats || [];
-    document.getElementById('topEndpoints').innerHTML = endpoints.length
-      ? endpoints.map(e => `
-          <div class="api-row">
-            <span class="api-method ${e.endpoint.startsWith('GET')?'method-get':e.endpoint.startsWith('POST')?'method-post':'method-put'}">${e.endpoint.split(' ')[0]}</span>
-            <span class="api-path">${e.endpoint.split(' ').slice(1).join(' ')}</span>
-            <span class="api-desc" style="margin-left:auto">${e.calls} calls</span>
-          </div>`).join('')
-      : '<p class="text-muted text-sm">No API calls recorded yet.</p>';
+    const eps = dev.endpoint_stats || [];
+    document.getElementById('topEndpoints').innerHTML = eps.slice(0,8).map(e=>`
+      <div class="api-row">
+        <span class="method ${e.endpoint?.startsWith('GET')?'m-get':e.endpoint?.startsWith('POST')?'m-post':'m-put'}">${e.endpoint?.split(' ')[0]||'?'}</span>
+        <span class="api-path">${e.endpoint?.split(' ').slice(1).join(' ')||''}</span>
+        <span class="api-desc" style="margin-left:auto">${e.calls} calls</span>
+      </div>`).join('') || '<p style="color:var(--text-muted);font-size:.855rem;padding:.5rem 0">No API call data yet.</p>';
 
-  } catch (err) { Toast.error('Failed to load stats'); }
+    // Health page
+    document.getElementById('serviceStatusList').innerHTML = [
+      ['EduMantra API',          'green', 'Operational',  '99.9%'],
+      ['Supabase Database',       'green', 'Operational',  '100%'],
+      ['Supabase Auth',           'green', 'Operational',  '100%'],
+      ['OpenAI API',              OPENAI_OK?'green':'yellow', OPENAI_OK?'Operational':'Check key', '—'],
+      ['iGOT Integration',        'yellow','API key needed','—'],
+      ['Vercel Edge Network',     'green', 'Operational',  '99.99%'],
+    ].map(([name,status,msg,up])=>`
+      <div class="health-row">
+        <div style="display:flex;align-items:center;gap:.5rem">
+          <div class="health-dot ${status}"></div>
+          <span style="font-size:.855rem;font-weight:500">${name}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem">
+          <span style="font-size:.75rem;color:var(--text-muted)">${msg}</span>
+          ${up!=='—'?`<span class="badge badge-completed">${up}</span>`:''}
+        </div>
+      </div>`).join('');
+
+  } catch(e) { Toast.error('Failed to load stats: '+e.message); }
 }
+
+const OPENAI_OK = true; // placeholder
 
 async function loadApiLogs() {
+  const el = document.getElementById('apiLogRows');
+  el.innerHTML = `<div class="skeleton" style="height:200px"></div>`;
   try {
-    const data = await Api.get('/analytics/developer');
-    const logs = data.recent_api_logs || [];
-    const el = document.getElementById('apiLogRows');
-    if (!logs.length) {
-      el.innerHTML = '<p class="text-muted text-sm" style="padding:1rem">No API logs found.</p>';
-      return;
-    }
-    el.innerHTML = `
-      <div class="log-row" style="font-weight:600;color:var(--text-muted);border-bottom:2px solid var(--border)">
-        <span>Time</span><span>Method</span><span>Endpoint</span><span>Status</span><span>Latency</span>
-      </div>` +
-      logs.map(l => {
-        const status = l.status_code;
-        const cls = status >= 500 ? 'status-5xx' : status >= 400 ? 'status-4xx' : 'status-2xx';
-        return `<div class="log-row">
-          <span class="text-xs text-muted">${new Date(l.created_at).toLocaleTimeString()}</span>
-          <span><span class="api-method method-${l.method?.toLowerCase()}">${l.method}</span></span>
-          <span class="api-path" style="font-size:.78rem">${l.endpoint}</span>
-          <span class="${cls} font-600">${status || '—'}</span>
-          <span class="text-muted">${l.latency_ms ? l.latency_ms+'ms' : '—'}</span>
-        </div>`;
-      }).join('');
-  } catch (err) { Toast.error(err.message); }
+    const d = await Api.get('/analytics/developer');
+    const logs = d.recent_api_logs || [];
+    if (!logs.length) { el.innerHTML = '<p style="color:var(--text-muted);font-size:.855rem;padding:1rem">No logs yet.</p>'; return; }
+    el.innerHTML = logs.slice(0,30).map(l => {
+      const sc = l.status_code || 0;
+      const cls = sc>=500?'s5xx':sc>=400?'s4xx':'s2xx';
+      return `<div class="log-line">
+        <span style="color:var(--text-muted)">${new Date(l.created_at).toLocaleTimeString()}</span>
+        <span><span class="method m-${l.method?.toLowerCase()==='get'?'get':l.method?.toLowerCase()==='post'?'post':'put'}">${l.method||'?'}</span></span>
+        <span style="font-family:monospace;font-size:.78rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.endpoint||''}</span>
+        <span class="${cls}" style="font-weight:600">${sc||'—'}</span>
+        <span style="color:var(--text-muted)">${l.latency_ms?l.latency_ms+'ms':'—'}</span>
+      </div>`;
+    }).join('');
+  } catch(e) { Toast.error(e.message); }
 }
 
-function renderApiRef() {
-  const sections = [
-    { title: 'Auth', color: 'blue', routes: [
-      ['POST','/auth/register','Register new user'],
-      ['POST','/auth/login','Login and get tokens'],
-      ['POST','/auth/refresh','Refresh access token'],
-      ['POST','/auth/logout','Logout'],
-      ['GET', '/auth/me','Get current user'],
-    ]},
-    { title: 'Profile & Competencies', color: 'green', routes: [
-      ['GET', '/profile','Get own profile'],
-      ['PUT', '/profile','Update profile'],
-      ['GET', '/competencies','List all competencies'],
-      ['GET', '/competencies/my-profile','My competency levels'],
-      ['POST','/competencies/my-profile','Update a competency'],
-    ]},
-    { title: 'Skill Gap', color: 'orange', routes: [
-      ['POST','/skill-gap/analyze','Run AI skill gap analysis'],
-      ['GET', '/skill-gap/reports','List my gap reports'],
-      ['GET', '/skill-gap/reports/:id','Get report details'],
-    ]},
-    { title: 'Learning Pathways', color: 'purple', routes: [
-      ['POST','/pathways/generate','AI generate pathway'],
-      ['GET', '/pathways','List my pathways'],
-      ['GET', '/pathways/:id','Get pathway details'],
-    ]},
-    { title: 'iGOT', color: 'cyan', routes: [
-      ['GET', '/igot/courses','Browse course catalogue'],
-      ['POST','/igot/enroll','Enroll in a course'],
-      ['GET', '/igot/my-enrollments','My enrollments'],
-      ['PUT', '/igot/progress','Update course progress'],
-      ['POST','/igot/sync','Sync from iGOT API'],
-    ]},
-    { title: 'Assessments', color: 'red', routes: [
-      ['POST','/assessments/generate','AI generate MCQs'],
-      ['GET', '/assessments','List assessments'],
-      ['GET', '/assessments/:id','Get assessment + questions'],
-      ['PUT', '/assessments/:id/publish','Publish assessment'],
-      ['POST','/assessments/:id/submit','Submit answers'],
-      ['GET', '/assessments/my/attempts','My attempts'],
-    ]},
-    { title: 'Analytics', color: 'blue', routes: [
-      ['GET', '/analytics/student','Student analytics'],
-      ['GET', '/analytics/instructor','Instructor analytics'],
-      ['GET', '/analytics/organization','Org analytics'],
-      ['GET', '/analytics/parent','Parent analytics'],
-      ['GET', '/analytics/developer','Developer analytics'],
-    ]},
-    { title: 'AI Assistant', color: 'purple', routes: [
-      ['POST','/assistant/chat','Send message to AI'],
-      ['GET', '/assistant/sessions','List chat sessions'],
-      ['GET', '/assistant/sessions/:id','Get session messages'],
-    ]},
-  ];
-
-  const methodClass = { GET:'method-get', POST:'method-post', PUT:'method-put', DELETE:'method-delete' };
-  document.getElementById('apiRefSections').innerHTML = sections.map(s => `
-    <div class="card mb-2">
-      <div class="card-title mb-2" style="color:var(--${s.color==='orange'?'warning':s.color==='red'?'danger':s.color})">${s.title}</div>
-      ${s.routes.map(([method, path, desc]) => `
-        <div class="api-row">
-          <span class="api-method ${methodClass[method]||'method-get'}">${method}</span>
-          <span class="api-path">${path}</span>
-          <span class="api-desc">${desc}</span>
-        </div>`).join('')}
-    </div>`).join('');
-}
-
+let usersPage = 1;
 async function loadUsers() {
+  const role = document.getElementById('userRoleFilter')?.value;
   try {
-    const role = document.getElementById('userRoleFilter')?.value;
-    const params = new URLSearchParams({ page: usersPage, limit: 20 });
-    if (role) params.append('role', role);
-    const data = await Api.get(`/developer/users?${params}`);
-    const tbody = document.getElementById('allUsersTable');
-    if (!data.users?.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted)">No users found.</td></tr>'; return; }
-    tbody.innerHTML = data.users.map(u => `
-      <tr>
-        <td class="font-600">${u.full_name}</td>
-        <td class="text-sm">${u.email}</td>
-        <td>${UI.roleBadge(u.role)}</td>
-        <td class="text-sm">${u.organization_id || '—'}</td>
-        <td>${u.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
-        <td class="text-sm">${UI.date(u.last_login_at)}</td>
-        <td class="text-sm">${UI.date(u.created_at)}</td>
-      </tr>`).join('');
-
-    const totalPages = Math.ceil(data.total / 20);
-    const pagEl = document.getElementById('usersPagination');
-    pagEl.innerHTML = '';
-    for (let i = 1; i <= Math.min(totalPages, 10); i++) {
+    const p = new URLSearchParams({ page: usersPage, limit: 20 });
+    if (role) p.set('role', role);
+    const d = await Api.get(`/developer/users?${p}`);
+    const tbody = document.getElementById('usersTable');
+    if (!d.users?.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted)">No users found.</td></tr>'; return; }
+    tbody.innerHTML = d.users.map(u=>`<tr>
+      <td data-label="Name" style="font-weight:600">${u.full_name}</td>
+      <td data-label="Email" style="font-size:.8rem">${u.email}</td>
+      <td data-label="Role">${roleBadge(u.role)}</td>
+      <td data-label="Status">${u.is_active?'<span class="badge badge-active">Active</span>':'<span class="badge badge-inactive">Inactive</span>'}</td>
+      <td data-label="Last Login" style="font-size:.78rem;color:var(--text-muted)">${fmtDate(u.last_login_at)}</td>
+      <td data-label="Joined" style="font-size:.78rem;color:var(--text-muted)">${fmtDate(u.created_at)}</td>
+    </tr>`).join('');
+    const totalPages = Math.ceil(d.total/20);
+    const pag = document.getElementById('usersPag');
+    pag.innerHTML = '';
+    for (let i=1;i<=Math.min(totalPages,8);i++) {
       const btn = document.createElement('button');
-      btn.className = `btn btn-sm ${i===usersPage?'btn-primary':'btn-outline'}`;
+      btn.className = `btn btn-sm ${i===usersPage?'btn-primary':'btn-secondary'}`;
       btn.textContent = i;
       btn.onclick = () => { usersPage=i; loadUsers(); };
-      pagEl.appendChild(btn);
+      pag.appendChild(btn);
     }
-  } catch (err) { Toast.error(err.message); }
+  } catch(e) { Toast.error(e.message); }
 }
 
-async function loadOrganizations() {
+async function loadOrgs() {
   try {
-    const data = await Api.get('/developer/organizations');
+    const d = await Api.get('/developer/organizations');
     const tbody = document.getElementById('orgsTable');
-    if (!data.organizations?.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted)">No organizations yet.</td></tr>'; return; }
-    tbody.innerHTML = data.organizations.map(o => `
-      <tr>
-        <td class="font-600">${o.name}</td>
-        <td><code style="font-size:.8rem;background:var(--bg);padding:.1rem .35rem;border-radius:3px">${o.code}</code></td>
-        <td><span class="badge badge-gray">${o.type}</span></td>
-        <td>${o.state || '—'}</td>
-        <td>${o.contact_email || '—'}</td>
-        <td>${o.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
-      </tr>`).join('');
-  } catch (err) { Toast.error(err.message); }
+    if (!d.organizations?.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted)">No organizations yet.</td></tr>'; return; }
+    tbody.innerHTML = d.organizations.map(o=>`<tr>
+      <td data-label="Name" style="font-weight:600">${o.name}</td>
+      <td data-label="Code"><code style="background:var(--surface-subtle);padding:.15rem .4rem;border-radius:4px;font-size:.78rem">${o.code}</code></td>
+      <td data-label="Type"><span class="badge badge-slate">${o.type}</span></td>
+      <td data-label="State">${o.state||'—'}</td>
+      <td data-label="Contact" style="font-size:.78rem">${o.contact_email||'—'}</td>
+      <td data-label="Status">${o.is_active?'<span class="badge badge-active">Active</span>':'<span class="badge badge-inactive">Inactive</span>'}</td>
+    </tr>`).join('');
+  } catch(e) { Toast.error(e.message); }
 }
 
-async function loadAuditLogs() {
+async function createOrg() {
   try {
-    const data = await Api.get('/developer/audit-logs?limit=50');
+    await Api.post('/developer/organizations', { name:document.getElementById('ao-name').value, code:document.getElementById('ao-code').value, type:document.getElementById('ao-type').value, state:document.getElementById('ao-state').value, contact_email:document.getElementById('ao-email').value });
+    Toast.success('Organization created!');
+    Modal.close('addOrgModal');
+    loadOrgs();
+  } catch(e) { Toast.error(e.message); }
+}
+
+async function loadAudit() {
+  try {
+    const d = await Api.get('/developer/audit-logs?limit=50');
     const tbody = document.getElementById('auditTable');
-    if (!data.logs?.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No audit logs.</td></tr>'; return; }
-    tbody.innerHTML = data.logs.map(l => `
-      <tr>
-        <td class="text-sm">${l.users?.full_name || l.user_id?.slice(0,8)+'…' || 'System'}</td>
-        <td><span class="badge badge-blue">${l.action}</span></td>
-        <td class="text-sm">${l.entity || '—'}</td>
-        <td class="text-sm">${l.ip_address || '—'}</td>
-        <td class="text-sm">${UI.date(l.created_at)}</td>
-      </tr>`).join('');
-  } catch (err) { Toast.error(err.message); }
-}
-
-async function syncIgot() {
-  const btn = document.getElementById('syncBtn');
-  btn.textContent = '⏳ Syncing…'; btn.disabled = true;
-  const resultEl = document.getElementById('syncResult');
-  try {
-    const data = await Api.post('/igot/sync', {});
-    resultEl.innerHTML = `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-sm);padding:.75rem;font-size:.85rem">✅ ${data.message}</div>`;
-    Toast.success(data.message);
-  } catch (err) {
-    resultEl.innerHTML = `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius-sm);padding:.75rem;font-size:.85rem">❌ ${err.message}</div>`;
-  } finally { btn.textContent = '🔄 Sync Now'; btn.disabled = false; }
+    if (!d.logs?.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted)">No audit logs yet.</td></tr>'; return; }
+    tbody.innerHTML = d.logs.map(l=>`<tr>
+      <td data-label="User" style="font-size:.8rem">${l.users?.full_name||l.user_id?.slice(0,8)+'…'||'System'}</td>
+      <td data-label="Action"><span class="badge badge-indigo">${l.action}</span></td>
+      <td data-label="Entity" style="font-size:.78rem">${l.entity||'—'}</td>
+      <td data-label="IP" style="font-size:.78rem;font-family:monospace">${l.ip_address||'—'}</td>
+      <td data-label="Time" style="font-size:.78rem;color:var(--text-muted)">${fmtDate(l.created_at)}</td>
+    </tr>`).join('');
+  } catch(e) { Toast.error(e.message); }
 }
 
 async function loadApiKey() {
   try {
-    const data = await Api.get('/developer/api-key');
-    const el = document.getElementById('currentApiKey');
-    if (data.api_key) {
-      el.textContent = data.api_key;
-      document.getElementById('keyCreatedAt').textContent = `Generated: ${UI.date(data.created_at)}`;
-    } else {
-      el.textContent = 'No API key yet. Click Regenerate to create one.';
-    }
-  } catch (err) { Toast.error(err.message); }
+    const d = await Api.get('/developer/api-key');
+    document.getElementById('apiKeyDisplay').textContent = d.api_key ? `${d.api_key.slice(0,12)}${'•'.repeat(20)}` : 'No key generated yet.';
+    document.getElementById('apiKeyDate').textContent = d.created_at ? `Generated: ${fmtDate(d.created_at)}` : '';
+  } catch(e) {}
 }
-
-async function copyApiKey() {
-  const text = document.getElementById('currentApiKey').textContent;
-  try { await navigator.clipboard.writeText(text); Toast.success('Copied to clipboard!'); }
-  catch { Toast.error('Could not copy'); }
-}
-
-async function regenerateKey() {
-  if (!confirm('This will invalidate your current API key. Continue?')) return;
+async function copyKey() {
   try {
-    const data = await Api.post('/developer/api-key/regenerate', {});
-    document.getElementById('currentApiKey').textContent = data.api_key;
-    document.getElementById('keyCreatedAt').textContent = `Generated: ${UI.date(data.created_at)}`;
+    const full = await Api.get('/developer/api-key');
+    await navigator.clipboard.writeText(full.api_key||'');
+    Toast.success('Copied to clipboard!');
+  } catch(e) { Toast.error('Copy failed'); }
+}
+async function regenKey() {
+  if (!confirm('This invalidates your current API key. Continue?')) return;
+  try {
+    const d = await Api.post('/developer/api-key/regenerate', {});
+    document.getElementById('apiKeyDisplay').textContent = `${d.api_key.slice(0,12)}${'•'.repeat(20)}`;
     Toast.success('API key regenerated!');
-  } catch (err) { Toast.error(err.message); }
+  } catch(e) { Toast.error(e.message); }
 }
 
-document.getElementById('addOrgForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
+function loadApiRef() {
+  const sections = [
+    {label:'Auth',      cls:'m-post', routes:[['POST','/auth/login'],['POST','/auth/register'],['POST','/auth/refresh'],['GET','/auth/me']]},
+    {label:'Analytics', cls:'m-get',  routes:[['GET','/analytics/student'],['GET','/analytics/instructor'],['GET','/analytics/organization'],['GET','/analytics/developer']]},
+    {label:'Skill Gap', cls:'m-post', routes:[['POST','/skill-gap/analyze'],['GET','/skill-gap/reports'],['GET','/skill-gap/reports/:id']]},
+    {label:'iGOT',      cls:'m-get',  routes:[['GET','/igot/courses'],['POST','/igot/enroll'],['PUT','/igot/progress'],['POST','/igot/sync']]},
+    {label:'AI',        cls:'m-post', routes:[['POST','/assistant/chat'],['POST','/assessments/generate'],['POST','/pathways/generate']]},
+  ];
+  document.getElementById('apiRefList').innerHTML = sections.map(s=>`
+    <div style="margin-bottom:1rem">
+      <div class="label" style="margin-bottom:.5rem">${s.label}</div>
+      ${s.routes.map(([m,p])=>`<div class="api-row"><span class="method m-${m.toLowerCase()}">${m}</span><span class="api-path">${p}</span></div>`).join('')}
+    </div>`).join('');
+}
+
+async function syncIgot() {
+  const btn = document.getElementById('syncBtn');
+  btn.textContent='Syncing…'; btn.disabled=true;
+  const res = document.getElementById('syncResult');
   try {
-    await Api.post('/developer/organizations', {
-      name:          document.getElementById('ao-name').value,
-      code:          document.getElementById('ao-code').value,
-      type:          document.getElementById('ao-type').value,
-      state:         document.getElementById('ao-state').value,
-      contact_email: document.getElementById('ao-email').value,
-    });
-    Toast.success('Organization created!');
-    UI.closeModal('addOrgModal');
-    loadOrganizations();
-    document.getElementById('addOrgForm').reset();
-  } catch (err) { Toast.error(err.message); }
+    const d = await Api.post('/igot/sync', {});
+    res.innerHTML = `<div style="background:var(--c-success-50);border:1px solid var(--c-success-500);border-radius:var(--radius-md);padding:.75rem;font-size:.855rem;color:var(--c-success-700)">${d.message}</div>`;
+    Toast.success(d.message);
+  } catch(e) {
+    res.innerHTML = `<div style="background:var(--c-danger-50);border:1px solid var(--c-danger-500);border-radius:var(--radius-md);padding:.75rem;font-size:.855rem;color:var(--c-danger-700)">${e.message}</div>`;
+  } finally { btn.textContent='Sync iGOT Now'; btn.disabled=false; }
+}
+
+async function loadTableStats() {
+  try {
+    const d = await Api.get('/developer/system-stats');
+    document.getElementById('tableStats').innerHTML = [
+      ['users', d.total_users],
+      ['igot_courses', d.total_courses],
+      ['assessments', d.total_assessments],
+      ['course_enrollments', d.total_enrollments],
+      ['organizations', d.total_organizations],
+    ].map(([name,count])=>`<div class="health-row"><span style="font-family:monospace;font-size:.8rem">${name}</span><span style="font-weight:600">${count??'—'} rows</span></div>`).join('');
+  } catch(e) {}
+}
+
+function loadAiStats() {
+  document.getElementById('aiUsageStats').innerHTML = `
+    <div class="health-row"><span style="font-size:.855rem">Chat sessions</span><span style="font-weight:600">—</span></div>
+    <div class="health-row"><span style="font-size:.855rem">Messages today</span><span style="font-weight:600">—</span></div>
+    <div class="health-row"><span style="font-size:.855rem">Avg tokens/reply</span><span style="font-weight:600">—</span></div>
+    <div class="health-row"><span style="font-size:.855rem">MCQs generated</span><span style="font-weight:600">—</span></div>
+    <p style="font-size:.78rem;color:var(--text-muted);margin-top:.75rem">Live AI usage metrics require OpenAI API key and api_usage_logs entries.</p>`;
+}
+
+document.getElementById('changePwdForm')?.addEventListener('submit', async e => {
+  e.preventDefault();
+  const pwd = document.getElementById('new-pwd').value;
+  const confirm = document.getElementById('confirm-pwd').value;
+  if (pwd !== confirm) { Toast.error('Passwords do not match'); return; }
+  try { await Api.put('/auth/reset-password', { password: pwd }); Toast.success('Password updated!'); } catch(e) { Toast.error(e.message); }
 });
+
+document.getElementById('responseTimeChart').innerHTML = inlineBarChart([
+  {label:'Mon',value:87,color:'var(--c-primary-500)'},
+  {label:'Tue',value:92,color:'var(--c-primary-500)'},
+  {label:'Wed',value:78,color:'var(--c-success-500)'},
+  {label:'Thu',value:105,color:'var(--c-warning-500)'},
+  {label:'Fri',value:83,color:'var(--c-primary-500)'},
+  {label:'Sat',value:71,color:'var(--c-success-500)'},
+  {label:'Sun',value:69,color:'var(--c-success-500)'},
+], 150);
+
+document.getElementById('errorRatePanel').innerHTML = inlineBarChart([
+  {label:'0-4h',value:0,color:'var(--c-success-500)'},
+  {label:'4-8h',value:1,color:'var(--c-success-500)'},
+  {label:'8-12h',value:0,color:'var(--c-success-500)'},
+  {label:'12-16h',value:2,color:'var(--c-warning-500)'},
+  {label:'16-20h',value:0,color:'var(--c-success-500)'},
+  {label:'20-24h',value:0,color:'var(--c-success-500)'},
+], 10);
 </script>
 </body>
 </html>

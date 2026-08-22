@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduMantra – Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/main.css">
+<style>
+.auth-page{background:linear-gradient(135deg,#1e3a8a 0%,#4c1d95 60%,#0e7490 100%)}
+.auth-split{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+.auth-left{display:flex;flex-direction:column;justify-content:center;padding:3rem;color:#fff}
+.auth-left h1{font-size:2.4rem;font-weight:800;line-height:1.15;margin-bottom:1rem}
+.auth-left p{font-size:1rem;opacity:.85;line-height:1.7;max-width:440px}
+.auth-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem}
+.auth-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:.35rem .9rem;font-size:.78rem;color:#fff}
+.auth-right{display:flex;align-items:center;justify-content:center;padding:2rem;background:rgba(0,0,0,.15)}
+.auth-card{background:#fff;border-radius:20px;padding:2.25rem;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.auth-logo{text-align:center;margin-bottom:1.5rem}
+.auth-logo .logo-mark{width:52px;height:52px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.2rem;margin:0 auto .6rem}
+.auth-logo h2{font-size:1.35rem;font-weight:700;color:#0f172a}
+.auth-logo p{font-size:.78rem;color:#64748b}
+.auth-tabs{display:flex;border-bottom:2px solid #e2e8f0;margin-bottom:1.4rem}
+.at-btn{flex:1;padding:.5rem;border:none;background:none;font-weight:500;font-size:.875rem;color:#64748b;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .18s,border-color .18s}
+.at-btn.active{color:#2563eb;border-color:#2563eb}
+.ap{display:none}.ap.active{display:block}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem;margin-bottom:1rem}
+.role-opt{border:1.5px solid #e2e8f0;border-radius:8px;padding:.5rem .35rem;text-align:center;cursor:pointer;font-size:.73rem;transition:border-color .18s,background .18s}
+.role-opt:hover{border-color:#2563eb;background:#eff6ff}
+.role-opt.sel{border-color:#2563eb;background:#eff6ff;color:#2563eb;font-weight:600}
+.role-opt .ri{font-size:1.25rem;display:block;margin-bottom:.2rem}
+@media(max-width:768px){.auth-split{grid-template-columns:1fr}.auth-left{display:none}.auth-right{min-height:100vh}}
+</style>
+</head>
+<body>
+<div class="auth-split">
+  <div class="auth-left">
+    <div style="font-size:2rem;margin-bottom:1rem">🎓</div>
+    <h1>AI-Enabled Skill Intelligence &amp; Learning Platform</h1>
+    <p>Bridging skill gaps for India's Official Statistical System through personalized learning pathways, AI-powered assessments, and seamless iGOT Karmayogi integration.</p>
+    <div class="auth-pills">
+      <span class="auth-pill">📊 Skill Gap Analysis</span>
+      <span class="auth-pill">🗺️ Learning Pathways</span>
+      <span class="auth-pill">🤖 AI Assessments</span>
+      <span class="auth-pill">🔗 iGOT Integration</span>
+      <span class="auth-pill">📈 Competency Mapping</span>
+      <span class="auth-pill">🏛️ NSSTA TPAC</span>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-mark">EM</div>
+        <h2>EduMantra</h2>
+        <p>Ministry of Statistics &amp; Programme Implementation</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="at-btn active" onclick="switchTab('login')">Sign In</button>
+        <button class="at-btn" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- Login -->
+      <div class="ap active" id="ap-login">
+        <form id="loginForm">
+          <div class="form-group"><label>Email</label><input type="email" id="l-email" placeholder="you@gov.in" required></div>
+          <div class="form-group"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" required></div>
+          <button class="btn btn-primary btn-full" id="loginBtn" style="margin-bottom:.75rem">Sign In →</button>
+          <p class="text-xs text-center text-muted">Forgot password? <a href="#" onclick="switchTab('forgot')" style="color:var(--primary)">Reset here</a></p>
+        </form>
+      </div>
+
+      <!-- Register -->
+      <div class="ap" id="ap-register">
+        <form id="regForm">
+          <div class="form-row">
+            <div class="form-group"><label>Full Name</label><input type="text" id="r-name" required placeholder="Your full name"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="r-email" required placeholder="you@gov.in"></div>
+          </div>
+          <div class="form-group"><label>Password (min 8 chars)</label><input type="password" id="r-pass" required minlength="8" placeholder="••••••••"></div>
+          <div class="form-group">
+            <label>Select Your Role</label>
+            <div class="role-grid" id="roleGrid">
+              <div class="role-opt" data-role="student" onclick="pickRole(this)"><span class="ri">🎓</span>Student</div>
+              <div class="role-opt" data-role="instructor" onclick="pickRole(this)"><span class="ri">👨‍🏫</span>Educator</div>
+              <div class="role-opt" data-role="parent" onclick="pickRole(this)"><span class="ri">🔍</span>Supervisor</div>
+              <div class="role-opt" data-role="organization_admin" onclick="pickRole(this)"><span class="ri">🏛️</span>Org Admin</div>
+              <div class="role-opt" data-role="developer" onclick="pickRole(this)"><span class="ri">💻</span>Developer</div>
+            </div>
+            <input type="hidden" id="r-role">
+          </div>
+          <div class="form-group"><label>Designation (optional)</label><input type="text" id="r-desig" placeholder="e.g. Statistical Officer"></div>
+          <button class="btn btn-primary btn-full" id="regBtn">Create Account</button>
+        </form>
+      </div>
+
+      <!-- Forgot -->
+      <div class="ap" id="ap-forgot">
+        <form id="forgotForm">
+          <p class="text-sm text-muted mb-2">Enter your email to receive a reset link.</p>
+          <div class="form-group"><label>Email</label><input type="email" id="f-email" placeholder="you@gov.in" required></div>
+          <button class="btn btn-primary btn-full">Send Reset Link</button>
+          <p class="text-xs text-center mt-1"><a href="#" onclick="switchTab('login')" style="color:var(--primary)">← Back to login</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+if (Auth.loggedIn()) { const u = Auth.user(); if (u) Auth.redirect(u); }
+
+let selectedRole = '';
+
+function switchTab(t) {
+  document.querySelectorAll('.at-btn').forEach((b,i)=>b.classList.toggle('active',['login','register','forgot'][i]===t));
+  document.querySelectorAll('.ap').forEach(p=>p.classList.remove('active'));
+  document.getElementById(`ap-${t}`)?.classList.add('active');
+}
+
+function pickRole(el) {
+  document.querySelectorAll('.role-opt').forEach(r=>r.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedRole = el.dataset.role;
+  document.getElementById('r-role').value = selectedRole;
+}
+
+document.getElementById('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  btn.textContent = 'Signing in…'; btn.disabled = true;
+  try {
+    const d = await Api.post('/auth/login',{ email: document.getElementById('l-email').value, password: document.getElementById('l-pass').value });
+    Auth.save(d);
+    Toast.success('Welcome back, '+d.user.full_name+'!');
+    setTimeout(()=>Auth.redirect(d.user), 600);
+  } catch(err){ Toast.error(err.message); btn.textContent='Sign In →'; btn.disabled=false; }
+});
+
+document.getElementById('regForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!selectedRole) { Toast.error('Please select a role'); return; }
+  const btn = document.getElementById('regBtn');
+  btn.textContent='Creating…'; btn.disabled=true;
+  try {
+    await Api.post('/auth/register',{ full_name:document.getElementById('r-name').value, email:document.getElementById('r-email').value, password:document.getElementById('r-pass').value, role:selectedRole, designation:document.getElementById('r-desig').value });
+    Toast.success('Account created! Please sign in.');
+    switchTab('login');
+  } catch(err){ Toast.error(err.message); }
+  finally{ btn.textContent='Create Account'; btn.disabled=false; }
+});
+
+document.getElementById('forgotForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    await Api.post('/auth/forgot-password',{ email:document.getElementById('f-email').value });
+    Toast.success('Reset link sent — check your email.');
+  } catch(err){ Toast.error(err.message); }
+});
+</script>
+</body>
+</html>

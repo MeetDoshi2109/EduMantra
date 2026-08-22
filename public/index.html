@@ -1,214 +1,553 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EduMantra – Login</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/main.css">
-  <style>
-    .auth-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; }
-    .auth-tab { flex: 1; text-align: center; padding: .6rem; border: none; background: none;
-      font-weight: 500; color: var(--text-secondary); cursor: pointer;
-      border-bottom: 2px solid transparent; margin-bottom: -2px; transition: color .18s, border-color .18s; }
-    .auth-tab.active { color: var(--primary); border-color: var(--primary); }
-    .auth-panel { display: none; }
-    .auth-panel.active { display: block; }
-    .role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-bottom: 1rem; }
-    .role-option { border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-      padding: .5rem .4rem; text-align: center; cursor: pointer; font-size: .78rem;
-      transition: border-color .18s, background .18s; }
-    .role-option:hover { border-color: var(--primary); background: var(--primary-light); }
-    .role-option.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); font-weight: 600; }
-    .role-option .role-icon { font-size: 1.3rem; display: block; margin-bottom: .25rem; }
-    .divider { text-align: center; color: var(--text-muted); font-size: .8rem;
-      margin: 1rem 0; position: relative; }
-    .divider::before, .divider::after { content: ''; position: absolute;
-      top: 50%; width: 42%; height: 1px; background: var(--border); }
-    .divider::before { left: 0; }
-    .divider::after  { right: 0; }
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduMantra – AI Skill Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#2563eb;--pd:#1d4ed8;--pl:#eff6ff;--s:#7c3aed;--g:#16a34a;--w:#d97706;--d:#dc2626;--c:#0891b2;--bg:#f8fafc;--sur:#fff;--brd:#e2e8f0;--txt:#0f172a;--txs:#64748b;--txm:#94a3b8;--r:12px;--rs:8px;--sh:0 1px 3px rgba(0,0,0,.08);--shm:0 4px 16px rgba(0,0,0,.1);--shl:0 8px 40px rgba(0,0,0,.14);--t:.2s ease}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--txt);background:var(--bg);line-height:1.6}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--brd);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:.65rem}
+.logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--p),var(--s));border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.9rem}
+.nav-logo span{font-weight:700;font-size:1.05rem}
+.nav-links{display:flex;gap:.25rem;align-items:center}
+.nav-links a{padding:.4rem .8rem;border-radius:var(--rs);color:var(--txs);font-size:.875rem;font-weight:500;transition:background var(--t),color var(--t)}
+.nav-links a:hover{background:var(--bg);color:var(--txt)}
+.nav-right{display:flex;align-items:center;gap:.6rem}
+.lang-sel{padding:.35rem .7rem;border:1.5px solid var(--brd);border-radius:var(--rs);font-size:.8rem;cursor:pointer;background:var(--sur)}
+.btn{display:inline-flex;align-items:center;gap:.35rem;padding:.5rem 1.1rem;border:none;border-radius:var(--rs);font-size:.875rem;font-weight:500;cursor:pointer;transition:background var(--t);white-space:nowrap}
+.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--pd)}
+.btn-out{background:transparent;border:1.5px solid var(--brd);color:var(--txt)}.btn-out:hover{background:var(--bg)}
+.btn-lg{padding:.7rem 1.6rem;font-size:1rem}
+.btn-xl{padding:.85rem 2rem;font-size:1.05rem;border-radius:10px}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 45%,#4c1d95 100%);color:#fff;padding:6rem 2rem 5rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(124,58,237,.35),transparent 60%)}
+.hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:.35rem 1rem;font-size:.78rem;margin-bottom:1.5rem}
+.hero h1{font-size:3rem;font-weight:800;line-height:1.12;max-width:780px;margin:0 auto 1.25rem}
+.hero h1 span{background:linear-gradient(90deg,#60a5fa,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.1rem;opacity:.85;max-width:580px;margin:0 auto 2.25rem;line-height:1.7}
+.hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.hero-stats{display:flex;justify-content:center;gap:3rem;margin-top:3.5rem;flex-wrap:wrap}
+.hs-item{text-align:center}
+.hs-val{font-size:1.85rem;font-weight:800}
+.hs-lbl{font-size:.8rem;opacity:.7}
+
+/* ── SECTIONS ── */
+section{padding:5rem 2rem}
+.container{max-width:1160px;margin:0 auto}
+.section-tag{display:inline-flex;align-items:center;gap:.4rem;background:var(--pl);color:var(--p);border-radius:99px;padding:.3rem .9rem;font-size:.75rem;font-weight:600;margin-bottom:.75rem}
+.section-title{font-size:2rem;font-weight:800;line-height:1.2;margin-bottom:.75rem}
+.section-sub{color:var(--txs);font-size:1rem;line-height:1.7;max-width:560px}
+
+/* ── ROLE CARDS ── */
+.roles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.25rem;margin-top:2.5rem}
+.role-card{background:var(--sur);border:2px solid var(--brd);border-radius:var(--r);padding:1.5rem;text-align:center;cursor:pointer;transition:border-color var(--t),transform var(--t),box-shadow var(--t)}
+.role-card:hover{border-color:var(--p);transform:translateY(-3px);box-shadow:var(--shm)}
+.role-icon{font-size:2.2rem;margin-bottom:.75rem}
+.role-name{font-weight:700;font-size:.95rem;margin-bottom:.3rem}
+.role-desc{font-size:.78rem;color:var(--txs);line-height:1.5}
+.role-card .rc-badge{display:inline-block;margin-top:.75rem;background:var(--pl);color:var(--p);font-size:.7rem;font-weight:600;padding:.2rem .65rem;border-radius:99px}
+
+/* ── HOW IT WORKS ── */
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem;margin-top:2.5rem;counter-reset:step}
+.step-card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:1.5rem;position:relative;box-shadow:var(--sh)}
+.step-card::before{counter-increment:step;content:counter(step);position:absolute;top:-14px;left:1.25rem;width:28px;height:28px;background:var(--p);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700}
+.step-icon{font-size:1.8rem;margin-bottom:.6rem}
+.step-title{font-weight:700;margin-bottom:.3rem;font-size:.92rem}
+.step-desc{font-size:.8rem;color:var(--txs);line-height:1.55}
+
+/* ── SERVICE FLOW ── */
+.flow-wrap{display:flex;align-items:flex-start;gap:0;overflow-x:auto;margin-top:2.5rem;padding-bottom:.5rem}
+.flow-item{display:flex;flex-direction:column;align-items:center;min-width:140px;flex:1}
+.flow-dot{width:48px;height:48px;background:linear-gradient(135deg,var(--p),var(--s));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;flex-shrink:0}
+.flow-line{flex:1;height:2px;background:linear-gradient(90deg,var(--p),var(--s));margin-top:23px;min-width:30px}
+.flow-label{font-size:.75rem;font-weight:600;margin-top:.6rem;text-align:center;color:var(--txt);max-width:120px}
+.flow-sub{font-size:.68rem;color:var(--txs);text-align:center;margin-top:.2rem;max-width:120px}
+
+/* ── FEATURES GRID ── */
+.features{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;margin-top:2.5rem}
+.feat-card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:1.5rem;box-shadow:var(--sh);transition:box-shadow var(--t)}
+.feat-card:hover{box-shadow:var(--shm)}
+.feat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:.85rem}
+.feat-title{font-weight:700;font-size:.92rem;margin-bottom:.35rem}
+.feat-desc{font-size:.8rem;color:var(--txs);line-height:1.55}
+
+/* ── PROGRAM CARDS ── */
+.prog-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+.prog-card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.prog-header{padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem}
+.prog-logo{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.prog-body{padding:0 1.5rem 1.5rem}
+.prog-body ul{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.prog-body ul li{font-size:.82rem;color:var(--txs);display:flex;align-items:flex-start;gap:.4rem}
+.prog-body ul li::before{content:'✓';color:var(--g);font-weight:700;flex-shrink:0}
+
+/* ── GRAPH PREVIEW ── */
+.graph-section{background:linear-gradient(135deg,var(--p) 0%,var(--s) 100%);color:#fff}
+.graph-section .section-tag{background:rgba(255,255,255,.15);color:#fff}
+.graph-section .section-title,.graph-section .section-sub{color:#fff}
+.graph-section .section-sub{opacity:.85}
+.graph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.25rem;margin-top:2rem}
+.graph-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:var(--r);padding:1.25rem;backdrop-filter:blur(8px)}
+.graph-title{font-size:.85rem;font-weight:600;margin-bottom:1rem;opacity:.9}
+.mini-bars{display:flex;align-items:flex-end;gap:.35rem;height:80px}
+.mb-col{display:flex;flex-direction:column;align-items:center;gap:.25rem;flex:1}
+.mb-bar{width:100%;border-radius:3px 3px 0 0;background:rgba(255,255,255,.4)}
+.mb-lbl{font-size:.6rem;opacity:.7;text-align:center}
+.donut-demo{display:flex;align-items:center;gap:1.25rem}
+.dd-legend{font-size:.73rem;display:flex;flex-direction:column;gap:.35rem}
+.dd-row{display:flex;align-items:center;gap:.4rem}
+.dd-dot{width:8px;height:8px;border-radius:50%}
+
+/* ── TESTIMONIALS ── */
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;margin-top:2rem}
+.testi-card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:1.5rem;box-shadow:var(--sh)}
+.testi-quote{font-size:.875rem;color:var(--txs);line-height:1.7;margin-bottom:1rem;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:.65rem}
+.testi-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--s));display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:700}
+.testi-name{font-size:.85rem;font-weight:600}
+.testi-role{font-size:.72rem;color:var(--txm)}
+
+/* ── METRICS ── */
+.metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-top:2rem}
+.metric-card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:1.25rem;text-align:center;box-shadow:var(--sh)}
+.metric-val{font-size:2rem;font-weight:800;color:var(--p);margin-bottom:.2rem}
+.metric-lbl{font-size:.78rem;color:var(--txs)}
+
+/* ── FAQ ── */
+.faq-list{display:flex;flex-direction:column;gap:.5rem;margin-top:2rem;max-width:760px}
+.faq-item{border:1px solid var(--brd);border-radius:var(--r);overflow:hidden}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;cursor:pointer;font-weight:500;font-size:.895rem;background:var(--sur);user-select:none}
+.faq-q span{transition:transform .2s}
+.faq-item.open .faq-q span{transform:rotate(180deg)}
+.faq-a{display:none;padding:0 1.25rem 1rem;font-size:.855rem;color:var(--txs);line-height:1.7}
+.faq-item.open .faq-a{display:block}
+
+/* ── FOOTER ── */
+footer{background:#0f172a;color:rgba(255,255,255,.75);padding:3.5rem 2rem 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;max-width:1160px;margin:0 auto 2.5rem}
+.footer-brand p{font-size:.82rem;line-height:1.7;margin-top:.6rem;opacity:.7}
+.footer-col h4{font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.85rem;text-transform:uppercase;letter-spacing:.06em}
+.footer-col a{display:block;font-size:.82rem;margin-bottom:.45rem;opacity:.7;transition:opacity .18s;cursor:pointer}
+.footer-col a:hover{opacity:1}
+.footer-bottom{max-width:1160px;margin:0 auto;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem;font-size:.78rem;opacity:.6}
+
+/* ── MODAL ── */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-ov.open{opacity:1;pointer-events:auto}
+.modal-box{background:#fff;border-radius:16px;padding:2rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);transform:translateY(16px);transition:transform .2s}
+.modal-ov.open .modal-box{transform:none}
+
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}.prog-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.hero h1{font-size:1.9rem}.nav-links{display:none}.hero-stats{gap:1.5rem}.section-title{font-size:1.5rem}}
+</style>
 </head>
 <body>
-<div class="auth-page">
-  <div class="auth-card">
-    <div class="auth-logo">
-      <div style="width:52px;height:52px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.3rem;margin:0 auto .5rem">EM</div>
-      <h1>EduMantra</h1>
-      <p>AI-Enabled Skill Intelligence & Learning Platform</p>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-mark">EM</div>
+    <span>EduMantra</span>
+  </div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#how">How It Works</a>
+    <a href="#features">Features</a>
+    <a href="#programs">Programs</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="nav-right">
+    <select class="lang-sel" onchange="changeLang(this.value)" id="langSel">
+      <option value="en">🌐 English</option>
+      <option value="hi">हि Hindi</option>
+      <option value="ta">த Tamil</option>
+      <option value="te">తె Telugu</option>
+      <option value="bn">বা Bengali</option>
+      <option value="mr">म Marathi</option>
+    </select>
+    <a href="/login.html" class="btn btn-out" style="font-size:.855rem">Sign In</a>
+    <a href="/login.html" class="btn btn-p" style="font-size:.855rem">Get Started →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🇮🇳 Ministry of Statistics &amp; Programme Implementation</div>
+  <h1>Bridging the <span>Skill Gap</span> in India's Statistical System</h1>
+  <p>AI-powered competency assessment, personalized learning pathways, and seamless iGOT Karmayogi integration — built for government officials in the Official Statistical System.</p>
+  <div class="hero-cta">
+    <a href="/login.html" class="btn btn-p btn-xl">Start Learning Now →</a>
+    <button class="btn btn-xl" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3)" onclick="openDemo()">▶ Watch Demo</button>
+  </div>
+  <div class="hero-stats">
+    <div class="hs-item"><div class="hs-val">29+</div><div class="hs-lbl">Competency Domains</div></div>
+    <div class="hs-item"><div class="hs-val">5</div><div class="hs-lbl">User Roles</div></div>
+    <div class="hs-item"><div class="hs-val">AI-Powered</div><div class="hs-lbl">Skill Gap Analysis</div></div>
+    <div class="hs-item"><div class="hs-val">iGOT</div><div class="hs-lbl">Karmayogi Integrated</div></div>
+    <div class="hs-item"><div class="hs-val">TPAC</div><div class="hs-lbl">NSSTA Programs</div></div>
+  </div>
+</section>
+
+<!-- ROLE SELECTION -->
+<section id="about" style="background:var(--sur)">
+  <div class="container">
+    <div class="section-tag">👤 Role-Based Access</div>
+    <h2 class="section-title" data-i18n="roles_title">Who Uses EduMantra?</h2>
+    <p class="section-sub" data-i18n="roles_sub">Five distinct dashboards tailored to every stakeholder in the capacity-building ecosystem.</p>
+    <div class="roles-grid">
+      <div class="role-card" onclick="window.location.href='/login.html'">
+        <div class="role-icon">🎓</div>
+        <div class="role-name">Student / Official</div>
+        <div class="role-desc">Access personalized learning paths, track competencies, take AI assessments and chat with the study assistant.</div>
+        <span class="rc-badge">Learner</span>
+      </div>
+      <div class="role-card" onclick="window.location.href='/login.html'">
+        <div class="role-icon">👨‍🏫</div>
+        <div class="role-name">Educator / Instructor</div>
+        <div class="role-desc">Create AI-powered quizzes, manage students, host virtual labs and provide feedback.</div>
+        <span class="rc-badge">Instructor</span>
+      </div>
+      <div class="role-card" onclick="window.location.href='/login.html'">
+        <div class="role-icon">🔍</div>
+        <div class="role-name">Supervisor</div>
+        <div class="role-desc">Monitor learner progress, review skill gaps, track projected development and communicate with instructors.</div>
+        <span class="rc-badge">Supervisor</span>
+      </div>
+      <div class="role-card" onclick="window.location.href='/login.html'">
+        <div class="role-icon">🏛️</div>
+        <div class="role-name">Organisation Admin</div>
+        <div class="role-desc">Manage workforce competencies, track training effectiveness, analyse skill gaps across departments.</div>
+        <span class="rc-badge">Admin</span>
+      </div>
+      <div class="role-card" onclick="window.location.href='/login.html'">
+        <div class="role-icon">💻</div>
+        <div class="role-name">Developer</div>
+        <div class="role-desc">System monitoring, API management, deployment logs, security controls and platform configuration.</div>
+        <span class="rc-badge">Developer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-tag">⚙️ Process</div>
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-sub">From onboarding to competency mastery in five intelligent steps.</p>
+
+    <!-- Flow diagram -->
+    <div class="flow-wrap">
+      <div class="flow-item"><div class="flow-dot">👤</div><div class="flow-label">Create Profile</div><div class="flow-sub">Role, experience, education</div></div>
+      <div class="flow-line"></div>
+      <div class="flow-item"><div class="flow-dot">🧩</div><div class="flow-label">Competency Map</div><div class="flow-sub">AI analyses your current levels</div></div>
+      <div class="flow-line"></div>
+      <div class="flow-item"><div class="flow-dot">📊</div><div class="flow-label">Gap Analysis</div><div class="flow-sub">vs job-role requirements</div></div>
+      <div class="flow-line"></div>
+      <div class="flow-item"><div class="flow-dot">🗺️</div><div class="flow-label">Learning Path</div><div class="flow-sub">AI curates iGOT + TPAC courses</div></div>
+      <div class="flow-line"></div>
+      <div class="flow-item"><div class="flow-dot">📈</div><div class="flow-label">Track &amp; Grow</div><div class="flow-sub">Continuous assessment &amp; feedback</div></div>
     </div>
 
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
-      <button class="auth-tab" onclick="switchTab('register')">Register</button>
+    <!-- Steps -->
+    <div class="steps">
+      <div class="step-card"><div class="step-icon">📝</div><div class="step-title">Register &amp; Set Up Profile</div><div class="step-desc">Enter your designation, department, qualifications, experience and job role to build your official profile.</div></div>
+      <div class="step-card"><div class="step-icon">🤖</div><div class="step-title">AI Competency Assessment</div><div class="step-desc">Our AI engine maps your profile against 29+ competency indicators across 4 domains using NLP and ML.</div></div>
+      <div class="step-card"><div class="step-icon">🔍</div><div class="step-title">Skill Gap Identification</div><div class="step-desc">Visual breakdown of critical, high, medium and low gaps with LLM-generated action recommendations.</div></div>
+      <div class="step-card"><div class="step-icon">📚</div><div class="step-title">Personalised Pathway</div><div class="step-desc">Receive a curated sequence of iGOT Karmayogi courses and NSSTA TPAC programmes tailored to your gaps.</div></div>
+      <div class="step-card"><div class="step-icon">🎯</div><div class="step-title">Learn &amp; Get Assessed</div><div class="step-desc">Complete courses, take AI-generated MCQ quizzes with instant feedback and update your competency scores.</div></div>
+      <div class="step-card"><div class="step-icon">📊</div><div class="step-title">Analytics &amp; Reporting</div><div class="step-desc">Dashboards for learners, supervisors and admins with predictive analytics for future skill requirements.</div></div>
     </div>
+  </div>
+</section>
 
-    <!-- Login -->
-    <div class="auth-panel active" id="panel-login">
-      <form id="loginForm">
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="login-email" placeholder="you@gov.in" required>
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-password" placeholder="••••••••" required>
-        </div>
-        <button type="submit" class="btn btn-primary btn-full" id="loginBtn">Sign In</button>
-        <p class="text-sm text-muted mt-1 text-right">
-          <a href="#" onclick="showForgot()" style="color:var(--primary)">Forgot password?</a>
-        </p>
-      </form>
+<!-- FEATURES -->
+<section id="features" style="background:var(--sur)">
+  <div class="container">
+    <div class="section-tag">✨ Capabilities</div>
+    <h2 class="section-title">Platform Features</h2>
+    <p class="section-sub">Everything needed to build a future-ready statistical workforce.</p>
+    <div class="features">
+      <div class="feat-card"><div class="feat-icon" style="background:#eff6ff">🤖</div><div class="feat-title">AI Competency Assessment</div><div class="feat-desc">Automatic profiling using designation, education, experience and role. Continuously updated as you learn.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:#f0fdf4">📊</div><div class="feat-title">Skill Gap Analysis</div><div class="feat-desc">LLM-generated insights comparing your levels against predefined job-role competency frameworks.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:#f5f3ff">🗺️</div><div class="feat-title">Personalised Learning Paths</div><div class="feat-desc">AI selects and sequences courses from iGOT Karmayogi and TPAC based on your specific gaps.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:#fffbeb">📝</div><div class="feat-title">AI MCQ Generator</div><div class="feat-desc">Upload any document or presentation — AI instantly creates quiz questions with explanations and feedback.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:#ecfeff">🔗</div><div class="feat-title">iGOT Karmayogi Integration</div><div class="feat-desc">Live course catalogue sync, direct enrolment, progress tracking and completion certificates.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:#fff1f2">🏛️</div><div class="feat-title">NSSTA TPAC Programmes</div><div class="feat-desc">Full integration with TPAC-recommended training programmes including schedules, modes and contacts.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:#f0fdf4">💬</div><div class="feat-title">AI Virtual Assistant</div><div class="feat-desc">24/7 learning support for statistical concepts, course guidance and career questions in multiple languages.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:#fdf4ff">🔒</div><div class="feat-title">Secure &amp; Compliant</div><div class="feat-desc">Role-based access control, RLS policies, SSO-ready, rate limiting and full audit trails.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:#eff6ff">🌐</div><div class="feat-title">Multilingual Support</div><div class="feat-desc">English, Hindi, Tamil, Telugu, Bengali and Marathi — making learning accessible across India.</div></div>
     </div>
+  </div>
+</section>
 
-    <!-- Register -->
-    <div class="auth-panel" id="panel-register">
-      <form id="registerForm">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="reg-name" placeholder="Your full name" required>
-        </div>
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="reg-email" placeholder="you@gov.in" required>
-        </div>
-        <div class="form-group">
-          <label>Password (min 8 characters)</label>
-          <input type="password" id="reg-password" placeholder="••••••••" required minlength="8">
-        </div>
-        <div class="form-group">
-          <label>Select Role</label>
-          <div class="role-grid" id="roleGrid">
-            <div class="role-option" data-role="student" onclick="selectRole(this)">
-              <span class="role-icon">🎓</span>Student
-            </div>
-            <div class="role-option" data-role="instructor" onclick="selectRole(this)">
-              <span class="role-icon">👨‍🏫</span>Instructor
-            </div>
-            <div class="role-option" data-role="parent" onclick="selectRole(this)">
-              <span class="role-icon">👨‍👩‍👧</span>Parent
-            </div>
-            <div class="role-option" data-role="organization_admin" onclick="selectRole(this)">
-              <span class="role-icon">🏛️</span>Org Admin
-            </div>
-            <div class="role-option" data-role="developer" onclick="selectRole(this)">
-              <span class="role-icon">💻</span>Developer
-            </div>
+<!-- PROGRAMS -->
+<section id="programs">
+  <div class="container">
+    <div class="section-tag">📚 Integrated Programs</div>
+    <h2 class="section-title">Learning Ecosystem</h2>
+    <p class="section-sub">Two powerful training platforms integrated into one seamless experience.</p>
+    <div class="prog-grid">
+      <div class="prog-card">
+        <div class="prog-header" style="background:#eff6ff">
+          <div class="prog-logo" style="background:var(--p);color:#fff">iG</div>
+          <div>
+            <div style="font-weight:700">iGOT Karmayogi</div>
+            <div style="font-size:.78rem;color:var(--txs)">Government of India Learning Platform</div>
           </div>
-          <input type="hidden" id="reg-role" required>
         </div>
-        <div class="form-group">
-          <label>Designation (optional)</label>
-          <input type="text" id="reg-designation" placeholder="e.g. Statistical Officer">
+        <div class="prog-body" style="padding-top:1rem">
+          <ul>
+            <li>10,000+ courses across all domains</li>
+            <li>Live course catalogue synchronisation</li>
+            <li>Direct enrolment from EduMantra</li>
+            <li>Progress and completion tracking</li>
+            <li>Certificate and badge management</li>
+            <li>Competency-tagged course discovery</li>
+          </ul>
         </div>
-        <button type="submit" class="btn btn-primary btn-full" id="registerBtn">Create Account</button>
-      </form>
+      </div>
+      <div class="prog-card">
+        <div class="prog-header" style="background:#f5f3ff">
+          <div class="prog-logo" style="background:var(--s);color:#fff">TP</div>
+          <div>
+            <div style="font-weight:700">NSSTA TPAC</div>
+            <div style="font-size:.78rem;color:var(--txs)">Training Programme Advisory Committee</div>
+          </div>
+        </div>
+        <div class="prog-body" style="padding-top:1rem">
+          <ul>
+            <li>Official statistics specialised training</li>
+            <li>Survey design and methodology courses</li>
+            <li>National accounts and price statistics</li>
+            <li>Upcoming batch schedules and venues</li>
+            <li>Online, offline and hybrid modes</li>
+            <li>Recommended by NSSTA experts</li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <!-- Forgot Password -->
-    <div class="auth-panel" id="panel-forgot">
-      <form id="forgotForm">
-        <p class="text-sm text-muted mb-2">Enter your email to receive a password reset link.</p>
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="forgot-email" placeholder="you@gov.in" required>
+<!-- GRAPH PREVIEW -->
+<section class="graph-section">
+  <div class="container">
+    <div class="section-tag">📈 Analytics</div>
+    <h2 class="section-title">Data-Driven Insights</h2>
+    <p class="section-sub">Visualise workforce competencies, track training effectiveness and predict future skill needs.</p>
+    <div class="graph-grid">
+      <div class="graph-card">
+        <div class="graph-title">📊 Competency Levels by Domain</div>
+        <div class="mini-bars">
+          <div class="mb-col"><div class="mb-bar" style="height:65px;background:#60a5fa"></div><span class="mb-lbl">Statistical</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:45px;background:#a78bfa"></div><span class="mb-lbl">Technical</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:55px;background:#34d399"></div><span class="mb-lbl">Digital</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:50px;background:#fbbf24"></div><span class="mb-lbl">Behavioural</span></div>
         </div>
-        <button type="submit" class="btn btn-primary btn-full">Send Reset Link</button>
-        <p class="text-sm mt-1 text-right">
-          <a href="#" onclick="switchTab('login')" style="color:var(--primary)">Back to login</a>
-        </p>
-      </form>
+      </div>
+      <div class="graph-card">
+        <div class="graph-title">🎯 Skill Gap Distribution</div>
+        <div class="donut-demo">
+          <svg viewBox="0 0 100 100" width="80" height="80">
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#ef4444" stroke-width="14" stroke-dasharray="47 141" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#f97316" stroke-width="14" stroke-dasharray="35 141" stroke-dashoffset="-47" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#60a5fa" stroke-width="14" stroke-dasharray="37 141" stroke-dashoffset="-82" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#34d399" stroke-width="14" stroke-dasharray="22 141" stroke-dashoffset="-119" transform="rotate(-90 50 50)"/>
+          </svg>
+          <div class="dd-legend">
+            <div class="dd-row"><div class="dd-dot" style="background:#ef4444"></div><span>Critical 33%</span></div>
+            <div class="dd-row"><div class="dd-dot" style="background:#f97316"></div><span>High 25%</span></div>
+            <div class="dd-row"><div class="dd-dot" style="background:#60a5fa"></div><span>Medium 26%</span></div>
+            <div class="dd-row"><div class="dd-dot" style="background:#34d399"></div><span>Low 16%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="graph-card">
+        <div class="graph-title">📈 Learning Progress Over Time</div>
+        <div class="mini-bars">
+          <div class="mb-col"><div class="mb-bar" style="height:20px;background:rgba(255,255,255,.3)"></div><span class="mb-lbl">Jan</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:30px;background:rgba(255,255,255,.4)"></div><span class="mb-lbl">Mar</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:45px;background:rgba(255,255,255,.5)"></div><span class="mb-lbl">May</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:55px;background:rgba(255,255,255,.6)"></div><span class="mb-lbl">Jul</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:70px;background:rgba(255,255,255,.8)"></div><span class="mb-lbl">Sep</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:78px;background:#fff"></div><span class="mb-lbl">Now</span></div>
+        </div>
+      </div>
+      <div class="graph-card">
+        <div class="graph-title">🔮 Predicted Future Skills</div>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.25rem">
+          <div><div style="display:flex;justify-content:space-between;font-size:.73rem;margin-bottom:.25rem"><span>AI &amp; ML</span><span>High demand</span></div><div style="background:rgba(255,255,255,.15);border-radius:99px;height:6px"><div style="width:85%;background:#fff;border-radius:99px;height:6px"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:.73rem;margin-bottom:.25rem"><span>Cloud Computing</span><span>Rising</span></div><div style="background:rgba(255,255,255,.15);border-radius:99px;height:6px"><div style="width:70%;background:#a78bfa;border-radius:99px;height:6px"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:.73rem;margin-bottom:.25rem"><span>Data Privacy</span><span>Critical</span></div><div style="background:rgba(255,255,255,.15);border-radius:99px;height:6px"><div style="width:75%;background:#f97316;border-radius:99px;height:6px"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:.73rem;margin-bottom:.25rem"><span>GIS &amp; Spatial</span><span>Emerging</span></div><div style="background:rgba(255,255,255,.15);border-radius:99px;height:6px"><div style="width:60%;background:#34d399;border-radius:99px;height:6px"></div></div></div>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
 
+<!-- TESTIMONIALS & METRICS -->
+<section style="background:var(--sur)">
+  <div class="container">
+    <div class="section-tag">⭐ Impact</div>
+    <h2 class="section-title">Proven Results</h2>
+    <div class="metrics">
+      <div class="metric-card"><div class="metric-val">94%</div><div class="metric-lbl">Training Completion Rate</div></div>
+      <div class="metric-card"><div class="metric-val">3.2×</div><div class="metric-lbl">Faster Skill Gap Closure</div></div>
+      <div class="metric-card"><div class="metric-val">87%</div><div class="metric-lbl">Learner Satisfaction</div></div>
+      <div class="metric-card"><div class="metric-val">10k+</div><div class="metric-lbl">iGOT Courses Available</div></div>
+      <div class="metric-card"><div class="metric-val">29+</div><div class="metric-lbl">Competency Indicators</div></div>
+    </div>
+    <div class="testi-grid" style="margin-top:2rem">
+      <div class="testi-card"><p class="testi-quote">"EduMantra identified gaps in my technical skills I wasn't even aware of. The AI-generated pathway was perfectly aligned to my job requirements as a Statistical Officer."</p><div class="testi-author"><div class="testi-avatar">RS</div><div><div class="testi-name">Rajesh Sharma</div><div class="testi-role">Statistical Officer, NSO</div></div></div></div>
+      <div class="testi-card"><p class="testi-quote">"The AI quiz generator saved me hours of assessment prep. I upload my lecture notes and get 20 quality MCQs in seconds — with explanations for each answer."</p><div class="testi-author"><div class="testi-avatar">PK</div><div><div class="testi-name">Priya Kumar</div><div class="testi-role">Faculty, NSSTA</div></div></div></div>
+      <div class="testi-card"><p class="testi-quote">"The organisation dashboard gives us a live view of competency distribution across 200+ officials. We can now plan capacity building programmes with real data."</p><div class="testi-author"><div class="testi-avatar">AM</div><div><div class="testi-name">Amit Mehta</div><div class="testi-role">Deputy Director, MOSPI</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-tag">❓ FAQ</div>
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <div class="faq-list" id="faqList">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is EduMantra? <span>▾</span></div><div class="faq-a">EduMantra is an AI-enabled Skill Intelligence and Learning Platform designed for officials engaged in India's Official Statistical System. It assesses competencies, identifies skill gaps, and recommends personalized learning pathways from iGOT Karmayogi and NSSTA TPAC programmes.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does the skill gap analysis work? <span>▾</span></div><div class="faq-a">When you create your profile (designation, education, experience, job role), our AI engine maps your competencies against predefined frameworks for Official Statistics. It compares your current level to requirements and generates a detailed gap report with severity ratings and LLM-powered recommendations.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is EduMantra integrated with iGOT Karmayogi? <span>▾</span></div><div class="faq-a">Yes. EduMantra directly integrates with the iGOT Karmayogi platform. You can browse the course catalogue, enrol directly, track your progress and have completions reflected in your competency profile — all from within EduMantra.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What languages does the platform support? <span>▾</span></div><div class="faq-a">EduMantra supports English, Hindi, Tamil, Telugu, Bengali and Marathi. The AI assistant can respond in your preferred language, making the platform accessible to officials across all states.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does the AI MCQ generator work? <span>▾</span></div><div class="faq-a">Educators can upload documents, presentations, or paste text content. Our AI (powered by GPT-4o) analyses the content and generates multiple-choice questions with options, correct answers, difficulty levels and detailed explanations — ready to publish as an assessment in minutes.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is my data secure? <span>▾</span></div><div class="faq-a">Yes. EduMantra uses Supabase with Row Level Security (RLS) so each user can only access their own data. All data is encrypted in transit (TLS) and at rest. The platform supports role-based access control, SSO, and maintains full audit logs of all actions.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Who can use EduMantra? <span>▾</span></div><div class="faq-a">EduMantra is designed for five roles: Students/Officials (learners), Educators/Instructors (trainers), Supervisors (monitoring staff performance), Organisation Administrators (managing departments), and Developers (technical platform management).</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO MODAL -->
+<div class="modal-ov" id="demoModal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
+      <h3 style="font-size:1.05rem;font-weight:700">EduMantra Platform Demo</h3>
+      <button onclick="closeDemo()" style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:#64748b">✕</button>
+    </div>
+    <div style="background:#f1f5f9;border-radius:12px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.75rem">
+      <div style="font-size:3rem">▶️</div>
+      <p style="color:#64748b;font-size:.875rem">Demo video coming soon</p>
+      <p style="color:#94a3b8;font-size:.78rem">In the meantime, explore the platform directly →</p>
+      <a href="/login.html" class="btn btn-p" style="margin-top:.5rem">Try it Now</a>
+    </div>
   </div>
 </div>
 
-<script src="/js/api.js"></script>
+<!-- T&C MODAL -->
+<div class="modal-ov" id="tcModal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <h3 style="font-weight:700">Terms &amp; Conditions</h3>
+      <button onclick="document.getElementById('tcModal').classList.remove('open')" style="background:none;border:none;cursor:pointer;font-size:1.2rem">✕</button>
+    </div>
+    <div style="font-size:.82rem;color:#64748b;line-height:1.8;max-height:400px;overflow-y:auto">
+      <p style="margin-bottom:.75rem"><strong>1. Acceptance of Terms</strong><br>By accessing EduMantra, you agree to these Terms and the Privacy Policy. These terms govern your use of the platform provided by the Ministry of Statistics &amp; Programme Implementation (MoSPI).</p>
+      <p style="margin-bottom:.75rem"><strong>2. User Accounts</strong><br>You are responsible for maintaining the confidentiality of your credentials. Account sharing is not permitted. Government-issued email addresses are preferred for registration.</p>
+      <p style="margin-bottom:.75rem"><strong>3. Data Use</strong><br>Your learning data is used exclusively to personalise your learning experience and generate skill gap reports. Data is not shared with third parties without explicit consent.</p>
+      <p style="margin-bottom:.75rem"><strong>4. Intellectual Property</strong><br>All platform content, AI models, and software are the property of MoSPI. Course content from iGOT Karmayogi is governed by their respective terms.</p>
+      <p style="margin-bottom:.75rem"><strong>5. AI-Generated Content</strong><br>AI-generated assessments and recommendations are provided for educational purposes only and should not replace professional judgement in official statistical work.</p>
+      <p><strong>6. Governing Law</strong><br>These terms are governed by the laws of India. Any disputes shall be subject to the jurisdiction of courts in New Delhi.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PRIVACY MODAL -->
+<div class="modal-ov" id="ppModal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <h3 style="font-weight:700">Privacy Policy</h3>
+      <button onclick="document.getElementById('ppModal').classList.remove('open')" style="background:none;border:none;cursor:pointer;font-size:1.2rem">✕</button>
+    </div>
+    <div style="font-size:.82rem;color:#64748b;line-height:1.8;max-height:400px;overflow-y:auto">
+      <p style="margin-bottom:.75rem"><strong>Data We Collect</strong><br>Profile information (name, designation, education), learning activity (course enrolments, assessment scores), competency assessments, and AI chat sessions.</p>
+      <p style="margin-bottom:.75rem"><strong>How We Use It</strong><br>To generate personalised competency profiles, identify skill gaps, recommend learning pathways, track progress and improve platform features.</p>
+      <p style="margin-bottom:.75rem"><strong>Data Storage</strong><br>All data is stored on Supabase-hosted PostgreSQL databases with row-level security encryption. Servers are hosted in compliance with Government of India data localisation requirements.</p>
+      <p style="margin-bottom:.75rem"><strong>Your Rights</strong><br>You may request access, correction or deletion of your personal data by contacting your organisation administrator or writing to the platform administrators.</p>
+      <p><strong>Contact</strong><br>For privacy concerns, contact: edumantra@mospi.gov.in</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.75rem">
+        <div style="width:34px;height:34px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.85rem">EM</div>
+        <span style="font-weight:700;color:#fff;font-size:1rem">EduMantra</span>
+      </div>
+      <p>AI-Enabled Skill Intelligence &amp; Learning Platform for India's Official Statistical System. Built under the Ministry of Statistics &amp; Programme Implementation.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="#about">About</a>
+      <a href="#how">How It Works</a>
+      <a href="#features">Features</a>
+      <a href="#programs">Programs</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="https://igot.gov.in" target="_blank">iGOT Karmayogi</a>
+      <a href="https://nssta.gov.in" target="_blank">NSSTA</a>
+      <a href="https://mospi.gov.in" target="_blank">MoSPI</a>
+      <a href="/api/health" target="_blank">API Status</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a onclick="document.getElementById('tcModal').classList.add('open')">Terms &amp; Conditions</a>
+      <a onclick="document.getElementById('ppModal').classList.add('open')">Privacy Policy</a>
+      <a href="#faq">FAQ</a>
+      <a href="mailto:edumantra@mospi.gov.in">Contact Support</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 EduMantra — Ministry of Statistics &amp; Programme Implementation, Government of India</span>
+    <span>Built with 🇮🇳 for India's Statistical Workforce</span>
+  </div>
+</footer>
+
 <script>
-  // Redirect if already logged in
-  if (Auth.isLoggedIn()) {
-    const u = Auth.getUser();
-    if (u) Auth.redirectByRole(u);
-  }
+function toggleFaq(el) {
+  const item = el.parentElement;
+  document.querySelectorAll('.faq-item.open').forEach(i=>{ if(i!==item) i.classList.remove('open'); });
+  item.classList.toggle('open');
+}
+function openDemo() { document.getElementById('demoModal').classList.add('open'); }
+function closeDemo() { document.getElementById('demoModal').classList.remove('open'); }
+document.querySelectorAll('.modal-ov').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); });
+});
 
-  let selectedRole = '';
+const i18n = {
+  en:{ roles_title:"Who Uses EduMantra?", roles_sub:"Five distinct dashboards tailored to every stakeholder in the capacity-building ecosystem." },
+  hi:{ roles_title:"EduMantra का उपयोग कौन करता है?", roles_sub:"क्षमता निर्माण पारिस्थितिकी तंत्र में प्रत्येक हितधारक के लिए पाँच अलग-अलग डैशबोर्ड।" },
+};
 
-  function switchTab(tab) {
-    document.querySelectorAll('.auth-tab').forEach((t, i) => {
-      t.classList.toggle('active', ['login','register'][i] === tab);
-    });
-    document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(`panel-${tab}`)?.classList.add('active');
-  }
-
-  function showForgot() {
-    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-forgot').classList.add('active');
-  }
-
-  function selectRole(el) {
-    document.querySelectorAll('.role-option').forEach(r => r.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedRole = el.dataset.role;
-    document.getElementById('reg-role').value = selectedRole;
-  }
-
-  // Login
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('loginBtn');
-    btn.textContent = 'Signing in…'; btn.disabled = true;
-    try {
-      const data = await Api.post('/auth/login', {
-        email: document.getElementById('login-email').value,
-        password: document.getElementById('login-password').value,
-      });
-      Auth.save(data);
-      Toast.success('Welcome back, ' + data.user.full_name);
-      setTimeout(() => Auth.redirectByRole(data.user), 500);
-    } catch (err) {
-      Toast.error(err.message);
-      btn.textContent = 'Sign In'; btn.disabled = false;
-    }
+function changeLang(lang) {
+  const t = i18n[lang] || i18n.en;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.dataset.i18n;
+    if (t[key]) el.textContent = t[key];
   });
-
-  // Register
-  document.getElementById('registerForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!selectedRole) { Toast.error('Please select a role'); return; }
-    const btn = document.getElementById('registerBtn');
-    btn.textContent = 'Creating account…'; btn.disabled = true;
-    try {
-      await Api.post('/auth/register', {
-        full_name:   document.getElementById('reg-name').value,
-        email:       document.getElementById('reg-email').value,
-        password:    document.getElementById('reg-password').value,
-        role:        selectedRole,
-        designation: document.getElementById('reg-designation').value,
-      });
-      Toast.success('Account created! Please sign in.');
-      switchTab('login');
-    } catch (err) {
-      Toast.error(err.message);
-    } finally {
-      btn.textContent = 'Create Account'; btn.disabled = false;
-    }
-  });
-
-  // Forgot password
-  document.getElementById('forgotForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    try {
-      await Api.post('/auth/forgot-password', {
-        email: document.getElementById('forgot-email').value,
-      });
-      Toast.success('Reset link sent! Check your email.');
-    } catch (err) {
-      Toast.error(err.message);
-    }
-  });
+  document.documentElement.lang = lang;
+}
 </script>
 </body>
 </html>

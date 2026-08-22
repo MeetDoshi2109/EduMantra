@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduMantra – Educator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/design-system.css">
+<style>
+.doc-card{background:var(--surface-card);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:.85rem;display:flex;align-items:flex-start;gap:.65rem;transition:box-shadow var(--dur-base)}
+.doc-card:hover{box-shadow:var(--shadow-md)}
+.doc-icon{width:36px;height:36px;border-radius:var(--radius-sm);background:var(--c-primary-50);color:var(--c-primary-600);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.75rem;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s}
+.cal-cell:hover{background:var(--c-primary-100)}
+.cal-cell.today{background:var(--c-primary-600);color:#fff;font-weight:700}
+.cal-cell.has-event{background:var(--c-primary-100);color:var(--c-primary-700);font-weight:600}
+.cal-cell.other-month{color:var(--text-muted)}
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="brand-mark">EM</div>
+    <div class="brand-text"><div class="brand-name">EduMantra</div><div class="brand-role">Educator</div></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <button class="nav-item active" data-page="home"><span class="nav-icon"></span><span class="nav-label">Dashboard</span></button>
+    <button class="nav-item" data-page="calendar"><span class="nav-icon"></span><span class="nav-label">Calendar</span></button>
+    <div class="nav-section">Teaching</div>
+    <button class="nav-item" data-page="students"><span class="nav-icon"></span><span class="nav-label">My Students</span></button>
+    <button class="nav-item" data-page="resources"><span class="nav-icon"></span><span class="nav-label">Resources</span></button>
+    <button class="nav-item" data-page="documents"><span class="nav-icon"></span><span class="nav-label">Documents</span></button>
+    <button class="nav-item" data-page="virtual-lab"><span class="nav-icon"></span><span class="nav-label">Virtual Lab</span></button>
+    <div class="nav-section">Assessment</div>
+    <button class="nav-item" data-page="assessments"><span class="nav-icon"></span><span class="nav-label">Assessments</span></button>
+    <button class="nav-item" data-page="create-quiz"><span class="nav-icon"></span><span class="nav-label">Create AI Quiz</span></button>
+    <button class="nav-item" data-page="grading"><span class="nav-icon"></span><span class="nav-label">Grading</span></button>
+    <div class="nav-section">AI Tools</div>
+    <button class="nav-item" data-page="ai-content"><span class="nav-icon"></span><span class="nav-label">AI Content</span></button>
+    <button class="nav-item" data-page="feedback"><span class="nav-icon"></span><span class="nav-label">Feedback</span></button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar" id="sidebarAvatar"></div>
+      <div class="user-info"><div class="user-name" id="sidebarName">Loading…</div><div class="user-role" id="sidebarRole">educator</div></div>
+      <button class="logout-btn" title="Sign out"></button>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main-area">
+  <header class="topbar">
+    <button class="menu-toggle" aria-label="Toggle menu"></button>
+    <span class="topbar-title">Dashboard</span>
+    <div class="topbar-actions">
+      <button class="btn btn-primary btn-sm" onclick="switchPage('create-quiz',pageHandlers)"><span id="newQuizIcon"></span> New Quiz</button>
+    </div>
+  </header>
+
+  <main class="page-body">
+
+    <!-- HOME -->
+    <div class="dash-page active" id="page-home">
+      <div class="page-header">
+        <h1 class="page-title display" id="welcomeMsg">Welcome, Educator!</h1>
+        <p class="page-subtitle">Manage your students, assessments and teaching resources.</p>
+      </div>
+      <div class="bento bento-4" style="margin-bottom:1.5rem">
+        <div class="stat-card"><div class="stat-icon si-indigo" id="ic-total"></div><div class="stat-info"><div class="stat-value" id="st-total">—</div><div class="stat-label">Assessments</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-emerald" id="ic-pub"></div><div class="stat-info"><div class="stat-value" id="st-published">—</div><div class="stat-label">Published</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-violet" id="ic-att"></div><div class="stat-info"><div class="stat-value" id="st-attempts">—</div><div class="stat-label">Total Attempts</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-amber" id="ic-score"></div><div class="stat-info"><div class="stat-value" id="st-avg">—</div><div class="stat-label">Avg Score</div></div></div>
+      </div>
+      <div class="bento bento-2" style="margin-bottom:1.5rem">
+        <div class="card">
+          <div class="card-header"><div class="card-title">My Assessments</div><button class="btn btn-ghost btn-sm" onclick="switchPage('assessments',pageHandlers)">View all</button></div>
+          <div id="recentAssessmentsList"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Score Distribution</div></div>
+          <div id="scoreDistChart"></div>
+        </div>
+      </div>
+      <div class="bento bento-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Upcoming Events</div><button class="btn btn-ghost btn-sm" onclick="switchPage('calendar',pageHandlers)">Calendar</button></div>
+          <div id="upcomingEvents"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Pass Rate Trend</div></div>
+          <div id="passRateChart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div class="dash-page" id="page-calendar">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div><h1 class="page-title">Calendar</h1><p class="page-subtitle">Schedule classes, assessments and deadlines.</p></div>
+        <button class="btn btn-primary" onclick="Modal.open('addEventModal')"><span id="addEventIcon"></span> Add Event</button>
+      </div>
+      <div class="bento bento-2">
+        <div class="card">
+          <div class="card-header">
+            <button class="btn btn-ghost btn-sm" onclick="changeMonth(-1)">← Prev</button>
+            <div class="card-title" id="calMonthTitle" style="flex:1;text-align:center"></div>
+            <button class="btn btn-ghost btn-sm" onclick="changeMonth(1)">Next →</button>
+          </div>
+          <div style="margin-bottom:.5rem">
+            <div class="cal-grid" style="margin-bottom:.25rem">
+              ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div style="text-align:center;font-size:.7rem;font-weight:600;color:var(--text-muted);padding:.3rem 0">${d}</div>`).join('')}
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Upcoming Events</div></div>
+          <div id="calEventsList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STUDENTS -->
+    <div class="dash-page" id="page-students">
+      <div class="page-header"><h1 class="page-title">My Students</h1><p class="page-subtitle">Monitor student performance and progress.</p></div>
+      <div class="card" style="margin-bottom:1rem">
+        <div style="display:flex;gap:.65rem;flex-wrap:wrap">
+          <div class="input-group" style="flex:1;min-width:200px"><span class="input-icon" id="stuSearchIcon"></span><input class="input" id="stuSearch" placeholder="Search students…" style="padding-left:2.25rem"></div>
+          <button class="btn btn-primary" onclick="loadStudentResults()">Search</button>
+        </div>
+      </div>
+      <div class="table-wrap"><table class="table"><thead><tr><th>Assessment</th><th>Score</th><th>Result</th><th>Feedback</th><th>Date</th></tr></thead><tbody id="studentResultsTable"></tbody></table></div>
+    </div>
+
+    <!-- RESOURCES -->
+    <div class="dash-page" id="page-resources">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div><h1 class="page-title">Resources</h1><p class="page-subtitle">Manage teaching materials organised by domain.</p></div>
+        <button class="btn btn-primary" onclick="Modal.open('uploadResourceModal')"><span id="uploadResIcon"></span> Upload</button>
+      </div>
+      <div class="tabs" data-tabs id="resourceTabs">
+        <button class="tab active" data-tab="all">All</button>
+        <button class="tab" data-tab="statistical">Statistical</button>
+        <button class="tab" data-tab="technical">Technical</button>
+        <button class="tab" data-tab="digital">Digital Gov</button>
+        <button class="tab" data-tab="behavioural">Behavioural</button>
+      </div>
+      <div class="tab-panel active" data-tab="all"><div class="bento bento-auto" id="resourcesGrid"></div></div>
+      <div class="tab-panel" data-tab="statistical"><div class="bento bento-auto" id="resStatGrid"></div></div>
+      <div class="tab-panel" data-tab="technical"><div class="bento bento-auto" id="resTechGrid"></div></div>
+      <div class="tab-panel" data-tab="digital"><div class="bento bento-auto" id="resDigGrid"></div></div>
+      <div class="tab-panel" data-tab="behavioural"><div class="bento bento-auto" id="resBehGrid"></div></div>
+    </div>
+
+    <!-- DOCUMENTS -->
+    <div class="dash-page" id="page-documents">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div><h1 class="page-title">Documents</h1><p class="page-subtitle">Repository of uploaded documents and presentations.</p></div>
+        <button class="btn btn-primary" onclick="Modal.open('uploadDocModal')"><span id="uploadDocIcon"></span> Upload Document</button>
+      </div>
+      <div id="documentsGrid" class="bento bento-auto"></div>
+    </div>
+
+    <!-- VIRTUAL LAB -->
+    <div class="dash-page" id="page-virtual-lab">
+      <div class="page-header"><h1 class="page-title">Virtual Lab</h1><p class="page-subtitle">Interactive coding and data analysis exercises for students.</p></div>
+      <div class="bento bento-2">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Python Data Analysis</div><span class="badge badge-emerald">Active</span></div></div>
+          <p style="font-size:.855rem;color:var(--text-secondary);margin-bottom:1rem">Interactive Python notebook environment for statistical analysis exercises.</p>
+          <div style="background:var(--c-slate-900);border-radius:var(--radius-md);padding:1rem;font-family:monospace;font-size:.8rem;color:#86efac;line-height:1.7;margin-bottom:1rem">
+            <div style="color:#64748b"># Student starter code</div>
+            <div>import pandas as pd</div>
+            <div>import numpy as np</div>
+            <div style="color:#64748b"># Load sample survey data</div>
+            <div>df = pd.read_csv('survey_data.csv')</div>
+            <div>df.describe()</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="Toast.info('Virtual lab environment — connect to JupyterHub or similar.')">Launch Lab</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">R Statistical Computing</div><span class="badge badge-amber">Beta</span></div></div>
+          <p style="font-size:.855rem;color:var(--text-secondary);margin-bottom:1rem">R-based exercises for advanced statistical analysis and visualisation.</p>
+          <div style="background:var(--c-slate-900);border-radius:var(--radius-md);padding:1rem;font-family:monospace;font-size:.8rem;color:#7dd3fc;line-height:1.7;margin-bottom:1rem">
+            <div style="color:#64748b"># Load tidyverse</div>
+            <div>library(tidyverse)</div>
+            <div style="color:#64748b"># Create visualisation</div>
+            <div>ggplot(data, aes(x=domain,</div>
+            <div>  y=score)) + geom_boxplot()</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="Toast.info('R lab environment — connect to RStudio Server or similar.')">Coming Soon</button>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <div class="card-header"><div class="card-title">Lab Assignments</div><button class="btn btn-ghost btn-sm" onclick="Modal.open('addLabModal')">Add Assignment</button></div>
+        <div id="labAssignments">
+          <div class="empty-state"><div class="empty-title">No lab assignments yet</div><p class="empty-desc">Create assignments for students to complete in the virtual lab.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ASSESSMENTS -->
+    <div class="dash-page" id="page-assessments">
+      <div class="page-header"><h1 class="page-title">Assessments</h1></div>
+      <div class="table-wrap"><table class="table"><thead><tr><th>Title</th><th>Questions</th><th>Difficulty</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody id="assessmentsTable"></tbody></table></div>
+    </div>
+
+    <!-- CREATE QUIZ -->
+    <div class="dash-page" id="page-create-quiz">
+      <div class="page-header"><h1 class="page-title">Create AI Quiz</h1><p class="page-subtitle">Upload learning content — AI generates MCQs with explanations instantly.</p></div>
+      <div class="bento bento-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Content & Settings</div></div>
+          <form id="quizGenForm">
+            <div class="form-field"><label class="form-label">Assessment Title *</label><input class="input" id="qg-title" required placeholder="e.g. Survey Design Fundamentals"></div>
+            <div class="form-row">
+              <div class="form-field"><label class="form-label">Questions</label><select class="input" id="qg-count"><option value="5">5</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option></select></div>
+              <div class="form-field"><label class="form-label">Difficulty</label><select class="input" id="qg-diff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select></div>
+            </div>
+            <div class="form-field">
+              <label class="form-label">Content Source</label>
+              <div class="tabs-pill tabs" data-tabs style="margin-bottom:.75rem">
+                <button type="button" class="tab active" data-tab="paste" onclick="toggleSource('paste')">Paste Text</button>
+                <button type="button" class="tab" data-tab="upload" onclick="toggleSource('upload')">Upload File</button>
+              </div>
+              <div id="source-paste"><textarea class="input" id="qg-text" rows="6" placeholder="Paste lecture notes, chapter text, or any learning material here…"></textarea></div>
+              <div id="source-upload" style="display:none">
+                <div class="upload-zone" id="uploadZone" onclick="document.getElementById('qg-file').click()">
+                  <div class="upload-zone-icon" id="uploadIcon"></div>
+                  <p class="upload-zone-text">Click to upload or drag & drop</p>
+                  <p class="upload-zone-hint">TXT, PDF, DOC, DOCX, PPT (max 10MB)</p>
+                </div>
+                <input type="file" id="qg-file" accept=".txt,.pdf,.doc,.docx,.ppt,.pptx" style="display:none" onchange="showFileName(this)">
+                <p id="fileName" style="font-size:.78rem;color:var(--text-muted);margin-top:.35rem"></p>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" id="genBtn" style="margin-top:.5rem">Generate Questions with AI</button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Generated Questions</div></div>
+          <div id="genPreview">
+            <div class="empty-state"><div class="empty-icon" id="genEmptyIcon"></div><div class="empty-title">Questions appear here</div><p class="empty-desc">Fill in the form and click Generate to create AI-powered MCQs.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRADING -->
+    <div class="dash-page" id="page-grading">
+      <div class="page-header"><h1 class="page-title">Grading</h1><p class="page-subtitle">Review and grade student submissions.</p></div>
+      <div class="bento bento-3" style="margin-bottom:1.5rem">
+        <div class="stat-card"><div class="stat-icon si-emerald"></div><div class="stat-info"><div class="stat-value" id="gr-pass">—</div><div class="stat-label">Pass Rate</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-amber"></div><div class="stat-info"><div class="stat-value" id="gr-avg">—</div><div class="stat-label">Avg Score</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-rose"></div><div class="stat-info"><div class="stat-value" id="gr-total">—</div><div class="stat-label">Total Attempts</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Score Distribution</div></div>
+        <div id="gradingDistChart"></div>
+      </div>
+    </div>
+
+    <!-- AI CONTENT ASSISTANT -->
+    <div class="dash-page" id="page-ai-content">
+      <div class="page-header"><h1 class="page-title">AI Content Assistant</h1><p class="page-subtitle">Generate lesson plans, course descriptions, and learning objectives using AI.</p></div>
+      <div class="bento bento-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Generate Content</div></div>
+          <div class="form-field"><label class="form-label">Content Type</label>
+            <select class="input" id="ct-type"><option value="lesson">Lesson Plan</option><option value="objectives">Learning Objectives</option><option value="description">Course Description</option><option value="summary">Topic Summary</option><option value="rubric">Assessment Rubric</option></select>
+          </div>
+          <div class="form-field"><label class="form-label">Topic / Subject</label><input class="input" id="ct-topic" placeholder="e.g. Survey Design for Agricultural Statistics"></div>
+          <div class="form-field"><label class="form-label">Target Audience</label><select class="input" id="ct-audience"><option>Beginner officials</option><option>Intermediate officers</option><option>Senior statisticians</option></select></div>
+          <div class="form-field"><label class="form-label">Duration / Scope</label><input class="input" id="ct-scope" placeholder="e.g. 2-hour session, 3-day workshop"></div>
+          <button class="btn btn-primary" id="ctGenBtn" onclick="generateContent()" style="margin-top:.5rem">Generate with AI</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Generated Output</div></div>
+          <div id="ctOutput" style="font-size:.855rem;line-height:1.75;white-space:pre-wrap;min-height:200px;color:var(--text-secondary)">AI-generated content will appear here…</div>
+          <div style="display:flex;gap:.5rem;margin-top:1rem" id="ctActions" style="display:none">
+            <button class="btn btn-primary btn-sm" onclick="copyContent()">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEEDBACK -->
+    <div class="dash-page" id="page-feedback">
+      <div class="page-header"><h1 class="page-title">Feedback & Evaluation</h1><p class="page-subtitle">View student feedback and provide personalised responses.</p></div>
+      <div class="card">
+        <div class="empty-state"><div class="empty-icon" id="fbEmptyIcon"></div><div class="empty-title">No feedback yet</div><p class="empty-desc">Feedback will appear here as students complete assessments and leave reviews.</p></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-backdrop" id="addEventModal">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">Add Event</span><button class="modal-close" data-modal-close>✕</button></div>
+    <div class="modal-body">
+      <div class="form-field"><label class="form-label">Title</label><input class="input" id="ev-title" placeholder="e.g. Survey Design Workshop"></div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Date</label><input class="input" type="date" id="ev-date"></div>
+        <div class="form-field"><label class="form-label">Time</label><input class="input" type="time" id="ev-time"></div>
+      </div>
+      <div class="form-field"><label class="form-label">Type</label><select class="input" id="ev-type"><option value="class">Class</option><option value="assessment">Assessment</option><option value="deadline">Deadline</option><option value="training">Training</option></select></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" data-modal-close>Cancel</button><button class="btn btn-primary" onclick="addEvent()">Save Event</button></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="uploadResourceModal">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">Upload Resource</span><button class="modal-close" data-modal-close>✕</button></div>
+    <div class="modal-body">
+      <div class="form-field"><label class="form-label">Title</label><input class="input" id="rs-title" placeholder="Resource title"></div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Domain</label><select class="input" id="rs-domain"><option value="statistical">Statistical</option><option value="technical">Technical</option><option value="digital_governance">Digital Governance</option><option value="behavioural_managerial">Behavioural</option></select></div>
+        <div class="form-field"><label class="form-label">Type</label><select class="input" id="rs-type"><option value="document">Document</option><option value="presentation">Presentation</option><option value="video">Video</option><option value="url">URL</option></select></div>
+      </div>
+      <div class="form-field"><label class="form-label">URL or File</label><input class="input" id="rs-url" placeholder="https://… or upload file"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" data-modal-close>Cancel</button><button class="btn btn-primary" onclick="saveResource()">Save</button></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="uploadDocModal">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">Upload Document</span><button class="modal-close" data-modal-close>✕</button></div>
+    <div class="modal-body">
+      <div class="form-field"><label class="form-label">Title *</label><input class="input" id="doc-title" required></div>
+      <div class="upload-zone" style="margin-top:.5rem" onclick="Toast.info('File upload — connect to Supabase Storage.')"><div id="docUploadIcon" style="font-size:1.5rem;margin-bottom:.4rem"></div><p style="font-size:.855rem;color:var(--text-muted)">Click to select file</p></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" data-modal-close>Cancel</button><button class="btn btn-primary" onclick="Toast.success('Document saved (demo mode).');Modal.close('uploadDocModal')">Save</button></div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/shell.js"></script>
+<script>
+const user = Auth.guard();
+if (user && user.role !== 'instructor') Auth.redirect(user);
+
+let calYear, calMonth;
+const calEvents = JSON.parse(localStorage.getItem('em_cal_events') || '[]');
+const resources = JSON.parse(localStorage.getItem('em_resources') || '[]');
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const iconMap = { home:'house', calendar:'calendar', students:'users', resources:'book', documents:'file', 'virtual-lab':'flask', assessments:'clipboard', 'create-quiz':'sparkle', grading:'chart', 'ai-content':'robot', feedback:'star' };
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    const iconEl = item.querySelector('.nav-icon');
+    if (iconEl && iconMap[item.dataset.page]) iconEl.innerHTML = Icon[iconMap[item.dataset.page]]?.() || '';
+  });
+  document.getElementById('newQuizIcon').innerHTML = Icon.plus();
+  document.getElementById('addEventIcon').innerHTML = Icon.plus();
+  document.getElementById('uploadResIcon').innerHTML = Icon.upload();
+  document.getElementById('uploadDocIcon').innerHTML = Icon.upload();
+  document.getElementById('uploadIcon').innerHTML = Icon.upload(28);
+  document.getElementById('genEmptyIcon').innerHTML = Icon.sparkle(32);
+  document.getElementById('fbEmptyIcon').innerHTML = Icon.star(32);
+  document.getElementById('stuSearchIcon').innerHTML = Icon.search();
+
+  buildSidebar({ role: user?.role, name: user?.full_name, avatarUrl: user?.avatar_url });
+  document.getElementById('sidebarName').textContent = user?.full_name || 'Educator';
+  document.getElementById('welcomeMsg').textContent = `Welcome, ${user?.full_name?.split(' ')[0] || 'Educator'}!`;
+
+  Modal.init('addEventModal'); Modal.init('uploadResourceModal'); Modal.init('uploadDocModal');
+  initTabs(document.getElementById('page-resources'));
+  initNav('home', pageHandlers);
+
+  const now = new Date();
+  calYear = now.getFullYear(); calMonth = now.getMonth();
+  renderCalendar();
+  await loadDashboard();
+  renderResources();
+  renderDocuments();
+});
+
+const pageHandlers = {
+  assessments:  loadAssessmentsTable,
+  students:     loadStudentResults,
+  grading:      loadGrading,
+  calendar:     () => renderCalendar(),
+};
+
+async function loadDashboard() {
+  try {
+    const d = await Api.get('/analytics/instructor');
+    document.getElementById('st-total').textContent    = d.stats?.total_assessments ?? '—';
+    document.getElementById('st-published').textContent = d.stats?.published_assessments ?? '—';
+    document.getElementById('st-attempts').textContent  = d.stats?.total_attempts ?? '—';
+    document.getElementById('st-avg').textContent       = d.stats?.avg_score != null ? `${d.stats.avg_score}%` : '—';
+    document.getElementById('ic-total').innerHTML  = Icon.clipboard();
+    document.getElementById('ic-pub').innerHTML    = Icon.check();
+    document.getElementById('ic-att').innerHTML    = Icon.users();
+    document.getElementById('ic-score').innerHTML  = Icon.trend();
+
+    // Recent assessments
+    const list = document.getElementById('recentAssessmentsList');
+    const items = (d.assessments||[]).slice(0,5);
+    if (!items.length) { list.innerHTML = `<div style="padding:1.5rem 0;text-align:center;font-size:.875rem;color:var(--text-muted)">No assessments yet.<br><button class="btn btn-primary btn-sm" style="margin-top:.5rem" onclick="switchPage('create-quiz',pageHandlers)">Create one</button></div>`; }
+    else list.innerHTML = items.map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--border-default)"><div><div style="font-size:.855rem;font-weight:600">${a.title}</div><div style="font-size:.72rem;color:var(--text-muted)">${a.total_questions} questions</div></div>${a.is_published?'<span class="badge badge-completed">Live</span>':'<span class="badge badge-slate">Draft</span>'}</div>`).join('');
+
+    // Score distribution
+    const dist = d.score_distribution||{};
+    const maxV = Math.max(...Object.values(dist),1);
+    document.getElementById('scoreDistChart').innerHTML = inlineBarChart(
+      Object.entries(dist).map(([range,count])=>({label:range,value:count,color:'var(--c-primary-500)'})), maxV);
+
+    // Pass rate trend
+    document.getElementById('passRateChart').innerHTML = inlineBarChart([
+      {label:'W1',value:65,color:'var(--c-warning-500)'},
+      {label:'W2',value:70,color:'var(--c-warning-500)'},
+      {label:'W3',value:75,color:'var(--c-primary-500)'},
+      {label:'W4',value:82,color:'var(--c-success-500)'},
+    ]);
+
+    // Upcoming events (from localStorage)
+    const evEl = document.getElementById('upcomingEvents');
+    const upcoming = calEvents.filter(e => new Date(e.date) >= new Date()).slice(0,3);
+    if (!upcoming.length) evEl.innerHTML = `<div style="padding:1.5rem 0;text-align:center;font-size:.875rem;color:var(--text-muted)">No upcoming events.<br><button class="btn btn-primary btn-sm" style="margin-top:.5rem" onclick="Modal.open('addEventModal')">Add event</button></div>`;
+    else evEl.innerHTML = upcoming.map(e=>`<div style="display:flex;align-items:center;gap:.65rem;padding:.55rem 0;border-bottom:1px solid var(--border-default)"><div style="width:36px;height:36px;border-radius:var(--radius-sm);background:var(--c-primary-50);display:flex;align-items:center;justify-content:center;flex-shrink:0">${Icon.calendar(16)}</div><div><div style="font-size:.855rem;font-weight:600">${e.title}</div><div style="font-size:.72rem;color:var(--text-muted)">${fmtDate(e.date)} ${e.time||''}</div></div><span class="badge badge-${e.type==='assessment'?'rose':e.type==='deadline'?'amber':'indigo'}">${e.type}</span></div>`).join('');
+
+    // Grading stats
+    document.getElementById('gr-pass').textContent = d.stats?.pass_rate != null ? `${d.stats.pass_rate}%` : '—';
+    document.getElementById('gr-avg').textContent  = d.stats?.avg_score  != null ? `${d.stats.avg_score}%` : '—';
+    document.getElementById('gr-total').textContent= d.stats?.total_attempts ?? '—';
+    document.getElementById('gradingDistChart').innerHTML = inlineBarChart(
+      Object.entries(dist).map(([r,c])=>({label:r,value:c,color:'var(--c-primary-500)'})), maxV);
+  } catch(e) { Toast.error('Failed to load dashboard'); }
+}
+
+async function loadAssessmentsTable() {
+  try {
+    const d = await Api.get('/assessments');
+    const tbody = document.getElementById('assessmentsTable');
+    if (!d.assessments?.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted)">No assessments yet.</td></tr>'; return; }
+    tbody.innerHTML = d.assessments.map(a=>`<tr>
+      <td data-label="Title" style="font-weight:600">${a.title}</td>
+      <td data-label="Questions">${a.total_questions}</td>
+      <td data-label="Difficulty"><span class="badge badge-${a.difficulty==='hard'?'rose':a.difficulty==='medium'?'amber':'emerald'}">${a.difficulty}</span></td>
+      <td data-label="Status">${a.is_published?'<span class="badge badge-completed">Published</span>':'<span class="badge badge-slate">Draft</span>'}</td>
+      <td data-label="Created" style="font-size:.78rem;color:var(--text-muted)">${fmtDate(a.created_at)}</td>
+      <td data-label="Actions"><div class="table-actions">
+        ${!a.is_published?`<button class="btn btn-primary btn-sm" onclick="publishAssessment('${a.id}',this)">Publish</button>`:''}
+      </div></td>
+    </tr>`).join('');
+  } catch(e) { Toast.error(e.message); }
+}
+
+async function publishAssessment(id, btn) {
+  btn.textContent='…'; btn.disabled=true;
+  try { await Api.put(`/assessments/${id}/publish`,{}); Toast.success('Assessment published!'); loadAssessmentsTable(); loadDashboard(); }
+  catch(e) { Toast.error(e.message); btn.textContent='Publish'; btn.disabled=false; }
+}
+
+async function loadStudentResults() {
+  try {
+    const d = await Api.get('/analytics/instructor');
+    const tbody = document.getElementById('studentResultsTable');
+    Toast.info(`Total attempts across all assessments: ${d.stats?.total_attempts||0}`);
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Total attempts: ${d.stats?.total_attempts||0} — Avg score: ${d.stats?.avg_score||0}% — Pass rate: ${d.stats?.pass_rate||0}%<br><small>Per-student breakdown requires org-admin or higher access.</small></td></tr>`;
+  } catch(e) { Toast.error(e.message); }
+}
+
+async function loadGrading() { await loadDashboard(); }
+
+// AI Quiz generation
+function toggleSource(type) {
+  document.getElementById('source-paste').style.display  = type==='paste'  ? 'block' : 'none';
+  document.getElementById('source-upload').style.display = type==='upload' ? 'block' : 'none';
+}
+function showFileName(input) { document.getElementById('fileName').textContent = input.files[0]?.name || ''; }
+
+document.getElementById('quizGenForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('genBtn');
+  const title = document.getElementById('qg-title').value;
+  const count = document.getElementById('qg-count').value;
+  const diff  = document.getElementById('qg-diff').value;
+  const text  = document.getElementById('qg-text').value;
+  const file  = document.getElementById('qg-file').files[0];
+  if (!text.trim() && !file) { Toast.error('Paste text or upload a file'); return; }
+  btn.textContent='Generating…'; btn.disabled=true;
+  document.getElementById('genPreview').innerHTML = Array(parseInt(count)).fill(`<div class="skeleton" style="height:60px;border-radius:var(--radius-sm);margin-bottom:.4rem"></div>`).join('');
+  try {
+    const form = new FormData();
+    form.append('title', title);
+    form.append('num_questions', count);
+    form.append('difficulty', diff);
+    if (text.trim()) form.append('content_text', text);
+    if (file) form.append('file', file);
+    const d = await Api.upload('/assessments/generate', form);
+    renderGenPreview(d);
+    Toast.success(`Generated ${d.questions?.length} questions!`);
+    loadAssessmentsTable();
+  } catch(err) { document.getElementById('genPreview').innerHTML = `<div style="color:var(--c-danger-600);font-size:.855rem">${err.message}</div>`; Toast.error(err.message); }
+  finally { btn.textContent='Generate Questions with AI'; btn.disabled=false; }
+});
+
+function renderGenPreview(data) {
+  const qs = data.questions||[];
+  document.getElementById('genPreview').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+      <span class="badge badge-completed">${qs.length} questions created</span>
+      <button class="btn btn-primary btn-sm" onclick="publishAssessment('${data.assessment?.id}',this)">Publish</button>
+    </div>
+    <div style="max-height:500px;overflow-y:auto;display:flex;flex-direction:column;gap:.65rem">
+      ${qs.map((q,i)=>`
+        <div style="background:var(--surface-subtle);border-radius:var(--radius-md);padding:.85rem">
+          <p style="font-size:.855rem;font-weight:600;margin-bottom:.4rem">${i+1}. ${q.question_text}</p>
+          ${(q.options||[]).map(opt=>`<div style="font-size:.8rem;padding:.15rem 0;color:${opt.key===q.correct_answer?'var(--c-success-600)':'var(--text-secondary)'};font-weight:${opt.key===q.correct_answer?'600':'400'}">${opt.key===q.correct_answer?'✓':'○'} ${opt.key}. ${opt.text}</div>`).join('')}
+          ${q.explanation?`<div style="font-size:.75rem;color:var(--c-info-600);margin-top:.35rem;padding:.35rem .6rem;background:var(--c-info-50);border-radius:4px">${q.explanation}</div>`:''}
+        </div>`).join('')}
+    </div>`;
+}
+
+// Calendar
+function renderCalendar() {
+  const now = new Date();
+  document.getElementById('calMonthTitle').textContent = new Date(calYear, calMonth).toLocaleDateString('en-IN', { month:'long', year:'numeric' });
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const daysInPrev  = new Date(calYear, calMonth, 0).getDate();
+  let cells = '';
+  for (let i=firstDay-1; i>=0; i--) cells += `<div class="cal-cell other-month">${daysInPrev-i}</div>`;
+  for (let d=1; d<=daysInMonth; d++) {
+    const isToday = d===now.getDate() && calMonth===now.getMonth() && calYear===now.getFullYear();
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const hasEvent = calEvents.some(e => e.date === dateStr);
+    cells += `<div class="cal-cell${isToday?' today':hasEvent?' has-event':''}" onclick="showDayEvents('${dateStr}')">${d}</div>`;
+  }
+  let after = 1;
+  while ((firstDay + daysInMonth + after - 1) % 7 !== 0) { cells += `<div class="cal-cell other-month">${after++}</div>`; }
+  document.getElementById('calGrid').innerHTML = cells;
+  document.getElementById('calEventsList').innerHTML = calEvents.length
+    ? calEvents.slice(0,6).map(e=>`<div style="display:flex;align-items:center;gap:.65rem;padding:.5rem 0;border-bottom:1px solid var(--border-default)"><div style="width:8px;height:8px;border-radius:50%;background:var(--c-primary-500);flex-shrink:0"></div><div style="flex:1"><div style="font-size:.855rem;font-weight:500">${e.title}</div><div style="font-size:.72rem;color:var(--text-muted)">${fmtDate(e.date)} ${e.time||''}</div></div><span class="badge badge-${e.type==='assessment'?'rose':e.type==='deadline'?'amber':'indigo'}">${e.type}</span></div>`).join('')
+    : `<div style="padding:1.5rem 0;text-align:center;font-size:.855rem;color:var(--text-muted)">No events scheduled.</div>`;
+}
+
+function changeMonth(dir) { calMonth += dir; if(calMonth<0){calMonth=11;calYear--;} if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); }
+function showDayEvents(date) { const evs = calEvents.filter(e=>e.date===date); Toast.info(evs.length ? evs.map(e=>e.title).join(', ') : `No events on ${fmtDate(date)}`); }
+function addEvent() {
+  const title = document.getElementById('ev-title').value.trim();
+  const date  = document.getElementById('ev-date').value;
+  if (!title || !date) { Toast.error('Title and date required'); return; }
+  calEvents.push({ title, date, time:document.getElementById('ev-time').value, type:document.getElementById('ev-type').value });
+  localStorage.setItem('em_cal_events', JSON.stringify(calEvents));
+  Modal.close('addEventModal');
+  renderCalendar();
+  Toast.success('Event added!');
+}
+
+// Resources
+function renderResources() {
+  const sample = [
+    {title:'Survey Design Manual',domain:'statistical',type:'document',url:'#'},
+    {title:'Python for Statistics',domain:'technical',type:'document',url:'#'},
+    {title:'SDG Indicators Guide',domain:'statistical',type:'presentation',url:'#'},
+    {title:'Data Privacy Act 2025',domain:'digital_governance',type:'document',url:'#'},
+    ...resources
+  ];
+  const grid = document.getElementById('resourcesGrid');
+  if (!sample.length) { grid.innerHTML = emptyState('No resources yet','Upload teaching materials to get started.'); return; }
+  grid.innerHTML = sample.map(r=>`
+    <div class="doc-card">
+      <div class="doc-icon">${Icon.file()}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.855rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</div>
+        <div style="font-size:.72rem;color:var(--text-muted);margin-top:2px;text-transform:capitalize">${(r.domain||'').replace(/_/g,' ')} • ${r.type}</div>
+      </div>
+      ${r.url&&r.url!=='#'?`<a href="${r.url}" target="_blank" class="btn btn-ghost btn-sm btn-icon">${Icon.eye(14)}</a>`:''}
+    </div>`).join('');
+}
+
+function saveResource() {
+  const title  = document.getElementById('rs-title').value.trim();
+  if (!title) { Toast.error('Title required'); return; }
+  resources.push({ title, domain:document.getElementById('rs-domain').value, type:document.getElementById('rs-type').value, url:document.getElementById('rs-url').value||'#' });
+  localStorage.setItem('em_resources', JSON.stringify(resources));
+  Modal.close('uploadResourceModal');
+  renderResources();
+  Toast.success('Resource saved!');
+}
+
+function renderDocuments() {
+  const docs = JSON.parse(localStorage.getItem('em_resources')||'[]').filter(r=>r.type==='document'||r.type==='presentation');
+  const grid = document.getElementById('documentsGrid');
+  if (!docs.length) { grid.innerHTML = emptyState('No documents uploaded','Upload documents to use for AI quiz generation.'); return; }
+  grid.innerHTML = docs.map(d=>`
+    <div class="doc-card">
+      <div class="doc-icon">${Icon.file()}</div>
+      <div style="flex:1;min-width:0"><div style="font-size:.855rem;font-weight:600">${d.title}</div><div style="font-size:.72rem;color:var(--text-muted)">${d.type}</div></div>
+    </div>`).join('');
+}
+
+// AI Content
+async function generateContent() {
+  const btn = document.getElementById('ctGenBtn');
+  const type = document.getElementById('ct-type').value;
+  const topic = document.getElementById('ct-topic').value;
+  const audience = document.getElementById('ct-audience').value;
+  const scope = document.getElementById('ct-scope').value;
+  if (!topic) { Toast.error('Topic is required'); return; }
+  btn.textContent = 'Generating…'; btn.disabled = true;
+  document.getElementById('ctOutput').textContent = 'Generating content with AI…';
+  try {
+    const d = await Api.post('/assistant/chat', { message: `Generate a ${type} for the topic: "${topic}". Target audience: ${audience}. Scope: ${scope}. Make it practical and relevant to India's Official Statistical System.` });
+    document.getElementById('ctOutput').textContent = d.reply;
+    document.getElementById('ctActions').style.display = 'flex';
+  } catch(e) { document.getElementById('ctOutput').textContent = e.message; Toast.error(e.message); }
+  finally { btn.textContent = 'Generate with AI'; btn.disabled = false; }
+}
+function copyContent() {
+  navigator.clipboard.writeText(document.getElementById('ctOutput').textContent);
+  Toast.success('Copied!');
+}
+</script>
+</body>
+</html>
