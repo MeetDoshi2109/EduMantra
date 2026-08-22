@@ -48,7 +48,6 @@ router.get('/student', authenticate, async (req, res) => {
     const gap     = { data: (gaps.data     || [])[0] || null };
 
     const enroll = enrollments.data || [];
-    const enroll = enrollments.data || [];
     const totalHours = (hours.data || []).reduce((s, h) => s + parseFloat(h.hours_spent || 0), 0);
     const completedCourses = enroll.filter(e => e.status === 'completed').length;
     const inProgressCourses = enroll.filter(e => e.status === 'in_progress').length;
@@ -221,11 +220,11 @@ router.get('/parent', authenticate, authorize('parent'), async (req, res) => {
           courses_enrolled:  enroll.length,
           courses_completed: enroll.filter(e => e.status === 'completed').length,
           avg_score: att.length ? Math.round(att.reduce((s, a) => s + (a.score || 0), 0) / att.length) : 0,
-          skill_gap_score: gaps.data?.overall_gap_score || null,
+          skill_gap_score: gapRow?.overall_gap_score || null,
         },
-        recent_courses: enroll.slice(0, 3),
+        recent_courses:  enroll.slice(0, 3),
         recent_attempts: att.slice(0, 3),
-        latest_gap: gaps.data,
+        latest_gap:      gapRow,
       };
     }));
 
