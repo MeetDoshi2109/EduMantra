@@ -27,7 +27,29 @@ async function authenticate(req, res, next) {
       .single();
 
     if (profileError || !profile) {
-      return res.status(401).json({ error: 'User profile not found' });
+      // Profile row missing — auto-create a minimal one so the app
+      // works even before the full schema migration has been run.
+      const fallbackRole = user.user_metadata?.role || 'student';
+      const fallbackProfile = {
+        id:    user.id,
+        email: user.email,
+        full_name:          user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+        role:               fallbackRole,
+        designation:        user.user_metadata?.designation || null,
+        organization_id:    null,
+        preferred_language: 'en',
+        years_of_experience: 0,
+        is_active:          true,
+        last_login_at:      new Date().toISOString(),
+      };
+
+      // Try to upsert the row — silently ignore errors if table doesn't exist yet
+      await supabaseAdmin.from('users').upsert(fallbackProfile).catch(() => {});
+
+      req.user    = user;
+      req.profile = fallbackProfile;
+      req.token   = token;
+      return next();
     }
 
     req.user = user;

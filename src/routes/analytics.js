@@ -9,35 +9,45 @@ const router = express.Router();
 router.get('/student', authenticate, async (req, res) => {
   const userId = req.profile.id;
   try {
-    const [enrollments, attempts, hours, pathway, gaps, notifications] = await Promise.all([
-      supabaseAdmin.from('course_enrollments')
+    // Use individual try/catch per query so one empty table
+    // never breaks the whole response.
+    const safeQuery = async (fn) => {
+      try { return await fn(); } catch (_) { return { data: null }; }
+    };
+
+    const [enrollments, attempts, hours, pathways, gaps, notifications] = await Promise.all([
+      safeQuery(() => supabaseAdmin.from('course_enrollments')
         .select('status, progress_pct, igot_courses(title, thumbnail_url, duration_hours)')
-        .eq('user_id', userId),
-      supabaseAdmin.from('assessment_attempts')
+        .eq('user_id', userId)),
+      safeQuery(() => supabaseAdmin.from('assessment_attempts')
         .select('score, passed, created_at, assessments(title)')
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
-        .limit(10),
-      supabaseAdmin.from('learning_hours_log')
+        .limit(10)),
+      safeQuery(() => supabaseAdmin.from('learning_hours_log')
         .select('hours_spent, activity_type, logged_at')
-        .eq('user_id', userId),
-      supabaseAdmin.from('learning_pathways')
+        .eq('user_id', userId)),
+      // Use .limit(1) + array instead of .single() to avoid errors on empty table
+      safeQuery(() => supabaseAdmin.from('learning_pathways')
         .select('title, total_hours, target_completion, pathway_items(id)')
         .eq('user_id', userId)
         .eq('is_active', true)
         .order('created_at', { ascending: false })
-        .limit(1)
-        .single(),
-      supabaseAdmin.from('skill_gap_reports')
+        .limit(1)),
+      safeQuery(() => supabaseAdmin.from('skill_gap_reports')
         .select('overall_gap_score, generated_at, summary')
         .eq('user_id', userId)
         .order('generated_at', { ascending: false })
-        .limit(1)
-        .single(),
-      supabaseAdmin.from('notifications')
-        .select('*').eq('user_id', userId).eq('is_read', false).limit(5),
+        .limit(1)),
+      safeQuery(() => supabaseAdmin.from('notifications')
+        .select('*').eq('user_id', userId).eq('is_read', false).limit(5)),
     ]);
 
+    // Flatten pathway/gap from array to single object
+    const pathway = { data: (pathways.data || [])[0] || null };
+    const gap     = { data: (gaps.data     || [])[0] || null };
+
+    const enroll = enrollments.data || [];
     const enroll = enrollments.data || [];
     const totalHours = (hours.data || []).reduce((s, h) => s + parseFloat(h.hours_spent || 0), 0);
     const completedCourses = enroll.filter(e => e.status === 'completed').length;
@@ -53,13 +63,13 @@ router.get('/student', authenticate, async (req, res) => {
         in_progress_courses: inProgressCourses,
         total_learning_hours: Math.round(totalHours * 10) / 10,
         avg_assessment_score: avgScore,
-        skill_gap_score: gaps.data?.overall_gap_score || null,
-        unread_notifications: notifications.data?.length || 0,
+        skill_gap_score: gap.data?.overall_gap_score || null,
+        unread_notifications: (notifications.data || []).length,
       },
       recent_courses: enroll.slice(0, 5),
       recent_attempts: attempts.data || [],
       latest_pathway: pathway.data,
-      latest_gap_report: gaps.data,
+      latest_gap_report: gap.data,
       notifications: notifications.data || [],
     });
   } catch (err) {
@@ -183,29 +193,32 @@ router.get('/parent', authenticate, authorize('parent'), async (req, res) => {
 
   try {
     const childrenData = await Promise.all(childIds.map(async (childId) => {
+      const safe = async (fn) => { try { return await fn(); } catch(_) { return { data: null }; } };
+
       const [profile, enrollments, attempts, gaps] = await Promise.all([
-        supabaseAdmin.from('users')
+        safe(() => supabaseAdmin.from('users')
           .select('id, full_name, email, designation, avatar_url, last_login_at')
-          .eq('id', childId).single(),
-        supabaseAdmin.from('course_enrollments')
+          .eq('id', childId).single()),
+        safe(() => supabaseAdmin.from('course_enrollments')
           .select('status, progress_pct, igot_courses(title)')
-          .eq('user_id', childId).limit(5),
-        supabaseAdmin.from('assessment_attempts')
+          .eq('user_id', childId).limit(5)),
+        safe(() => supabaseAdmin.from('assessment_attempts')
           .select('score, passed, created_at, assessments(title)')
           .eq('user_id', childId)
-          .order('created_at', { ascending: false }).limit(5),
-        supabaseAdmin.from('skill_gap_reports')
+          .order('created_at', { ascending: false }).limit(5)),
+        safe(() => supabaseAdmin.from('skill_gap_reports')
           .select('overall_gap_score, summary, generated_at')
           .eq('user_id', childId)
-          .order('generated_at', { ascending: false }).limit(1).single(),
+          .order('generated_at', { ascending: false }).limit(1)),
       ]);
 
       const enroll = enrollments.data || [];
-      const att = attempts.data || [];
+      const att    = attempts.data || [];
+      const gapRow = (gaps.data || [])[0] || null;
       return {
         profile: profile.data,
         stats: {
-          courses_enrolled: enroll.length,
+          courses_enrolled:  enroll.length,
           courses_completed: enroll.filter(e => e.status === 'completed').length,
           avg_score: att.length ? Math.round(att.reduce((s, a) => s + (a.score || 0), 0) / att.length) : 0,
           skill_gap_score: gaps.data?.overall_gap_score || null,
