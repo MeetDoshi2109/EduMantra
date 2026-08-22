@@ -54,7 +54,7 @@ const Auth = {
       organization_admin: '/dashboards/organization.html',
       developer:          '/dashboards/developer.html',
     };
-    window.location.href = map[u.role] || '/dashboards/student.html';
+    window.location.href = map[u?.role] || '/dashboards/student.html';
   },
 };
 

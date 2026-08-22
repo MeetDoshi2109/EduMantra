@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduMantra – Supervisor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/design-system.css">
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<div class="app-shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar" aria-label="Navigation">
+  <div class="sidebar-header">
+    <div class="brand-mark">EM</div>
+    <div><div class="brand-name">EduMantra</div><div class="brand-role">Supervisor</div></div>
+  </div>
+  <nav class="sidebar-nav" aria-label="Main navigation">
+    <div class="nav-group-label">Overview</div>
+    <button class="nav-item active" data-page="home">
+      <span id="ni-home"></span><span class="nav-label">Dashboard</span>
+    </button>
+    <button class="nav-item" data-page="learners">
+      <span id="ni-learners"></span><span class="nav-label">My Learners</span>
+    </button>
+
+    <div class="nav-group-label">Analytics</div>
+    <button class="nav-item" data-page="performance">
+      <span id="ni-perf"></span><span class="nav-label">Performance</span>
+    </button>
+    <button class="nav-item" data-page="pathdetails">
+      <span id="ni-path"></span><span class="nav-label">Path Details</span>
+    </button>
+    <button class="nav-item" data-page="insights">
+      <span id="ni-insights"></span><span class="nav-label">Learning Insights</span>
+    </button>
+    <button class="nav-item" data-page="projected">
+      <span id="ni-proj"></span><span class="nav-label">Projected Development</span>
+    </button>
+
+    <div class="nav-group-label">People</div>
+    <button class="nav-item" data-page="instructors">
+      <span id="ni-inst"></span><span class="nav-label">Instructor Details</span>
+    </button>
+
+    <div class="nav-group-label">Account</div>
+    <button class="nav-item" data-page="notifications">
+      <span id="ni-notif"></span><span class="nav-label">Alerts</span>
+      <span class="nav-badge" id="notifBadge" style="display:none">0</span>
+    </button>
+    <button class="nav-item" data-page="profile">
+      <span id="ni-profile"></span><span class="nav-label">My Profile</span>
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-row">
+      <div class="user-avatar" id="sidebarAvatar"></div>
+      <div style="flex:1;min-width:0">
+        <div class="user-name" id="sidebarName">Loading…</div>
+        <div class="user-role" id="sidebarRole">supervisor</div>
+      </div>
+      <button class="logout-btn" aria-label="Sign out"></button>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main-area">
+  <header class="topbar">
+    <button class="menu-toggle" aria-label="Toggle navigation"></button>
+    <span class="topbar-title" aria-live="polite">Dashboard</span>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-icon" id="notifBell" aria-label="Notifications" onclick="goPage('notifications',pageHandlers)">
+        <span id="bellIcon"></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="page-body" id="main-content">
+
+    <!-- HOME -->
+    <div class="dash-page active" id="page-home">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h1 class="page-title" id="welcomeMsg">Supervisor Dashboard</h1>
+          <p class="page-subtitle">Monitor your learners' progress, gaps and development.</p>
+        </div>
+        <button class="btn btn-primary" onclick="goPage('learners',pageHandlers)">
+          <span id="viewLearnersIcon"></span> View Learners
+        </button>
+      </div>
+
+      <!-- No learners state -->
+      <div id="noLearnersCard" class="card" style="display:none">
+        <div class="empty-state">
+          <div class="empty-icon" id="noLearnersIcon"></div>
+          <div class="empty-title">No learners linked</div>
+          <p class="empty-desc">Ask your organisation administrator to link learner accounts to your supervisor profile.</p>
+        </div>
+      </div>
+
+      <!-- Learner selector pills -->
+      <div class="card card-sm" style="margin-bottom:1.25rem" id="learnerSelectorCard">
+        <div style="font-size:.8125rem;font-weight:600;color:var(--n-500);margin-bottom:.5rem">SELECT LEARNER</div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap" id="learnerPills"></div>
+      </div>
+
+      <!-- KPI row -->
+      <div class="bento g4" style="margin-bottom:1.25rem">
+        <div class="stat-card"><div class="stat-icon" id="si-courses"></div><div><div class="stat-value" id="kpi-enrolled">—</div><div class="stat-label">Courses Enrolled</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-green" id="si-done"></div><div><div class="stat-value" id="kpi-done">—</div><div class="stat-label">Completed</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-amber" id="si-score"></div><div><div class="stat-value" id="kpi-score">—</div><div class="stat-label">Avg Score</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-red" id="si-gap"></div><div><div class="stat-value" id="kpi-gap">—</div><div class="stat-label">Skill Gap</div></div></div>
+      </div>
+
+      <div class="bento g2">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Recent Courses</div></div>
+            <button class="btn btn-ghost btn-sm" onclick="goPage('pathdetails',pageHandlers)">View path</button>
+          </div>
+          <div id="recentCoursesList"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Latest Assessment Results</div></div>
+            <button class="btn btn-ghost btn-sm" onclick="goPage('performance',pageHandlers)">Full report</button>
+          </div>
+          <div id="recentAttemptsList"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1.25rem">
+        <div class="card-header">
+          <div><div class="card-title">Skill Gap Summary</div><div class="card-subtitle" id="gapGenerated"></div></div>
+          <div id="gapScorePill"></div>
+        </div>
+        <div id="gapSummaryBody"></div>
+      </div>
+    </div>
+
+    <!-- LEARNERS -->
+    <div class="dash-page" id="page-learners">
+      <div class="page-header"><h1 class="page-title">My Learners</h1></div>
+      <div class="bento g-auto" id="learnerCardsGrid"></div>
+    </div>
+
+    <!-- PERFORMANCE -->
+    <div class="dash-page" id="page-performance">
+      <div class="page-header"><h1 class="page-title">Performance Analysis</h1><p class="page-subtitle">Assessment scores and pass rates across all tracked learners.</p></div>
+      <div class="bento g2" style="margin-bottom:1.25rem">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Score Distribution</div></div>
+          <div id="perfBarChart"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Pass / Fail Summary</div></div>
+          <div id="perfPassFail"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Assessment Attempt History</div></div>
+        <div class="table-wrap">
+          <table class="table" aria-label="Assessment attempts">
+            <thead><tr><th>Assessment</th><th>Score</th><th>Result</th><th>Feedback</th><th>Date</th></tr></thead>
+            <tbody id="perfTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PATH DETAILS -->
+    <div class="dash-page" id="page-pathdetails">
+      <div class="page-header"><h1 class="page-title">Learning Path Details</h1><p class="page-subtitle">Full course sequence and completion status for selected learner.</p></div>
+      <div id="pathDetailContainer"></div>
+    </div>
+
+    <!-- LEARNING INSIGHTS -->
+    <div class="dash-page" id="page-insights">
+      <div class="page-header"><h1 class="page-title">Learning Insights</h1><p class="page-subtitle">AI-generated insights about learning patterns and engagement.</p></div>
+      <div class="bento g2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Learning Hours</div></div>
+          <div id="hoursChart"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Engagement Summary</div></div>
+          <div id="engagementSummary"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1.25rem">
+        <div class="card-header">
+          <div><div class="card-title">AI Learning Analysis</div></div>
+          <span class="badge badge-blue" style="font-size:.75rem">AI Generated</span>
+        </div>
+        <div id="aiInsightsBody" style="font-size:.875rem;line-height:1.75;color:var(--n-600)"></div>
+      </div>
+    </div>
+
+    <!-- PROJECTED DEVELOPMENT -->
+    <div class="dash-page" id="page-projected">
+      <div class="page-header"><h1 class="page-title">Projected Development</h1><p class="page-subtitle">Estimated competency growth trajectory based on current learning pace.</p></div>
+      <div class="bento g2">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Competency Trajectory (6 months)</div></div>
+          </div>
+          <div id="projectionChart"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Target vs Current</div></div>
+          <div id="projTargetVsCurrent"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1.25rem">
+        <div class="card-header"><div class="card-title">Development Milestones</div></div>
+        <div class="timeline" id="projMilestones"></div>
+      </div>
+    </div>
+
+    <!-- INSTRUCTOR DETAILS -->
+    <div class="dash-page" id="page-instructors">
+      <div class="page-header"><h1 class="page-title">Instructor Details</h1><p class="page-subtitle">Contact information and activity for assigned instructors.</p></div>
+      <div class="bento g-auto" id="instructorCards"></div>
+    </div>
+
+    <!-- ALERTS / NOTIFICATIONS -->
+    <div class="dash-page" id="page-notifications">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div><h1 class="page-title">Alerts & Notifications</h1></div>
+        <button class="btn btn-ghost btn-sm" onclick="markAllRead()">Mark all read</button>
+      </div>
+      <div class="card" id="notifContainer"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="dash-page" id="page-profile">
+      <div class="page-header"><h1 class="page-title">My Profile</h1></div>
+      <div class="card" style="max-width:520px">
+        <form id="profileForm" novalidate>
+          <div class="form-group"><label class="form-label" for="pf-name">Full Name</label><input class="input" id="pf-name" type="text"></div>
+          <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-phone">Phone</label><input class="input" id="pf-phone" type="tel"></div>
+          <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-lang">Preferred Language</label>
+            <select class="input" id="pf-lang">
+              <option value="en">English</option><option value="hi">हिन्दी</option>
+              <option value="ta">தமிழ்</option><option value="te">తెలుగు</option>
+              <option value="bn">বাংলা</option><option value="mr">मराठी</option>
+            </select>
+          </div>
+          <div style="margin-top:var(--space-lg)"><button type="submit" class="btn btn-primary">Save Changes</button></div>
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/shell.js"></script>
+<script>
+const user = Auth.guard();
+if (user && user.role !== 'parent') Auth.redirect(user);
+
+let childrenData = [];
+let selectedIdx  = 0;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // Inject Lucide icons into nav
+  document.getElementById('ni-home').innerHTML      = L.home();
+  document.getElementById('ni-learners').innerHTML  = L.users();
+  document.getElementById('ni-perf').innerHTML      = L.barChart();
+  document.getElementById('ni-path').innerHTML      = L.map();
+  document.getElementById('ni-insights').innerHTML  = L.activity();
+  document.getElementById('ni-proj').innerHTML      = L.trendingUp();
+  document.getElementById('ni-inst').innerHTML      = L.userCheck();
+  document.getElementById('ni-notif').innerHTML     = L.bell();
+  document.getElementById('ni-profile').innerHTML   = L.user();
+  document.getElementById('bellIcon').innerHTML     = L.bell();
+  document.getElementById('viewLearnersIcon').innerHTML = L.arrowRight();
+  document.getElementById('noLearnersIcon').innerHTML   = L.users(40);
+  document.getElementById('si-courses').innerHTML   = L.book();
+  document.getElementById('si-done').innerHTML      = L.checkCircle();
+  document.getElementById('si-score').innerHTML     = L.star();
+  document.getElementById('si-gap').innerHTML       = L.zap();
+
+  initShell({ name: user?.full_name, role: user?.role, avatarUrl: user?.avatar_url });
+  initNav('home', pageHandlers);
+  await loadData();
+});
+
+const pageHandlers = {
+  learners:     renderLearnerCards,
+  performance:  renderPerformance,
+  pathdetails:  renderPathDetails,
+  insights:     renderInsights,
+  projected:    renderProjected,
+  instructors:  renderInstructors,
+  notifications:loadNotifications,
+  profile:      loadProfile,
+};
+
+async function loadData() {
+  try {
+    const d = await Api.get('/analytics/parent');
+    childrenData = d.children || [];
+
+    if (!childrenData.length) {
+      document.getElementById('noLearnersCard').style.display = '';
+      document.getElementById('learnerSelectorCard').style.display = 'none';
+      return;
+    }
+
+    // Build learner selector pills
+    const pillWrap = document.getElementById('learnerPills');
+    pillWrap.innerHTML = childrenData.map((c,i) => `
+      <button class="btn btn-sm ${i===0?'btn-primary':'btn-secondary'}"
+        id="pill-${i}" onclick="selectLearner(${i})"
+        aria-pressed="${i===0}">
+        ${c.profile?.full_name || 'Learner '+(i+1)}
+      </button>`).join('');
+
+    selectLearner(0);
+  } catch(e) { Toast.error('Failed to load learner data'); }
+}
+
+function selectLearner(idx) {
+  selectedIdx = idx;
+  document.querySelectorAll('[id^="pill-"]').forEach((btn, i) => {
+    btn.className = `btn btn-sm ${i===idx?'btn-primary':'btn-secondary'}`;
+    btn.setAttribute('aria-pressed', i===idx);
+  });
+  renderHomeForLearner(childrenData[idx]);
+}
+
+function renderHomeForLearner(c) {
+  if (!c) return;
+  document.getElementById('welcomeMsg').textContent = `Supervising: ${c.profile?.full_name}`;
+  const s = c.stats || {};
+  document.getElementById('kpi-enrolled').textContent = s.courses_enrolled ?? '—';
+  document.getElementById('kpi-done').textContent     = s.courses_completed ?? '—';
+  document.getElementById('kpi-score').textContent    = s.avg_score != null ? `${s.avg_score}%` : '—';
+  document.getElementById('kpi-gap').textContent      = s.skill_gap_score != null ? `${Math.round(s.skill_gap_score)}%` : '—';
+
+  // Recent courses
+  const courseEl = document.getElementById('recentCoursesList');
+  const courses  = c.recent_courses || [];
+  if (!courses.length) { courseEl.innerHTML = `<p style="color:var(--n-400);font-size:.875rem;padding:.75rem 0">No enrollments yet.</p>`; }
+  else courseEl.innerHTML = courses.slice(0,4).map(co => `
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem 0;border-bottom:1px solid var(--n-100)">
+      <div style="color:var(--color-primary);flex-shrink:0">${L.book(16)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.875rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${co.igot_courses?.title||'Course'}</div>
+        <div style="margin-top:3px">${progBar(co.progress_pct)}</div>
+      </div>
+      <span style="font-size:.75rem;color:var(--n-400);flex-shrink:0;font-family:'Fira Code',monospace">${Math.round(co.progress_pct||0)}%</span>
+    </div>`).join('');
+
+  // Recent attempts
+  const attEl = document.getElementById('recentAttemptsList');
+  const atts  = c.recent_attempts || [];
+  if (!atts.length) { attEl.innerHTML = `<p style="color:var(--n-400);font-size:.875rem;padding:.75rem 0">No assessments attempted yet.</p>`; }
+  else attEl.innerHTML = atts.slice(0,4).map(a => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.625rem 0;border-bottom:1px solid var(--n-100)">
+      <span style="font-size:.875rem;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.assessments?.title||'Quiz'}</span>
+      <div style="display:flex;align-items:center;gap:.5rem;flex-shrink:0">
+        <span style="font-family:'Fira Code',monospace;font-weight:700">${a.score||0}%</span>
+        ${a.passed ? '<span class="badge badge-done">Pass</span>' : '<span class="badge badge-red">Fail</span>'}
+      </div>
+    </div>`).join('');
+
+  // Gap summary
+  const gap = c.latest_gap;
+  if (!gap) {
+    document.getElementById('gapSummaryBody').innerHTML = `<p style="color:var(--n-400);font-size:.875rem">No skill gap report available yet.</p>`;
+  } else {
+    const sc = Math.round(gap.overall_gap_score||0);
+    const col = sc>60?'var(--color-danger)':sc>30?'var(--color-warning)':'var(--color-success)';
+    document.getElementById('gapGenerated').textContent = `Generated ${fmtDate(gap.generated_at)}`;
+    document.getElementById('gapScorePill').innerHTML = `<span style="font-size:1.75rem;font-weight:700;font-family:'Fira Code',monospace;color:${col}">${sc}%</span>`;
+    document.getElementById('gapSummaryBody').innerHTML = `
+      <div class="progress progress-lg" style="margin-bottom:.5rem"><div class="progress-fill${sc>60?' red':sc>30?' amber':' green'}" style="width:${sc}%"></div></div>
+      <p style="font-size:.875rem;color:var(--n-600)">${gap.summary||'No summary available.'}</p>
+      ${sc>60?`<div style="margin-top:.75rem;padding:.75rem;background:var(--color-danger-l);border-radius:var(--r-md);font-size:.875rem;color:var(--color-danger)">
+        ${L.alertTriangle(16)} <strong>Action required:</strong> Critical skill gaps identified. Encourage the learner to complete their AI-generated learning pathway.
+      </div>`:''}`;
+  }
+}
+
+function renderLearnerCards() {
+  const grid = document.getElementById('learnerCardsGrid');
+  if (!childrenData.length) { grid.innerHTML = emptyState('No learners linked','Contact your org admin to link learner accounts.'); return; }
+  grid.innerHTML = childrenData.map((c,i) => `
+    <div class="card card-hover" role="button" tabindex="0" onclick="selectLearner(${i});goPage('home',pageHandlers)" onkeydown="if(event.key==='Enter')this.click()" style="cursor:pointer">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+        <div class="user-avatar" style="width:44px;height:44px;font-size:1rem">${(c.profile?.full_name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+        <div>
+          <div style="font-weight:600">${c.profile?.full_name||'Learner'}</div>
+          <div style="font-size:.8125rem;color:var(--n-400)">${c.profile?.designation||'Student'}</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.4rem">
+        <div style="display:flex;justify-content:space-between;font-size:.875rem"><span style="color:var(--n-500)">Enrolled</span><span style="font-weight:600;font-family:'Fira Code',monospace">${c.stats.courses_enrolled}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:.875rem"><span style="color:var(--n-500)">Completed</span><span style="font-weight:600;font-family:'Fira Code',monospace">${c.stats.courses_completed}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:.875rem"><span style="color:var(--n-500)">Avg Score</span><span style="font-weight:600;font-family:'Fira Code',monospace">${c.stats.avg_score}%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:.875rem"><span style="color:var(--n-500)">Skill Gap</span><span style="font-weight:600;font-family:'Fira Code',monospace;color:${(c.stats.skill_gap_score||0)>60?'var(--color-danger)':'var(--color-success)'}">${c.stats.skill_gap_score?Math.round(c.stats.skill_gap_score)+'%':'—'}</span></div>
+      </div>
+      <div style="margin-top:.75rem;display:flex;align-items:center;gap:.4rem;font-size:.8125rem;color:var(--n-400)">
+        ${L.activity(14)} Last active: ${fmtDate(c.profile?.last_login_at)}
+      </div>
+    </div>`).join('');
+}
+
+function renderPerformance() {
+  const c = childrenData[selectedIdx];
+  if (!c) return;
+  const atts = c.recent_attempts || [];
+  const pass = atts.filter(a=>a.passed).length;
+  const fail = atts.length - pass;
+  const avg  = atts.length ? Math.round(atts.reduce((s,a)=>s+(a.score||0),0)/atts.length) : 0;
+
+  document.getElementById('perfBarChart').innerHTML = barChart([
+    {label:'0-40%',  value: atts.filter(a=>(a.score||0)<=40).length,               color:'var(--color-danger)'},
+    {label:'41-60%', value: atts.filter(a=>(a.score||0)>40&&(a.score||0)<=60).length,color:'var(--color-warning)'},
+    {label:'61-80%', value: atts.filter(a=>(a.score||0)>60&&(a.score||0)<=80).length,color:'var(--color-secondary)'},
+    {label:'81-100%',value: atts.filter(a=>(a.score||0)>80).length,                 color:'var(--color-success)'},
+  ]);
+
+  document.getElementById('perfPassFail').innerHTML = `
+    <div style="display:flex;justify-content:space-around;text-align:center;padding:.75rem 0">
+      <div><div style="font-size:2rem;font-weight:700;font-family:'Fira Code',monospace;color:var(--color-success)">${pass}</div><div style="font-size:.8125rem;color:var(--n-500)">Passed</div></div>
+      <div style="width:1px;background:var(--n-200)"></div>
+      <div><div style="font-size:2rem;font-weight:700;font-family:'Fira Code',monospace;color:var(--color-danger)">${fail}</div><div style="font-size:.8125rem;color:var(--n-500)">Failed</div></div>
+      <div style="width:1px;background:var(--n-200)"></div>
+      <div><div style="font-size:2rem;font-weight:700;font-family:'Fira Code',monospace;color:var(--color-primary)">${avg}%</div><div style="font-size:.8125rem;color:var(--n-500)">Average</div></div>
+    </div>`;
+
+  const tbody = document.getElementById('perfTable');
+  if (!atts.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--n-400)">No attempts yet.</td></tr>'; return; }
+  tbody.innerHTML = atts.map(a=>`<tr>
+    <td data-label="Assessment" style="font-weight:600">${a.assessments?.title||'Quiz'}</td>
+    <td data-label="Score" style="font-family:'Fira Code',monospace;font-weight:600">${a.score||0}%</td>
+    <td data-label="Result">${a.passed?'<span class="badge badge-done">Pass</span>':'<span class="badge badge-red">Fail</span>'}</td>
+    <td data-label="Feedback" style="font-size:.8125rem;color:var(--n-500);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.ai_feedback?(a.ai_feedback.slice(0,60)+'…'):'—'}</td>
+    <td data-label="Date" style="font-size:.8125rem;color:var(--n-400)">${fmtDate(a.created_at)}</td>
+  </tr>`).join('');
+}
+
+function renderPathDetails() {
+  const c = childrenData[selectedIdx];
+  const el = document.getElementById('pathDetailContainer');
+  const courses = c?.recent_courses || [];
+  if (!courses.length) { el.innerHTML = emptyState('No learning pathway','This learner has not yet generated a pathway.'); return; }
+  el.innerHTML = `<div class="card"><div class="timeline">
+    ${courses.map((co,i) => `
+      <div class="tl-item">
+        <div class="tl-dot ${co.status==='completed'?'done':co.status==='in_progress'?'act':''}">${L[co.status==='completed'?'checkCircle':co.status==='in_progress'?'activity':'minus'](14)}</div>
+        <div class="tl-body">
+          <div class="tl-title">${co.igot_courses?.title||'Course '+(i+1)}</div>
+          <div class="tl-sub">${statusBadge(co.status)} • ${Math.round(co.progress_pct||0)}% complete</div>
+          <div style="margin-top:.35rem;max-width:280px">${progBar(co.progress_pct)}</div>
+        </div>
+      </div>`).join('')}
+  </div></div>`;
+}
+
+function renderInsights() {
+  const c = childrenData[selectedIdx];
+  document.getElementById('hoursChart').innerHTML = barChart([
+    {label:'W1',value:2, color:'var(--color-secondary)'},
+    {label:'W2',value:5, color:'var(--color-secondary)'},
+    {label:'W3',value:3, color:'var(--color-secondary)'},
+    {label:'W4',value:7, color:'var(--color-primary)'},
+  ]);
+  const s = c?.stats || {};
+  document.getElementById('engagementSummary').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:.5rem">
+      <div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--n-100);font-size:.875rem"><span style="color:var(--n-500)">Courses enrolled</span><span style="font-weight:600;font-family:'Fira Code',monospace">${s.courses_enrolled}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--n-100);font-size:.875rem"><span style="color:var(--n-500)">Courses completed</span><span style="font-weight:600;font-family:'Fira Code',monospace">${s.courses_completed}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--n-100);font-size:.875rem"><span style="color:var(--n-500)">Avg quiz score</span><span style="font-weight:600;font-family:'Fira Code',monospace">${s.avg_score}%</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.5rem 0;font-size:.875rem"><span style="color:var(--n-500)">Overall skill gap</span><span style="font-weight:600;font-family:'Fira Code',monospace">${s.skill_gap_score?Math.round(s.skill_gap_score)+'%':'—'}</span></div>
+    </div>`;
+  document.getElementById('aiInsightsBody').innerHTML = c?.latest_gap?.summary
+    ? `<div style="background:var(--color-primary-xl);border-left:3px solid var(--color-primary);border-radius:0 var(--r-md) var(--r-md) 0;padding:.85rem 1rem">${c.latest_gap.summary}</div>`
+    : `<p style="color:var(--n-400)">AI insights will appear once the learner has completed a skill gap analysis.</p>`;
+}
+
+function renderProjected() {
+  document.getElementById('projectionChart').innerHTML = barChart([
+    {label:'Now',  value:30, color:'var(--color-danger)'},
+    {label:'M+1',  value:40, color:'var(--color-warning)'},
+    {label:'M+2',  value:50, color:'var(--color-warning)'},
+    {label:'M+3',  value:60, color:'var(--color-secondary)'},
+    {label:'M+4',  value:70, color:'var(--color-primary)'},
+    {label:'M+5',  value:78, color:'var(--color-success)'},
+    {label:'M+6',  value:85, color:'var(--color-success)'},
+  ]);
+  document.getElementById('projTargetVsCurrent').innerHTML = ['Statistical','Technical','Digital Gov','Behavioural'].map(dom => `
+    <div style="margin-bottom:.85rem">
+      <div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.3rem">
+        <span style="font-weight:500">${dom}</span>
+        <span style="color:var(--n-400);font-family:'Fira Code',monospace">45% → 75%</span>
+      </div>
+      <div style="display:flex;gap:.25rem;height:8px">
+        <div style="flex:.45;background:var(--color-primary);border-radius:var(--r-sm) 0 0 var(--r-sm)"></div>
+        <div style="flex:.3;background:var(--color-secondary-l);border-radius:0 var(--r-sm) var(--r-sm) 0"></div>
+        <div style="flex:.25;background:var(--n-200);border-radius:var(--r-sm)"></div>
+      </div>
+    </div>`).join('');
+  document.getElementById('projMilestones').innerHTML = [
+    ['Beginner in Python', 'done',  'Completed • Aug 2026'],
+    ['Complete Survey Design course', 'act', 'In progress • due Sep 2026'],
+    ['Intermediate in Statistical Methods', '', 'Target: Oct 2026'],
+    ['Complete AI/ML module', '', 'Target: Nov 2026'],
+    ['Advanced competency in Technical domain', '', 'Target: Jan 2027'],
+  ].map(([title,cls,sub])=>`
+    <div class="tl-item">
+      <div class="tl-dot ${cls}">${L[cls==='done'?'checkCircle':cls==='act'?'activity':'minus'](14)}</div>
+      <div class="tl-body"><div class="tl-title">${title}</div><div class="tl-sub">${sub}</div></div>
+    </div>`).join('');
+}
+
+function renderInstructors() {
+  const grid = document.getElementById('instructorCards');
+  // Placeholder — real data would come from org member query for instructors
+  grid.innerHTML = `
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+        <div class="user-avatar">FT</div>
+        <div><div style="font-weight:600">Faculty Trainer</div><div style="font-size:.8125rem;color:var(--n-400)">Statistical Methods • NSSTA</div></div>
+      </div>
+      <div style="font-size:.875rem;color:var(--n-500);margin-bottom:.75rem">Assigned instructor for this learner cohort.</div>
+      <div style="display:flex;gap:.5rem">
+        <button class="btn btn-secondary btn-sm" onclick="Toast.info('Messaging — connect to notification broadcast endpoint.')">
+          ${L.messageSquare(14)} Message
+        </button>
+      </div>
+    </div>
+    <div class="empty-state" style="grid-column:span 2">
+      <div class="empty-icon">${L.userCheck(36)}</div>
+      <div class="empty-title">Additional instructors will appear here</div>
+      <p class="empty-desc">As learners enrol in courses, their assigned instructors will be listed here with contact details.</p>
+    </div>`;
+}
+
+async function loadNotifications() {
+  const el = document.getElementById('notifContainer');
+  try {
+    const d = await Api.get('/notifications');
+    const notifs = d.notifications || [];
+    if (!notifs.length) { el.innerHTML = emptyState('All clear','No alerts or notifications.'); return; }
+    el.innerHTML = notifs.map(n=>`
+      <div style="display:flex;align-items:flex-start;gap:.75rem;padding:.85rem 0;border-bottom:1px solid var(--n-100)">
+        <div style="width:8px;height:8px;border-radius:50%;margin-top:.4rem;background:${!n.is_read?'var(--color-primary)':'transparent'};flex-shrink:0;border:${!n.is_read?'none':'1px solid var(--n-200)'}"></div>
+        <div style="flex:1">
+          <div style="font-size:.875rem;font-weight:600">${n.title}</div>
+          <div style="font-size:.8125rem;color:var(--n-500)">${n.body}</div>
+          <div style="font-size:.75rem;color:var(--n-400);margin-top:.25rem">${timeAgo(n.created_at)}</div>
+        </div>
+        ${!n.is_read?`<button class="btn btn-ghost btn-sm" onclick="markRead('${n.id}',this)">Mark read</button>`:''}
+      </div>`).join('');
+  } catch(e) { Toast.error(e.message); }
+}
+
+async function markRead(id, btn) {
+  try { await Api.put(`/notifications/${id}/read`,{}); btn.closest('div[style]').querySelector('div[style*="background:var(--color-primary)"]')?.setAttribute('style','width:8px;height:8px;border-radius:50%;margin-top:.4rem;background:transparent;flex-shrink:0;border:1px solid var(--n-200)'); btn.remove(); } catch(e) {}
+}
+async function markAllRead() {
+  try { await Api.put('/notifications/read-all',{}); document.getElementById('notifBadge').style.display='none'; loadNotifications(); } catch(e) {}
+}
+
+async function loadProfile() {
+  try {
+    const d = await Api.get('/profile');
+    document.getElementById('pf-name').value  = d.profile.full_name||'';
+    document.getElementById('pf-phone').value = d.profile.phone||'';
+    document.getElementById('pf-lang').value  = d.profile.preferred_language||'en';
+  } catch(e) {}
+}
+
+document.getElementById('profileForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    await Api.put('/profile', { full_name:document.getElementById('pf-name').value, phone:document.getElementById('pf-phone').value, preferred_language:document.getElementById('pf-lang').value });
+    Toast.success('Profile saved!');
+  } catch(e) { Toast.error(e.message); }
+});
+</script>
+</body>
+</html>
