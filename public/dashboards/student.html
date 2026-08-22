@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduMantra – Student Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<div class="dashboard">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">EM</div>
+      <div>
+        <div class="brand-name">EduMantra</div>
+        <div class="brand-role">Student</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <button class="nav-item active" data-page="home">
+        <span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-item" data-page="courses">
+        <span class="nav-icon">📚</span><span class="nav-label">My Courses</span>
+      </button>
+      <button class="nav-item" data-page="pathway">
+        <span class="nav-icon">🗺️</span><span class="nav-label">Learning Pathway</span>
+      </button>
+
+      <div class="nav-section-label">Assessment</div>
+      <button class="nav-item" data-page="assessments">
+        <span class="nav-icon">📝</span><span class="nav-label">Assessments</span>
+      </button>
+      <button class="nav-item" data-page="skillgap">
+        <span class="nav-icon">📊</span><span class="nav-label">Skill Gap Analysis</span>
+      </button>
+
+      <div class="nav-section-label">AI Tools</div>
+      <button class="nav-item" data-page="assistant">
+        <span class="nav-icon">🤖</span><span class="nav-label">AI Assistant</span>
+      </button>
+
+      <div class="nav-section-label">Account</div>
+      <button class="nav-item" data-page="profile">
+        <span class="nav-icon">👤</span><span class="nav-label">My Profile</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar" id="sidebarAvatar"></div>
+        <div class="user-info">
+          <div class="name" id="sidebarName">Loading…</div>
+          <div class="role">Student</div>
+        </div>
+      </div>
+      <button class="sidebar-logout">🚪 Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-content">
+    <header class="topbar">
+      <button class="hamburger">☰</button>
+      <span class="topbar-title">Dashboard</span>
+      <div class="topbar-actions">
+        <button class="notif-btn" id="notifBtn" title="Notifications">
+          🔔 <span class="notif-dot hidden" id="notifDot"></span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- ── HOME PAGE ─────────────────────────────────── -->
+      <div id="page-home" class="dash-page">
+        <div class="page-header">
+          <h1 id="welcomeMsg">Welcome back!</h1>
+          <p>Here's your learning overview for today.</p>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card"><div class="stat-icon blue">📚</div><div class="stat-info"><div class="value" id="st-enrolled">—</div><div class="label">Courses Enrolled</div></div></div>
+          <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-info"><div class="value" id="st-completed">—</div><div class="label">Completed</div></div></div>
+          <div class="stat-card"><div class="stat-icon orange">⏱️</div><div class="stat-info"><div class="value" id="st-hours">—</div><div class="label">Learning Hours</div></div></div>
+          <div class="stat-card"><div class="stat-icon purple">🎯</div><div class="stat-info"><div class="value" id="st-score">—</div><div class="label">Avg Quiz Score</div></div></div>
+          <div class="stat-card"><div class="stat-icon red">📉</div><div class="stat-info"><div class="value" id="st-gap">—</div><div class="label">Skill Gap Score</div></div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div><div class="card-title">Active Courses</div></div>
+              <button class="btn btn-sm btn-outline" onclick="showPage('courses')">View All</button>
+            </div>
+            <div id="activeCoursesList"><div class="empty-state"><div class="empty-icon">📭</div><p>No active courses yet.</p></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div><div class="card-title">Recent Assessments</div></div>
+              <button class="btn btn-sm btn-outline" onclick="showPage('assessments')">View All</button>
+            </div>
+            <div id="recentAttemptsList"><div class="empty-state"><div class="empty-icon">📝</div><p>No attempts yet.</p></div></div>
+          </div>
+        </div>
+
+        <div class="card mt-2">
+          <div class="card-header">
+            <div><div class="card-title">🗺️ My Learning Pathway</div><div class="card-subtitle">AI-personalized based on your skill gaps</div></div>
+            <button class="btn btn-sm btn-primary" onclick="generatePathway()">Generate / Refresh</button>
+          </div>
+          <div id="pathwayPreview"><div class="empty-state"><div class="empty-icon">🗺️</div><h3>No pathway yet</h3><p>Run a skill gap analysis first, then generate your pathway.</p></div></div>
+        </div>
+      </div>
+
+      <!-- ── COURSES PAGE ──────────────────────────────── -->
+      <div id="page-courses" class="dash-page hidden">
+        <div class="page-header">
+          <h1>My Courses</h1>
+          <p>Browse and manage your enrolled courses.</p>
+        </div>
+        <div class="card mb-2">
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+            <input type="text" id="courseSearch" placeholder="Search courses…" style="flex:1;min-width:180px;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);outline:none">
+            <select id="courseDomain" style="padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);outline:none">
+              <option value="">All Domains</option>
+              <option value="statistical">Statistical</option>
+              <option value="technical">Technical</option>
+              <option value="digital_governance">Digital Governance</option>
+              <option value="behavioural_managerial">Behavioural</option>
+            </select>
+            <button class="btn btn-primary" onclick="searchCourses()">Search</button>
+            <button class="btn btn-outline" onclick="loadEnrollments()">My Enrolled</button>
+          </div>
+        </div>
+        <div class="grid-auto" id="coursesGrid">
+          <div class="empty-state"><div class="empty-icon">📚</div><p>Search for courses above or view your enrolled courses.</p></div>
+        </div>
+      </div>
+
+      <!-- ── PATHWAY PAGE ──────────────────────────────── -->
+      <div id="page-pathway" class="dash-page hidden">
+        <div class="page-header">
+          <h1>Learning Pathway</h1>
+          <p>Your AI-generated personalized learning journey.</p>
+        </div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem">
+          <button class="btn btn-primary" onclick="generatePathway()">🤖 Generate Pathway</button>
+          <button class="btn btn-outline" onclick="loadPathways()">🔄 Refresh</button>
+        </div>
+        <div id="pathwayContainer">
+          <div class="empty-state"><div class="empty-icon">🗺️</div><h3>No pathway generated yet</h3><p>Run skill gap analysis first, then click Generate Pathway.</p></div>
+        </div>
+      </div>
+
+      <!-- ── SKILL GAP PAGE ────────────────────────────── -->
+      <div id="page-skillgap" class="dash-page hidden">
+        <div class="page-header">
+          <h1>Skill Gap Analysis</h1>
+          <p>AI-powered analysis of your current vs required competencies.</p>
+        </div>
+        <div class="card mb-2">
+          <div class="card-header"><div class="card-title">Run Analysis</div></div>
+          <p class="text-sm text-muted mb-2">This will compare your current competency profile against your job role requirements and generate an AI-powered report.</p>
+          <button class="btn btn-primary" id="runAnalysisBtn" onclick="runSkillGap()">🔍 Analyze My Skills</button>
+        </div>
+        <div id="gapReportContainer"></div>
+      </div>
+
+      <!-- ── ASSESSMENTS PAGE ──────────────────────────── -->
+      <div id="page-assessments" class="dash-page hidden">
+        <div class="page-header">
+          <h1>Assessments</h1>
+          <p>Test your knowledge with AI-generated quizzes.</p>
+        </div>
+        <div class="tab-bar" id="assessTabs">
+          <button class="tab-btn active" data-tab="available">Available</button>
+          <button class="tab-btn" data-tab="attempts">My Attempts</button>
+        </div>
+        <div class="tab-panel active" data-tab="available" id="tab-panel-available">
+          <div class="grid-auto" id="assessmentsList"></div>
+        </div>
+        <div class="tab-panel" data-tab="attempts" id="tab-panel-attempts">
+          <div class="card"><div class="table-wrap"><table>
+            <thead><tr><th>Assessment</th><th>Score</th><th>Result</th><th>Date</th></tr></thead>
+            <tbody id="attemptsTable"></tbody>
+          </table></div></div>
+        </div>
+      </div>
+
+      <!-- ── AI ASSISTANT PAGE ─────────────────────────── -->
+      <div id="page-assistant" class="dash-page hidden">
+        <div class="page-header">
+          <h1>AI Learning Assistant</h1>
+          <p>Ask anything about courses, statistics, or your learning journey.</p>
+        </div>
+        <div class="chat-container" id="chatContainer">
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg">
+              <div class="msg-avatar">🤖</div>
+              <div class="bubble">Hello! I'm your EduMantra AI assistant. I can help you with course recommendations, skill gap analysis, statistical concepts, or anything related to your learning journey. What would you like to know?</div>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <textarea id="chatInput" placeholder="Ask a question about your learning, courses, or statistical topics…" rows="1"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+            <button class="btn btn-primary" onclick="sendChat()">Send ➤</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROFILE PAGE ──────────────────────────────── -->
+      <div id="page-profile" class="dash-page hidden">
+        <div class="page-header"><h1>My Profile</h1><p>Update your personal and professional information.</p></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Personal Information</div></div>
+            <form id="profileForm">
+              <div class="form-group"><label>Full Name</label><input type="text" id="p-name"></div>
+              <div class="form-group"><label>Designation</label><input type="text" id="p-designation"></div>
+              <div class="form-group"><label>Phone</label><input type="tel" id="p-phone"></div>
+              <div class="form-group"><label>Education Level</label>
+                <select id="p-edu">
+                  <option value="">Select</option>
+                  <option>High School</option><option>Diploma</option>
+                  <option>Bachelor's</option><option>Master's</option><option>PhD</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Field of Study</label><input type="text" id="p-field"></div>
+              <div class="form-group"><label>Years of Experience</label><input type="number" id="p-exp" min="0"></div>
+              <div class="form-group"><label>Preferred Language</label>
+                <select id="p-lang">
+                  <option value="en">English</option><option value="hi">Hindi</option>
+                  <option value="ta">Tamil</option><option value="te">Telugu</option>
+                  <option value="bn">Bengali</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Competency Profile</div></div>
+            <div id="competencyProfileList">
+              <div class="empty-state"><div class="empty-icon">🧩</div><p>No competencies assessed yet. Complete assessments to build your profile.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Assessment Modal -->
+<div class="modal-overlay" id="assessModal">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-header">
+      <span class="modal-title" id="assessModalTitle">Assessment</span>
+      <button class="modal-close" onclick="UI.closeModal('assessModal')">✕</button>
+    </div>
+    <div id="assessModalBody"></div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+const user = Auth.requireAuth();
+if (user && user.role !== 'student') Auth.redirectByRole(user);
+
+// ── Init ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+  setupSidebar('student', user?.full_name, user?.avatar_url);
+  document.getElementById('welcomeMsg').textContent = `Welcome back, ${user?.full_name?.split(' ')[0] || 'Student'}!`;
+  document.getElementById('sidebarName').textContent = user?.full_name || 'Student';
+  document.getElementById('sidebarAvatar').textContent = UI.initials(user?.full_name);
+  await loadDashboard();
+  setupNavigation();
+  UI.setupTabs(document.getElementById('page-assessments'));
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.tab === 'attempts') loadAttempts();
+      if (btn.dataset.tab === 'available') loadPublishedAssessments();
+    });
+  });
+  loadPublishedAssessments();
+});
+
+function setupNavigation() {
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      showPage(item.dataset.page);
+      const handlers = {
+        courses: () => loadEnrollments(),
+        pathway: () => loadPathways(),
+        skillgap: () => loadGapReports(),
+        assessments: () => loadPublishedAssessments(),
+        profile: () => loadProfile(),
+      };
+      handlers[item.dataset.page]?.();
+    });
+  });
+}
+
+// ── Dashboard data ────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const data = await Api.get('/analytics/student');
+    const s = data.stats;
+    document.getElementById('st-enrolled').textContent = s.total_courses_enrolled;
+    document.getElementById('st-completed').textContent = s.completed_courses;
+    document.getElementById('st-hours').textContent = UI.hours(s.total_learning_hours);
+    document.getElementById('st-score').textContent = s.avg_assessment_score ? `${s.avg_assessment_score}%` : '—';
+    document.getElementById('st-gap').textContent = s.skill_gap_score ? `${Math.round(s.skill_gap_score)}%` : '—';
+
+    // Notifications
+    if (s.unread_notifications > 0) {
+      document.getElementById('notifDot').classList.remove('hidden');
+    }
+
+    // Active courses
+    renderActiveCourses(data.recent_courses);
+
+    // Recent attempts
+    renderRecentAttempts(data.recent_attempts);
+
+    // Pathway preview
+    if (data.latest_pathway) renderPathwayPreview(data.latest_pathway);
+  } catch (err) {
+    Toast.error('Failed to load dashboard');
+  }
+}
+
+function renderActiveCourses(courses) {
+  const el = document.getElementById('activeCoursesList');
+  const active = (courses || []).filter(c => c.status === 'in_progress');
+  if (!active.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No active courses. Browse courses to enroll.</p></div>'; return; }
+  el.innerHTML = active.map(c => `
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--border)">
+      <div style="font-size:1.4rem">${c.igot_courses?.thumbnail_url ? '' : '📗'}</div>
+      <div style="flex:1">
+        <div class="font-600 text-sm">${c.igot_courses?.title || 'Course'}</div>
+        <div>${UI.progress(c.progress_pct)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderRecentAttempts(attempts) {
+  const el = document.getElementById('recentAttemptsList');
+  if (!attempts?.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><p>No attempts yet.</p></div>'; return; }
+  el.innerHTML = attempts.slice(0, 5).map(a => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--border)">
+      <div class="text-sm font-600">${a.assessments?.title || 'Quiz'}</div>
+      <div style="display:flex;align-items:center;gap:.5rem">
+        <span class="font-600">${a.score || 0}%</span>
+        ${a.passed ? '<span class="badge badge-green">Pass</span>' : '<span class="badge badge-red">Fail</span>'}
+      </div>
+    </div>`).join('');
+}
+
+function renderPathwayPreview(pathway) {
+  const el = document.getElementById('pathwayPreview');
+  const items = pathway.pathway_items || [];
+  el.innerHTML = `
+    <div style="margin-bottom:.75rem">
+      <strong>${pathway.title}</strong>
+      <span class="text-sm text-muted" style="margin-left:.5rem">• Target: ${UI.date(pathway.target_completion)}</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem">
+      ${items.slice(0, 4).map((item, i) => `
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.5rem .85rem;font-size:.8rem">
+          <span style="color:var(--primary);font-weight:600">${i+1}.</span> ${item.igot_courses?.title || 'Course'}
+        </div>`).join('')}
+      ${items.length > 4 ? `<div style="font-size:.8rem;color:var(--text-muted);padding:.5rem">+${items.length-4} more courses</div>` : ''}
+    </div>`;
+}
+
+// ── Courses ───────────────────────────────────────────────
+async function searchCourses() {
+  const search = document.getElementById('courseSearch').value;
+  const domain = document.getElementById('courseDomain').value;
+  const grid = document.getElementById('coursesGrid');
+  grid.innerHTML = '<div class="skeleton" style="height:120px"></div>'.repeat(6);
+  try {
+    const params = new URLSearchParams({ limit: 20 });
+    if (search) params.append('search', search);
+    if (domain) params.append('domain', domain);
+    const data = await Api.get(`/igot/courses?${params}`);
+    renderCoursesGrid(data.courses || []);
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function loadEnrollments() {
+  const grid = document.getElementById('coursesGrid');
+  try {
+    const data = await Api.get('/igot/my-enrollments');
+    renderCoursesGrid((data.enrollments || []).map(e => ({ ...e.igot_courses, enrollment: e })));
+  } catch (err) { Toast.error(err.message); }
+}
+
+function renderCoursesGrid(courses) {
+  const grid = document.getElementById('coursesGrid');
+  if (!courses.length) { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📭</div><p>No courses found.</p></div>'; return; }
+  grid.innerHTML = courses.map(c => `
+    <div class="course-card">
+      <div class="course-thumb">${c.thumbnail_url ? `<img src="${c.thumbnail_url}" alt="${c.title}">` : '📘'}</div>
+      <div class="course-body">
+        <h4>${c.title}</h4>
+        <div class="meta">
+          <span>⏱ ${UI.hours(c.duration_hours)}</span>
+          <span>${c.level || 'All Levels'}</span>
+        </div>
+        ${c.enrollment ? UI.progress(c.enrollment.progress_pct) : ''}
+        <div style="margin-top:.75rem;display:flex;gap:.5rem">
+          ${!c.enrollment ? `<button class="btn btn-primary btn-sm" onclick="enrollCourse('${c.id}')">Enroll</button>` : UI.statusBadge(c.enrollment.status)}
+          ${c.url ? `<a href="${c.url}" target="_blank" class="btn btn-outline btn-sm">Open ↗</a>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function enrollCourse(id) {
+  try {
+    await Api.post('/igot/enroll', { igot_course_id: id });
+    Toast.success('Enrolled successfully!');
+    loadEnrollments();
+  } catch (err) { Toast.error(err.message); }
+}
+
+// ── Skill Gap ─────────────────────────────────────────────
+async function runSkillGap() {
+  const btn = document.getElementById('runAnalysisBtn');
+  btn.textContent = '⏳ Analyzing…'; btn.disabled = true;
+  try {
+    const data = await Api.post('/skill-gap/analyze', {});
+    Toast.success('Analysis complete!');
+    renderGapReport(data.report);
+  } catch (err) { Toast.error(err.message); }
+  finally { btn.textContent = '🔍 Analyze My Skills'; btn.disabled = false; }
+}
+
+async function loadGapReports() {
+  try {
+    const data = await Api.get('/skill-gap/reports');
+    if (data.reports?.length) {
+      const report = data.reports[0];
+      // Load details
+      const detail = await Api.get(`/skill-gap/reports/${report.id}`);
+      renderGapReport(detail.report);
+    }
+  } catch (_) {}
+}
+
+function renderGapReport(report) {
+  const el = document.getElementById('gapReportContainer');
+  if (!report) return;
+  const details = report.details || report.gaps || [];
+  const color = report.overall_gap_score > 60 ? 'red' : report.overall_gap_score > 30 ? 'orange' : 'green';
+  el.innerHTML = `
+    <div class="card mb-2">
+      <div class="card-header">
+        <div><div class="card-title">Gap Report — ${UI.date(report.generated_at)}</div>
+        <div class="card-subtitle">${report.summary || ''}</div></div>
+        <div style="font-size:1.8rem;font-weight:700;color:var(--${color === 'red' ? 'danger' : color === 'orange' ? 'warning' : 'success'})">${Math.round(report.overall_gap_score || 0)}%</div>
+      </div>
+      ${report.ai_insights?.priorities?.length ? `
+        <div style="background:var(--primary-light);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:1rem">
+          <strong style="font-size:.85rem">🤖 AI Recommendations</strong>
+          <ul style="margin-top:.5rem;padding-left:1.2rem;font-size:.83rem">
+            ${(report.ai_insights.priorities || []).map(p => `<li><strong>${p.area}</strong>: ${p.action} (est. ${p.hours}h)</li>`).join('')}
+          </ul>
+        </div>` : ''}
+    </div>
+    <div class="card">
+      <div class="card-title mb-2">Competency Gaps</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Competency</th><th>Domain</th><th>Current</th><th>Required</th><th>Severity</th></tr></thead>
+        <tbody>
+          ${details.map(g => `
+            <tr>
+              <td class="font-600">${g.competency_framework?.name || g.name}</td>
+              <td><span class="badge badge-blue">${g.competency_framework?.domain || g.domain}</span></td>
+              <td>${g.current_level}</td>
+              <td>${g.required_level}</td>
+              <td>${UI.severityBadge(g.severity)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+// ── Pathways ──────────────────────────────────────────────
+async function generatePathway() {
+  const btn = event?.target;
+  if (btn) { btn.textContent = '⏳ Generating…'; btn.disabled = true; }
+  try {
+    const data = await Api.post('/pathways/generate', {});
+    Toast.success('Pathway generated!');
+    if (data.pathway) renderPathwayFull(data.pathway);
+    if (data.pathway) renderPathwayPreview(data.pathway);
+  } catch (err) { Toast.error(err.message); }
+  finally { if (btn) { btn.textContent = '🤖 Generate Pathway'; btn.disabled = false; } }
+}
+
+async function loadPathways() {
+  try {
+    const data = await Api.get('/pathways');
+    if (data.pathways?.length) renderPathwayFull(data.pathways[0]);
+  } catch (_) {}
+}
+
+function renderPathwayFull(pathway) {
+  const el = document.getElementById('pathwayContainer');
+  const items = pathway.pathway_items || [];
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">${pathway.title}</div>
+        <div class="card-subtitle">${pathway.ai_rationale || ''}</div></div>
+        <span class="badge badge-blue">Target: ${UI.date(pathway.target_completion)}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.75rem;margin-top:1rem">
+        ${items.sort((a,b) => a.sequence_order - b.sequence_order).map(item => `
+          <div style="display:flex;gap:1rem;align-items:flex-start;padding:.85rem;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border)">
+            <div style="width:28px;height:28px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0">${item.sequence_order}</div>
+            <div style="flex:1">
+              <div class="font-600">${item.igot_courses?.title || 'Course'}</div>
+              <div class="text-sm text-muted">${item.ai_reason || ''}</div>
+              <div style="display:flex;gap:.5rem;margin-top:.4rem;flex-wrap:wrap">
+                <span class="badge badge-gray">⏱ ${UI.hours(item.igot_courses?.duration_hours)}</span>
+                ${item.is_mandatory ? '<span class="badge badge-orange">Mandatory</span>' : '<span class="badge badge-gray">Optional</span>'}
+                ${item.igot_courses?.url ? `<a href="${item.igot_courses.url}" target="_blank" class="badge badge-blue">Open ↗</a>` : ''}
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ── Assessments ───────────────────────────────────────────
+async function loadPublishedAssessments() {
+  try {
+    const data = await Api.get('/assessments');
+    const el = document.getElementById('assessmentsList');
+    const assessments = data.assessments || [];
+    if (!assessments.length) { el.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📝</div><p>No assessments available yet.</p></div>'; return; }
+    el.innerHTML = assessments.map(a => `
+      <div class="card">
+        <div class="card-title">${a.title}</div>
+        <div class="text-sm text-muted mt-1">${a.description || ''}</div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0">
+          <span class="badge badge-blue">${a.total_questions} questions</span>
+          <span class="badge badge-gray">${a.difficulty}</span>
+          ${a.time_limit_mins ? `<span class="badge badge-orange">⏱ ${a.time_limit_mins} min</span>` : ''}
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="startAssessment('${a.id}','${a.title}')">Start Quiz →</button>
+      </div>`).join('');
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function loadAttempts() {
+  try {
+    const data = await Api.get('/assessments/my/attempts');
+    const tbody = document.getElementById('attemptsTable');
+    const attempts = data.attempts || [];
+    if (!attempts.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted)">No attempts yet.</td></tr>'; return; }
+    tbody.innerHTML = attempts.map(a => `
+      <tr>
+        <td class="font-600">${a.assessments?.title || 'Quiz'}</td>
+        <td>${a.score || 0}%</td>
+        <td>${a.passed ? '<span class="badge badge-green">Pass</span>' : '<span class="badge badge-red">Fail</span>'}</td>
+        <td>${UI.date(a.created_at)}</td>
+      </tr>`).join('');
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function startAssessment(id, title) {
+  UI.openModal('assessModal');
+  document.getElementById('assessModalTitle').textContent = title;
+  document.getElementById('assessModalBody').innerHTML = '<p class="text-sm text-muted">Loading questions…</p>';
+  try {
+    const data = await Api.get(`/assessments/${id}`);
+    const questions = data.questions || [];
+    const answers = {};
+    document.getElementById('assessModalBody').innerHTML = `
+      <form id="quizForm" style="max-height:420px;overflow-y:auto">
+        ${questions.map((q, i) => `
+          <div style="margin-bottom:1.25rem">
+            <p class="font-600 text-sm" style="margin-bottom:.5rem">${i+1}. ${q.question_text}</p>
+            ${q.options.map(opt => `
+              <label style="display:flex;align-items:center;gap:.5rem;padding:.35rem;cursor:pointer;font-size:.88rem">
+                <input type="radio" name="q_${q.id}" value="${opt.key}" onchange=""> ${opt.key}. ${opt.text}
+              </label>`).join('')}
+          </div>`).join('')}
+      </form>
+      <div style="display:flex;justify-content:flex-end;gap:.5rem;margin-top:1rem">
+        <button class="btn btn-outline" onclick="UI.closeModal('assessModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitQuiz('${id}',${JSON.stringify(questions.map(q=>q.id))})">Submit Answers</button>
+      </div>`;
+  } catch (err) { document.getElementById('assessModalBody').innerHTML = `<p style="color:var(--danger)">${err.message}</p>`; }
+}
+
+async function submitQuiz(assessId, questionIds) {
+  const answers = {};
+  questionIds.forEach(qId => {
+    const selected = document.querySelector(`input[name="q_${qId}"]:checked`);
+    if (selected) answers[qId] = selected.value;
+  });
+  try {
+    const result = await Api.post(`/assessments/${assessId}/submit`, { answers });
+    document.getElementById('assessModalBody').innerHTML = `
+      <div style="text-align:center;padding:1.5rem">
+        <div style="font-size:3rem;margin-bottom:.5rem">${result.passed ? '🎉' : '📚'}</div>
+        <div style="font-size:2rem;font-weight:700;color:var(--${result.passed?'success':'danger'})">${result.score}%</div>
+        <div style="margin:.5rem 0">${result.correct}/${result.total} correct • ${result.passed ? 'Passed' : 'Not passed'}</div>
+        ${result.ai_feedback ? `<div style="background:var(--bg);border-radius:var(--radius-sm);padding:.85rem;margin:.75rem 0;font-size:.85rem;text-align:left">${result.ai_feedback}</div>` : ''}
+        <button class="btn btn-primary" onclick="UI.closeModal('assessModal');loadAttempts()">Done</button>
+      </div>`;
+  } catch (err) { Toast.error(err.message); }
+}
+
+// ── AI Assistant ──────────────────────────────────────────
+let chatSessionId = null;
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  appendChatMsg('user', msg);
+  appendChatMsg('assistant', '<em>Thinking…</em>', 'typing');
+  try {
+    const data = await Api.post('/assistant/chat', { message: msg, session_id: chatSessionId });
+    chatSessionId = data.session_id;
+    document.getElementById('typing')?.remove();
+    appendChatMsg('assistant', data.reply);
+  } catch (err) {
+    document.getElementById('typing')?.remove();
+    appendChatMsg('assistant', 'Sorry, I couldn\'t process that. Please try again.');
+  }
+}
+
+function appendChatMsg(role, content, id) {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role === 'user' ? 'user' : ''}`;
+  if (id) div.id = id;
+  div.innerHTML = role === 'user'
+    ? `<div class="bubble">${content}</div><div class="msg-avatar">👤</div>`
+    : `<div class="msg-avatar">🤖</div><div class="bubble">${content}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+// ── Profile ───────────────────────────────────────────────
+async function loadProfile() {
+  try {
+    const data = await Api.get('/profile');
+    const p = data.profile;
+    document.getElementById('p-name').value = p.full_name || '';
+    document.getElementById('p-designation').value = p.designation || '';
+    document.getElementById('p-phone').value = p.phone || '';
+    document.getElementById('p-edu').value = p.education_level || '';
+    document.getElementById('p-field').value = p.field_of_study || '';
+    document.getElementById('p-exp').value = p.years_of_experience || 0;
+    document.getElementById('p-lang').value = p.preferred_language || 'en';
+
+    // Competency profile
+    const compData = await Api.get('/competencies/my-profile');
+    const comps = compData.competency_profile || [];
+    const el = document.getElementById('competencyProfileList');
+    if (!comps.length) return;
+    el.innerHTML = comps.map(c => `
+      <div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.85rem">
+        <span>${c.competency_framework?.name}</span>
+        <span class="badge badge-${c.current_level === 'expert' ? 'purple' : c.current_level === 'advanced' ? 'blue' : c.current_level === 'intermediate' ? 'green' : 'gray'}">${c.current_level}</span>
+      </div>`).join('');
+  } catch (_) {}
+}
+
+document.getElementById('profileForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    await Api.put('/profile', {
+      full_name: document.getElementById('p-name').value,
+      designation: document.getElementById('p-designation').value,
+      phone: document.getElementById('p-phone').value,
+      education_level: document.getElementById('p-edu').value,
+      field_of_study: document.getElementById('p-field').value,
+      years_of_experience: parseInt(document.getElementById('p-exp').value),
+      preferred_language: document.getElementById('p-lang').value,
+    });
+    Toast.success('Profile updated!');
+  } catch (err) { Toast.error(err.message); }
+});
+</script>
+</body>
+</html>

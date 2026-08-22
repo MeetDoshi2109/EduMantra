@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduMantra – Parent Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .child-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .child-card:hover, .child-card.selected {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+    .child-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 1.2rem;
+      margin: 0 auto .75rem;
+    }
+    .metric-row {
+      display: flex; justify-content: space-between;
+      padding: .4rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .85rem;
+    }
+    .metric-row:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">EM</div>
+      <div><div class="brand-name">EduMantra</div><div class="brand-role">Parent</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <button class="nav-item active" data-page="home"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
+      <button class="nav-item" data-page="progress"><span class="nav-icon">📈</span><span class="nav-label">Learning Progress</span></button>
+      <button class="nav-item" data-page="assessments"><span class="nav-icon">📝</span><span class="nav-label">Assessment Results</span></button>
+      <button class="nav-item" data-page="skillgap"><span class="nav-icon">📊</span><span class="nav-label">Skill Gap</span></button>
+      <div class="nav-section-label">Account</div>
+      <button class="nav-item" data-page="profile"><span class="nav-icon">👤</span><span class="nav-label">My Profile</span></button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar" id="sidebarAvatar"></div>
+        <div class="user-info"><div class="name" id="sidebarName">Loading…</div><div class="role">Parent</div></div>
+      </div>
+      <button class="sidebar-logout">🚪 Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <button class="hamburger">☰</button>
+      <span class="topbar-title">Parent Overview</span>
+      <div class="topbar-actions">
+        <button class="notif-btn" id="notifBtn">🔔 <span class="notif-dot hidden" id="notifDot"></span></button>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- OVERVIEW -->
+      <div id="page-home" class="dash-page">
+        <div class="page-header">
+          <h1 id="welcomeMsg">Welcome!</h1>
+          <p>Monitor your child's learning journey on EduMantra.</p>
+        </div>
+
+        <div id="noChildrenMsg" class="card hidden">
+          <div class="empty-state">
+            <div class="empty-icon">👶</div>
+            <h3>No linked children</h3>
+            <p>Ask your organisation administrator to link your children's accounts to your parent profile.</p>
+          </div>
+        </div>
+
+        <!-- Child selector cards -->
+        <div class="grid-auto mb-2" id="childCards"></div>
+
+        <!-- Selected child detail -->
+        <div id="childDetail" class="hidden">
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon blue">📚</div><div class="stat-info"><div class="value" id="cd-enrolled">—</div><div class="label">Courses Enrolled</div></div></div>
+            <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-info"><div class="value" id="cd-completed">—</div><div class="label">Completed</div></div></div>
+            <div class="stat-card"><div class="stat-icon purple">🎯</div><div class="stat-info"><div class="value" id="cd-score">—</div><div class="label">Avg Score</div></div></div>
+            <div class="stat-card"><div class="stat-icon red">📉</div><div class="stat-info"><div class="value" id="cd-gap">—</div><div class="label">Skill Gap</div></div></div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">Recent Courses</div></div>
+              <div id="cdCourses"></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Recent Quiz Results</div></div>
+              <div id="cdAttempts"></div>
+            </div>
+          </div>
+
+          <div class="card mt-2">
+            <div class="card-header"><div class="card-title">Latest Skill Gap Report</div></div>
+            <div id="cdGapReport"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEARNING PROGRESS -->
+      <div id="page-progress" class="dash-page hidden">
+        <div class="page-header"><h1>Learning Progress</h1><p>Detailed course progress for your child.</p></div>
+        <div id="childSelectorProgress" style="margin-bottom:1rem"></div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Course</th><th>Progress</th><th>Status</th><th>Started</th><th>Completed</th></tr></thead>
+              <tbody id="progressTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASSESSMENT RESULTS -->
+      <div id="page-assessments" class="dash-page hidden">
+        <div class="page-header"><h1>Assessment Results</h1><p>View quiz and test results for your child.</p></div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Assessment</th><th>Score</th><th>Result</th><th>Feedback</th><th>Date</th></tr></thead>
+              <tbody id="parentAttemptsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SKILL GAP -->
+      <div id="page-skillgap" class="dash-page hidden">
+        <div class="page-header"><h1>Skill Gap Analysis</h1><p>Understand where your child needs more support.</p></div>
+        <div id="parentGapContainer">
+          <div class="empty-state"><div class="empty-icon">📊</div><p>Select a child to view their skill gap report.</p></div>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div id="page-profile" class="dash-page hidden">
+        <div class="page-header"><h1>My Profile</h1></div>
+        <div class="card" style="max-width:480px">
+          <form id="profileForm">
+            <div class="form-group"><label>Full Name</label><input type="text" id="p-name"></div>
+            <div class="form-group"><label>Phone</label><input type="tel" id="p-phone"></div>
+            <div class="form-group"><label>Preferred Language</label>
+              <select id="p-lang"><option value="en">English</option><option value="hi">Hindi</option></select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+const user = Auth.requireAuth();
+if (user && user.role !== 'parent') Auth.redirectByRole(user);
+
+let childrenData = [];
+let selectedChildIndex = 0;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('sidebarName').textContent = user?.full_name || 'Parent';
+  document.getElementById('sidebarAvatar').textContent = UI.initials(user?.full_name);
+  document.getElementById('welcomeMsg').textContent = `Welcome, ${user?.full_name?.split(' ')[0] || 'Parent'}!`;
+  setupSidebar('parent', user?.full_name, user?.avatar_url);
+  setupNavigation();
+  await loadChildren();
+});
+
+function setupNavigation() {
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      showPage(item.dataset.page);
+      const topbarTitle = document.querySelector('.topbar-title');
+      if (topbarTitle) topbarTitle.textContent = item.querySelector('.nav-label').textContent;
+      const handlers = {
+        progress:    loadProgressPage,
+        assessments: loadAttemptsPage,
+        skillgap:    loadSkillGapPage,
+        profile:     loadProfile,
+      };
+      handlers[item.dataset.page]?.();
+    });
+  });
+}
+
+async function loadChildren() {
+  try {
+    const data = await Api.get('/analytics/parent');
+    childrenData = data.children || [];
+
+    if (!childrenData.length) {
+      document.getElementById('noChildrenMsg').classList.remove('hidden');
+      return;
+    }
+
+    // Render child cards
+    const cardsEl = document.getElementById('childCards');
+    cardsEl.innerHTML = childrenData.map((c, i) => `
+      <div class="child-card ${i===0?'selected':''}" onclick="selectChild(${i})">
+        <div class="child-avatar">${UI.initials(c.profile?.full_name)}</div>
+        <div style="text-align:center">
+          <div class="font-600">${c.profile?.full_name || 'Unknown'}</div>
+          <div class="text-xs text-muted">${c.profile?.designation || 'Student'}</div>
+        </div>
+        <div style="margin-top:.75rem">
+          <div class="metric-row"><span>Courses</span><span class="font-600">${c.stats.courses_enrolled}</span></div>
+          <div class="metric-row"><span>Completed</span><span class="font-600">${c.stats.courses_completed}</span></div>
+          <div class="metric-row"><span>Avg Score</span><span class="font-600">${c.stats.avg_score}%</span></div>
+        </div>
+      </div>`).join('');
+
+    selectChild(0);
+  } catch (err) { Toast.error('Failed to load children data'); }
+}
+
+function selectChild(index) {
+  selectedChildIndex = index;
+  document.querySelectorAll('.child-card').forEach((card, i) => {
+    card.classList.toggle('selected', i === index);
+  });
+
+  const child = childrenData[index];
+  if (!child) return;
+
+  document.getElementById('childDetail').classList.remove('hidden');
+
+  const s = child.stats;
+  document.getElementById('cd-enrolled').textContent  = s.courses_enrolled;
+  document.getElementById('cd-completed').textContent = s.courses_completed;
+  document.getElementById('cd-score').textContent     = `${s.avg_score}%`;
+  document.getElementById('cd-gap').textContent       = s.skill_gap_score ? `${Math.round(s.skill_gap_score)}%` : '—';
+
+  // Recent courses
+  const coursesEl = document.getElementById('cdCourses');
+  const courses = child.recent_courses || [];
+  if (!courses.length) coursesEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No courses enrolled.</p></div>';
+  else coursesEl.innerHTML = courses.map(c => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--border)">
+      <span class="font-600 text-sm">${c.igot_courses?.title || 'Course'}</span>
+      ${UI.statusBadge(c.status)}
+    </div>`).join('');
+
+  // Recent attempts
+  const attEl = document.getElementById('cdAttempts');
+  const attempts = child.recent_attempts || [];
+  if (!attempts.length) attEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><p>No quiz attempts yet.</p></div>';
+  else attEl.innerHTML = attempts.map(a => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--border)">
+      <span class="font-600 text-sm">${a.assessments?.title || 'Quiz'}</span>
+      <div style="display:flex;align-items:center;gap:.4rem">
+        <span>${a.score||0}%</span>
+        ${a.passed ? '<span class="badge badge-green">Pass</span>' : '<span class="badge badge-red">Fail</span>'}
+      </div>
+    </div>`).join('');
+
+  // Gap report
+  const gapEl = document.getElementById('cdGapReport');
+  const gap = child.latest_gap;
+  if (!gap) gapEl.innerHTML = '<p class="text-muted text-sm">No skill gap analysis has been run yet.</p>';
+  else gapEl.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+      <div>
+        <p class="text-sm">${gap.summary || ''}</p>
+        <p class="text-xs text-muted">Generated: ${UI.date(gap.generated_at)}</p>
+      </div>
+      <div style="font-size:1.8rem;font-weight:700;color:var(--${gap.overall_gap_score>60?'danger':gap.overall_gap_score>30?'warning':'success'})">${Math.round(gap.overall_gap_score||0)}%</div>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar ${gap.overall_gap_score>60?'red':gap.overall_gap_score>30?'orange':'green'}" style="width:${Math.round(gap.overall_gap_score||0)}%"></div></div>
+    <p class="text-xs text-muted mt-1">Gap score — higher means more areas need improvement</p>`;
+}
+
+async function loadProgressPage() {
+  const child = childrenData[selectedChildIndex];
+  if (!child) return;
+  const tbody = document.getElementById('progressTable');
+  const courses = child.recent_courses || [];
+  if (!courses.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No enrollments found.</td></tr>'; return; }
+  tbody.innerHTML = courses.map(c => `
+    <tr>
+      <td class="font-600">${c.igot_courses?.title || 'Course'}</td>
+      <td style="min-width:140px">${UI.progress(c.progress_pct)}</td>
+      <td>${UI.statusBadge(c.status)}</td>
+      <td>${UI.date(c.started_at)}</td>
+      <td>${UI.date(c.completed_at)}</td>
+    </tr>`).join('');
+}
+
+async function loadAttemptsPage() {
+  const child = childrenData[selectedChildIndex];
+  if (!child) return;
+  const tbody = document.getElementById('parentAttemptsTable');
+  const attempts = child.recent_attempts || [];
+  if (!attempts.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No attempts yet.</td></tr>'; return; }
+  tbody.innerHTML = attempts.map(a => `
+    <tr>
+      <td class="font-600">${a.assessments?.title || 'Quiz'}</td>
+      <td>${a.score||0}%</td>
+      <td>${a.passed ? '<span class="badge badge-green">Pass</span>' : '<span class="badge badge-red">Fail</span>'}</td>
+      <td class="text-sm" style="max-width:220px">${a.ai_feedback ? a.ai_feedback.slice(0,80)+'…' : '—'}</td>
+      <td>${UI.date(a.created_at)}</td>
+    </tr>`).join('');
+}
+
+async function loadSkillGapPage() {
+  const child = childrenData[selectedChildIndex];
+  const el = document.getElementById('parentGapContainer');
+  if (!child) return;
+  const gap = child.latest_gap;
+  if (!gap) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><p>No skill gap report available.</p></div>'; return; }
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${child.profile?.full_name}'s Skill Gap Report</div>
+          <div class="card-subtitle">Generated ${UI.date(gap.generated_at)}</div>
+        </div>
+        <div style="font-size:2rem;font-weight:700;color:var(--${gap.overall_gap_score>60?'danger':gap.overall_gap_score>30?'warning':'success'})">${Math.round(gap.overall_gap_score||0)}%</div>
+      </div>
+      <p class="text-sm" style="margin-bottom:1rem;padding:.75rem;background:var(--bg);border-radius:var(--radius-sm)">${gap.summary || 'No summary available.'}</p>
+      ${(gap.overall_gap_score > 60) ? `
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius-sm);padding:.85rem;font-size:.85rem">
+          ⚠️ <strong>Action needed:</strong> Your child has significant skill gaps. Encourage them to complete the recommended learning pathway.
+        </div>` : `
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-sm);padding:.85rem;font-size:.85rem">
+          ✅ <strong>Good progress!</strong> Your child's skill development is on track.
+        </div>`}
+    </div>`;
+}
+
+async function loadProfile() {
+  try {
+    const data = await Api.get('/profile');
+    const p = data.profile;
+    document.getElementById('p-name').value  = p.full_name || '';
+    document.getElementById('p-phone').value = p.phone || '';
+    document.getElementById('p-lang').value  = p.preferred_language || 'en';
+  } catch (_) {}
+}
+
+document.getElementById('profileForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    await Api.put('/profile', {
+      full_name: document.getElementById('p-name').value,
+      phone: document.getElementById('p-phone').value,
+      preferred_language: document.getElementById('p-lang').value,
+    });
+    Toast.success('Profile updated!');
+  } catch (err) { Toast.error(err.message); }
+});
+</script>
+</body>
+</html>

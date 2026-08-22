@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduMantra – Instructor Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">EM</div>
+      <div><div class="brand-name">EduMantra</div><div class="brand-role">Instructor</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <button class="nav-item active" data-page="home"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span></button>
+      <button class="nav-item" data-page="assessments"><span class="nav-icon">📝</span><span class="nav-label">Assessments</span></button>
+      <button class="nav-item" data-page="create"><span class="nav-icon">✨</span><span class="nav-label">Create Quiz</span></button>
+      <div class="nav-section-label">Students</div>
+      <button class="nav-item" data-page="students"><span class="nav-icon">👥</span><span class="nav-label">Student Results</span></button>
+      <div class="nav-section-label">Courses</div>
+      <button class="nav-item" data-page="courses"><span class="nav-icon">📚</span><span class="nav-label">Browse Courses</span></button>
+      <div class="nav-section-label">Account</div>
+      <button class="nav-item" data-page="profile"><span class="nav-icon">👤</span><span class="nav-label">My Profile</span></button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar" id="sidebarAvatar"></div>
+        <div class="user-info"><div class="name" id="sidebarName">Loading…</div><div class="role">Instructor</div></div>
+      </div>
+      <button class="sidebar-logout">🚪 Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <button class="hamburger">☰</button>
+      <span class="topbar-title">Dashboard</span>
+      <div class="topbar-actions">
+        <button class="btn btn-primary btn-sm" onclick="showPage('create');navActivate('create')">+ New Quiz</button>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- HOME -->
+      <div id="page-home" class="dash-page">
+        <div class="page-header">
+          <h1 id="welcomeMsg">Welcome, Instructor!</h1>
+          <p>Manage assessments and track student performance.</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon blue">📝</div><div class="stat-info"><div class="value" id="st-total">—</div><div class="label">Total Assessments</div></div></div>
+          <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-info"><div class="value" id="st-published">—</div><div class="label">Published</div></div></div>
+          <div class="stat-card"><div class="stat-icon purple">🎯</div><div class="stat-info"><div class="value" id="st-attempts">—</div><div class="label">Total Attempts</div></div></div>
+          <div class="stat-card"><div class="stat-icon orange">📊</div><div class="stat-info"><div class="value" id="st-avg">—</div><div class="label">Avg Score</div></div></div>
+          <div class="stat-card"><div class="stat-icon cyan">✔️</div><div class="stat-info"><div class="value" id="st-pass">—</div><div class="label">Pass Rate</div></div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">My Assessments</div>
+              <button class="btn btn-sm btn-outline" onclick="showPage('assessments');navActivate('assessments')">View All</button>
+            </div>
+            <div id="recentAssessmentsList"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Score Distribution</div></div>
+            <div id="scoreDistChart"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASSESSMENTS -->
+      <div id="page-assessments" class="dash-page hidden">
+        <div class="page-header">
+          <h1>My Assessments</h1>
+          <p>View and manage all assessments you've created.</p>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Title</th><th>Questions</th><th>Difficulty</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
+              <tbody id="assessmentsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREATE QUIZ -->
+      <div id="page-create" class="dash-page hidden">
+        <div class="page-header">
+          <h1>Create AI Quiz</h1>
+          <p>Upload learning content and let AI generate MCQs automatically.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">📄 Upload Content</div></div>
+            <form id="createQuizForm">
+              <div class="form-group">
+                <label>Assessment Title *</label>
+                <input type="text" id="q-title" placeholder="e.g. Survey Design Fundamentals Quiz" required>
+              </div>
+              <div class="form-group">
+                <label>Number of Questions</label>
+                <select id="q-count">
+                  <option value="5">5 questions</option>
+                  <option value="10" selected>10 questions</option>
+                  <option value="15">15 questions</option>
+                  <option value="20">20 questions</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Difficulty Level</label>
+                <select id="q-difficulty">
+                  <option value="easy">Easy</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Content Source</label>
+                <div class="tab-bar" id="contentSourceTabs" style="margin-bottom:.75rem">
+                  <button type="button" class="tab-btn active" data-tab="text-input" onclick="switchContentSource('text')">Paste Text</button>
+                  <button type="button" class="tab-btn" data-tab="file-input" onclick="switchContentSource('file')">Upload File</button>
+                </div>
+                <div id="text-input-area">
+                  <textarea id="q-content" rows="6" placeholder="Paste your learning material here (lecture notes, chapter text, etc.)…"></textarea>
+                </div>
+                <div id="file-input-area" style="display:none">
+                  <input type="file" id="q-file" accept=".txt,.pdf,.doc,.docx,.ppt,.pptx">
+                  <p class="text-xs text-muted mt-1">Supported: TXT, PDF, DOC, DOCX, PPT (max 10MB)</p>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full" id="generateBtn">
+                🤖 Generate Questions with AI
+              </button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">📋 Generated Questions Preview</div></div>
+            <div id="generatedPreview">
+              <div class="empty-state">
+                <div class="empty-icon">✨</div>
+                <h3>Questions will appear here</h3>
+                <p>Fill in the form and click Generate to create AI-powered MCQs.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STUDENT RESULTS -->
+      <div id="page-students" class="dash-page hidden">
+        <div class="page-header">
+          <h1>Student Results</h1>
+          <p>Review performance across your assessments.</p>
+        </div>
+        <div class="card mb-2">
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+            <select id="filterAssessment" style="flex:1;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);outline:none">
+              <option value="">All Assessments</option>
+            </select>
+            <button class="btn btn-outline" onclick="loadStudentResults()">Filter</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Assessment</th><th>Score</th><th>Result</th><th>Date</th><th>Feedback</th></tr></thead>
+              <tbody id="resultsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- COURSES -->
+      <div id="page-courses" class="dash-page hidden">
+        <div class="page-header"><h1>Browse iGOT Courses</h1><p>Explore courses for your students.</p></div>
+        <div class="card mb-2">
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+            <input type="text" id="courseSearch" placeholder="Search courses…" style="flex:1;min-width:180px;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);outline:none">
+            <select id="courseDomain" style="padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);outline:none">
+              <option value="">All Domains</option>
+              <option value="statistical">Statistical</option>
+              <option value="technical">Technical</option>
+              <option value="digital_governance">Digital Governance</option>
+              <option value="behavioural_managerial">Behavioural</option>
+            </select>
+            <button class="btn btn-primary" onclick="searchCourses()">Search</button>
+          </div>
+        </div>
+        <div class="grid-auto" id="coursesGrid">
+          <div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📚</div><p>Search for courses above.</p></div>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div id="page-profile" class="dash-page hidden">
+        <div class="page-header"><h1>My Profile</h1></div>
+        <div class="card" style="max-width:560px">
+          <form id="profileForm">
+            <div class="form-group"><label>Full Name</label><input type="text" id="p-name"></div>
+            <div class="form-group"><label>Designation</label><input type="text" id="p-designation"></div>
+            <div class="form-group"><label>Phone</label><input type="tel" id="p-phone"></div>
+            <div class="form-group"><label>Preferred Language</label>
+              <select id="p-lang"><option value="en">English</option><option value="hi">Hindi</option></select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Feedback Modal -->
+<div class="modal-overlay" id="feedbackModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">AI Feedback</span>
+      <button class="modal-close" onclick="UI.closeModal('feedbackModal')">✕</button>
+    </div>
+    <div id="feedbackBody" style="font-size:.88rem;line-height:1.6"></div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+const user = Auth.requireAuth();
+if (user && user.role !== 'instructor') Auth.redirectByRole(user);
+
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('sidebarName').textContent = user?.full_name || 'Instructor';
+  document.getElementById('sidebarAvatar').textContent = UI.initials(user?.full_name);
+  document.getElementById('welcomeMsg').textContent = `Welcome, ${user?.full_name?.split(' ')[0] || 'Instructor'}!`;
+  setupSidebar('instructor', user?.full_name, user?.avatar_url);
+  setupNavigation();
+  await loadDashboard();
+});
+
+function navActivate(page) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+}
+
+function setupNavigation() {
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    item.addEventListener('click', () => {
+      navActivate(item.dataset.page);
+      showPage(item.dataset.page);
+      const handlers = {
+        assessments: loadAssessmentsTable,
+        students:    () => { loadAssessmentsTable(); loadStudentResults(); },
+        courses:     () => {},
+        profile:     loadProfile,
+      };
+      handlers[item.dataset.page]?.();
+    });
+  });
+}
+
+async function loadDashboard() {
+  try {
+    const data = await Api.get('/analytics/instructor');
+    document.getElementById('st-total').textContent    = data.stats.total_assessments;
+    document.getElementById('st-published').textContent = data.stats.published_assessments;
+    document.getElementById('st-attempts').textContent  = data.stats.total_attempts;
+    document.getElementById('st-avg').textContent       = `${data.stats.avg_score}%`;
+    document.getElementById('st-pass').textContent      = `${data.stats.pass_rate}%`;
+
+    // Recent assessments list
+    const el = document.getElementById('recentAssessmentsList');
+    const list = (data.assessments || []).slice(0, 5);
+    if (!list.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><p>No assessments yet. Create one!</p></div>'; }
+    else el.innerHTML = list.map(a => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div class="font-600 text-sm">${a.title}</div>
+          <div class="text-xs text-muted">${a.total_questions} questions</div>
+        </div>
+        <div style="display:flex;gap:.4rem">
+          ${a.is_published ? '<span class="badge badge-green">Live</span>' : '<span class="badge badge-gray">Draft</span>'}
+        </div>
+      </div>`).join('');
+
+    // Score distribution
+    const dist = data.score_distribution || {};
+    const maxVal = Math.max(...Object.values(dist), 1);
+    document.getElementById('scoreDistChart').innerHTML = `
+      <div style="display:flex;align-items:flex-end;gap:.5rem;height:120px;padding-bottom:.5rem">
+        ${Object.entries(dist).map(([range, count]) => `
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.25rem">
+            <span class="text-xs text-muted">${count}</span>
+            <div style="width:100%;background:var(--primary);border-radius:4px 4px 0 0;height:${Math.round((count/maxVal)*90)+5}px;opacity:.8"></div>
+            <span class="text-xs text-muted">${range}</span>
+          </div>`).join('')}
+      </div>
+      <p class="text-xs text-muted" style="text-align:center">Score Range Distribution</p>`;
+  } catch (err) { Toast.error('Failed to load dashboard'); }
+}
+
+async function loadAssessmentsTable() {
+  try {
+    const data = await Api.get('/assessments');
+    const tbody = document.getElementById('assessmentsTable');
+    // Also populate filter dropdown
+    const sel = document.getElementById('filterAssessment');
+    if (sel) {
+      sel.innerHTML = '<option value="">All Assessments</option>' +
+        (data.assessments||[]).map(a => `<option value="${a.id}">${a.title}</option>`).join('');
+    }
+    if (!data.assessments?.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted)">No assessments yet. Create one!</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.assessments.map(a => `
+      <tr>
+        <td class="font-600">${a.title}</td>
+        <td>${a.total_questions}</td>
+        <td><span class="badge badge-${a.difficulty==='hard'?'red':a.difficulty==='medium'?'orange':'green'}">${a.difficulty}</span></td>
+        <td>${a.is_published ? '<span class="badge badge-green">Published</span>' : '<span class="badge badge-gray">Draft</span>'}</td>
+        <td>${UI.date(a.created_at)}</td>
+        <td style="display:flex;gap:.35rem">
+          ${!a.is_published ? `<button class="btn btn-sm btn-primary" onclick="publishAssessment('${a.id}',this)">Publish</button>` : ''}
+        </td>
+      </tr>`).join('');
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function publishAssessment(id, btn) {
+  btn.textContent = '…'; btn.disabled = true;
+  try {
+    await Api.put(`/assessments/${id}/publish`, {});
+    Toast.success('Assessment published!');
+    loadAssessmentsTable();
+    loadDashboard();
+  } catch (err) { Toast.error(err.message); btn.textContent = 'Publish'; btn.disabled = false; }
+}
+
+async function loadStudentResults() {
+  const filterId = document.getElementById('filterAssessment')?.value;
+  // For instructor, we rely on the analytics endpoint
+  try {
+    const data = await Api.get('/analytics/instructor');
+    const tbody = document.getElementById('resultsTable');
+    Toast.info('Student-level attempt data requires org-admin or higher access. Showing aggregate view.');
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">
+      Total attempts across all assessments: ${data.stats.total_attempts} — Avg score: ${data.stats.avg_score}% — Pass rate: ${data.stats.pass_rate}%
+    </td></tr>`;
+  } catch (err) { Toast.error(err.message); }
+}
+
+// ── Create Quiz ───────────────────────────────────────────
+function switchContentSource(type) {
+  document.getElementById('text-input-area').style.display = type === 'text' ? 'block' : 'none';
+  document.getElementById('file-input-area').style.display = type === 'file' ? 'block' : 'none';
+}
+
+document.getElementById('createQuizForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('generateBtn');
+  const title = document.getElementById('q-title').value;
+  const count = document.getElementById('q-count').value;
+  const difficulty = document.getElementById('q-difficulty').value;
+  const contentText = document.getElementById('q-content').value;
+  const fileInput = document.getElementById('q-file');
+
+  if (!contentText.trim() && !fileInput.files.length) {
+    Toast.error('Please paste text or upload a file');
+    return;
+  }
+
+  btn.textContent = '⏳ Generating questions…'; btn.disabled = true;
+  document.getElementById('generatedPreview').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:.5rem">
+      ${Array(parseInt(count)).fill(0).map(() => '<div class="skeleton" style="height:60px"></div>').join('')}
+    </div>`;
+
+  try {
+    const form = new FormData();
+    form.append('title', title);
+    form.append('num_questions', count);
+    form.append('difficulty', difficulty);
+    if (contentText.trim()) form.append('content_text', contentText);
+    if (fileInput.files[0]) form.append('file', fileInput.files[0]);
+
+    const data = await Api.upload('/assessments/generate', form);
+    renderGeneratedPreview(data);
+    Toast.success(`Generated ${data.questions?.length} questions!`);
+    loadAssessmentsTable();
+    loadDashboard();
+  } catch (err) {
+    document.getElementById('generatedPreview').innerHTML = `<div style="color:var(--danger);padding:1rem">${err.message}</div>`;
+    Toast.error(err.message);
+  } finally {
+    btn.textContent = '🤖 Generate Questions with AI'; btn.disabled = false;
+  }
+});
+
+function renderGeneratedPreview(data) {
+  const el = document.getElementById('generatedPreview');
+  const qs = data.questions || [];
+  el.innerHTML = `
+    <div style="margin-bottom:.75rem;display:flex;justify-content:space-between;align-items:center">
+      <span class="badge badge-green">✓ ${qs.length} questions created</span>
+      <button class="btn btn-sm btn-primary" onclick="publishAssessment('${data.assessment?.id}',this)">Publish</button>
+    </div>
+    <div style="max-height:480px;overflow-y:auto;display:flex;flex-direction:column;gap:.75rem">
+      ${qs.map((q, i) => `
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem">
+          <p class="font-600 text-sm" style="margin-bottom:.4rem">${i+1}. ${q.question_text}</p>
+          ${q.options.map(opt => `
+            <div style="font-size:.8rem;padding:.15rem 0;${opt.key===q.correct_answer?'color:var(--success);font-weight:600':'color:var(--text-secondary)'}">
+              ${opt.key === q.correct_answer ? '✓' : '○'} ${opt.key}. ${opt.text}
+            </div>`).join('')}
+          ${q.explanation ? `<div style="font-size:.75rem;color:var(--info);margin-top:.35rem;padding:.35rem;background:#ecfeff;border-radius:4px">💡 ${q.explanation}</div>` : ''}
+        </div>`).join('')}
+    </div>`;
+}
+
+// ── Courses ───────────────────────────────────────────────
+async function searchCourses() {
+  const search = document.getElementById('courseSearch').value;
+  const domain = document.getElementById('courseDomain').value;
+  const grid = document.getElementById('coursesGrid');
+  grid.innerHTML = '<div class="skeleton" style="height:120px;grid-column:1/-1"></div>';
+  try {
+    const params = new URLSearchParams({ limit: 20 });
+    if (search) params.append('search', search);
+    if (domain) params.append('domain', domain);
+    const data = await Api.get(`/igot/courses?${params}`);
+    const courses = data.courses || [];
+    if (!courses.length) { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📭</div><p>No courses found.</p></div>'; return; }
+    grid.innerHTML = courses.map(c => `
+      <div class="course-card">
+        <div class="course-thumb">${c.thumbnail_url ? `<img src="${c.thumbnail_url}">` : '📘'}</div>
+        <div class="course-body">
+          <h4>${c.title}</h4>
+          <div class="meta"><span>⏱ ${UI.hours(c.duration_hours)}</span><span>${c.level||'All'}</span></div>
+          ${c.url ? `<a href="${c.url}" target="_blank" class="btn btn-outline btn-sm" style="margin-top:.75rem">Open ↗</a>` : ''}
+        </div>
+      </div>`).join('');
+  } catch (err) { Toast.error(err.message); }
+}
+
+// ── Profile ───────────────────────────────────────────────
+async function loadProfile() {
+  try {
+    const data = await Api.get('/profile');
+    const p = data.profile;
+    document.getElementById('p-name').value = p.full_name || '';
+    document.getElementById('p-designation').value = p.designation || '';
+    document.getElementById('p-phone').value = p.phone || '';
+    document.getElementById('p-lang').value = p.preferred_language || 'en';
+  } catch (_) {}
+}
+
+document.getElementById('profileForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    await Api.put('/profile', {
+      full_name: document.getElementById('p-name').value,
+      designation: document.getElementById('p-designation').value,
+      phone: document.getElementById('p-phone').value,
+      preferred_language: document.getElementById('p-lang').value,
+    });
+    Toast.success('Profile updated!');
+  } catch (err) { Toast.error(err.message); }
+});
+</script>
+</body>
+</html>

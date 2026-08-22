@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduMantra – Developer Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .api-row { display:flex;align-items:center;gap:.5rem;padding:.55rem .85rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:.5rem }
+    .api-method { font-size:.72rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;min-width:42px;text-align:center }
+    .method-get    { background:#dcfce7;color:#15803d }
+    .method-post   { background:#dbeafe;color:#1d4ed8 }
+    .method-put    { background:#fef3c7;color:#b45309 }
+    .method-delete { background:#fee2e2;color:#b91c1c }
+    .api-path { font-family:monospace;font-size:.83rem;flex:1 }
+    .api-desc { font-size:.78rem;color:var(--text-muted) }
+    .code-block { background:#0f172a;color:#e2e8f0;border-radius:var(--radius-sm);padding:1.1rem;font-family:monospace;font-size:.82rem;overflow-x:auto;line-height:1.6 }
+    .code-block .kw  { color:#7dd3fc }
+    .code-block .str { color:#86efac }
+    .code-block .cmt { color:#64748b }
+    .key-display { font-family:monospace;font-size:.9rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.55rem .85rem;word-break:break-all }
+    .log-row { display:grid;grid-template-columns:90px 60px 1fr 80px 70px;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.78rem;align-items:center }
+    .log-row:last-child { border-bottom:none }
+    .status-2xx { color:var(--success) }
+    .status-4xx { color:var(--warning) }
+    .status-5xx { color:var(--danger) }
+  </style>
+</head>
+<body>
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">EM</div>
+      <div><div class="brand-name">EduMantra</div><div class="brand-role">Developer</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Platform</div>
+      <button class="nav-item active" data-page="home"><span class="nav-icon">📊</span><span class="nav-label">System Stats</span></button>
+      <button class="nav-item" data-page="api-logs"><span class="nav-icon">🔌</span><span class="nav-label">API Logs</span></button>
+      <button class="nav-item" data-page="api-ref"><span class="nav-icon">📖</span><span class="nav-label">API Reference</span></button>
+
+      <div class="nav-section-label">Administration</div>
+      <button class="nav-item" data-page="users"><span class="nav-icon">👥</span><span class="nav-label">All Users</span></button>
+      <button class="nav-item" data-page="organizations"><span class="nav-icon">🏛️</span><span class="nav-label">Organizations</span></button>
+      <button class="nav-item" data-page="audit"><span class="nav-icon">🔍</span><span class="nav-label">Audit Logs</span></button>
+
+      <div class="nav-section-label">Integration</div>
+      <button class="nav-item" data-page="igot"><span class="nav-icon">🔗</span><span class="nav-label">iGOT Sync</span></button>
+      <button class="nav-item" data-page="apikey"><span class="nav-icon">🔑</span><span class="nav-label">API Keys</span></button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar" id="sidebarAvatar"></div>
+        <div class="user-info"><div class="name" id="sidebarName">Loading…</div><div class="role">Developer</div></div>
+      </div>
+      <button class="sidebar-logout">🚪 Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <button class="hamburger">☰</button>
+      <span class="topbar-title">System Stats</span>
+      <div class="topbar-actions">
+        <span id="healthIndicator" style="font-size:.78rem;color:var(--text-muted)">● Checking…</span>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- SYSTEM STATS -->
+      <div id="page-home" class="dash-page">
+        <div class="page-header">
+          <h1>System Overview</h1>
+          <p>Platform-wide health, usage, and data metrics.</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon blue">👥</div><div class="stat-info"><div class="value" id="sys-users">—</div><div class="label">Total Users</div></div></div>
+          <div class="stat-card"><div class="stat-icon cyan">🏛️</div><div class="stat-info"><div class="value" id="sys-orgs">—</div><div class="label">Organizations</div></div></div>
+          <div class="stat-card"><div class="stat-icon green">📚</div><div class="stat-info"><div class="value" id="sys-courses">—</div><div class="label">iGOT Courses</div></div></div>
+          <div class="stat-card"><div class="stat-icon purple">📝</div><div class="stat-info"><div class="value" id="sys-assessments">—</div><div class="label">Assessments</div></div></div>
+          <div class="stat-card"><div class="stat-icon orange">📈</div><div class="stat-info"><div class="value" id="sys-enrollments">—</div><div class="label">Enrollments</div></div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Users by Role</div></div>
+            <div id="userRoleChart"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">API Stats (Last 7 Days)</div></div>
+            <div id="apiStatsPanel"></div>
+          </div>
+        </div>
+
+        <div class="card mt-2">
+          <div class="card-header"><div class="card-title">Top Endpoints (Last 7 Days)</div></div>
+          <div id="topEndpoints"></div>
+        </div>
+      </div>
+
+      <!-- API LOGS -->
+      <div id="page-api-logs" class="dash-page hidden">
+        <div class="page-header"><h1>API Logs</h1><p>Real-time request log for your API key.</p></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent Requests</div>
+            <button class="btn btn-sm btn-outline" onclick="loadApiLogs()">🔄 Refresh</button>
+          </div>
+          <div id="apiLogRows">
+            <div class="log-row" style="font-weight:600;color:var(--text-muted)">
+              <span>Time</span><span>Method</span><span>Endpoint</span><span>Status</span><span>Latency</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API REFERENCE -->
+      <div id="page-api-ref" class="dash-page hidden">
+        <div class="page-header"><h1>API Reference</h1><p>Base URL: <code style="background:var(--bg);padding:.15rem .45rem;border-radius:4px">/api/v1</code></p></div>
+
+        <div class="card mb-2">
+          <div class="card-header"><div class="card-title">Authentication</div></div>
+          <p class="text-sm text-muted mb-2">All endpoints require a Bearer token in the Authorization header.</p>
+          <div class="code-block"><span class="kw">Authorization</span>: <span class="str">Bearer &lt;access_token&gt;</span></div>
+        </div>
+
+        <div id="apiRefSections"></div>
+      </div>
+
+      <!-- ALL USERS -->
+      <div id="page-users" class="dash-page hidden">
+        <div class="page-header"><h1>All Users</h1></div>
+        <div class="card mb-2">
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+            <select id="userRoleFilter" style="padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);outline:none">
+              <option value="">All Roles</option>
+              <option value="student">Student</option>
+              <option value="instructor">Instructor</option>
+              <option value="parent">Parent</option>
+              <option value="organization_admin">Org Admin</option>
+              <option value="developer">Developer</option>
+            </select>
+            <button class="btn btn-primary" onclick="loadUsers()">Filter</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Organization</th><th>Status</th><th>Last Login</th><th>Joined</th></tr></thead>
+              <tbody id="allUsersTable"></tbody>
+            </table>
+          </div>
+          <div id="usersPagination" style="display:flex;justify-content:flex-end;gap:.5rem;margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--border)"></div>
+        </div>
+      </div>
+
+      <!-- ORGANIZATIONS -->
+      <div id="page-organizations" class="dash-page hidden">
+        <div class="page-header"><h1>Organizations</h1></div>
+        <div class="card mb-2">
+          <button class="btn btn-primary btn-sm" onclick="UI.openModal('addOrgModal')">+ Add Organization</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Code</th><th>Type</th><th>State</th><th>Contact</th><th>Status</th></tr></thead>
+              <tbody id="orgsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUDIT LOGS -->
+      <div id="page-audit" class="dash-page hidden">
+        <div class="page-header"><h1>Audit Logs</h1><p>Complete action history across the platform.</p></div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>User</th><th>Action</th><th>Entity</th><th>IP</th><th>Time</th></tr></thead>
+              <tbody id="auditTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- IGOT SYNC -->
+      <div id="page-igot" class="dash-page hidden">
+        <div class="page-header"><h1>iGOT Karmayogi Integration</h1><p>Sync course catalogue from iGOT platform.</p></div>
+        <div class="card mb-2" style="max-width:520px">
+          <div class="card-header"><div class="card-title">Course Sync</div></div>
+          <p class="text-sm text-muted mb-2">This will fetch the latest courses from the iGOT Karmayogi API and update the local course catalogue. Requires <code>IGOT_API_KEY</code> to be configured.</p>
+          <button class="btn btn-primary" id="syncBtn" onclick="syncIgot()">🔄 Sync Now</button>
+          <div id="syncResult" class="mt-2"></div>
+        </div>
+        <div class="card" style="max-width:520px">
+          <div class="card-title mb-2">Connection Status</div>
+          <div class="api-row"><span class="api-method method-get">GET</span><span class="api-path">/igot/courses</span><span class="api-desc">Local cache</span></div>
+          <div class="api-row"><span class="api-method method-post">POST</span><span class="api-path">/igot/sync</span><span class="api-desc">Requires API key</span></div>
+        </div>
+      </div>
+
+      <!-- API KEYS -->
+      <div id="page-apikey" class="dash-page hidden">
+        <div class="page-header"><h1>API Keys</h1><p>Manage your developer API key for integrations.</p></div>
+        <div class="card" style="max-width:520px">
+          <div class="card-header"><div class="card-title">Your API Key</div></div>
+          <div class="key-display" id="currentApiKey">Loading…</div>
+          <p class="text-xs text-muted mt-1" id="keyCreatedAt"></p>
+          <div style="display:flex;gap:.5rem;margin-top:1rem">
+            <button class="btn btn-outline btn-sm" onclick="copyApiKey()">📋 Copy</button>
+            <button class="btn btn-danger btn-sm" onclick="regenerateKey()">🔄 Regenerate</button>
+          </div>
+          <div style="background:#fef3c7;border:1px solid #fbbf24;border-radius:var(--radius-sm);padding:.75rem;margin-top:1rem;font-size:.8rem">
+            ⚠️ Regenerating will invalidate the current key. Any integrations using the old key will stop working.
+          </div>
+        </div>
+        <div class="card mt-2" style="max-width:520px">
+          <div class="card-title mb-2">Example Usage</div>
+          <div class="code-block">
+<span class="cmt">// Node.js example</span>
+<span class="kw">const</span> response = <span class="kw">await</span> fetch(<span class="str">'/api/v1/analytics/developer'</span>, {
+  headers: {
+    <span class="str">'Authorization'</span>: <span class="str">`Bearer ${apiKey}`</span>
+  }
+});
+<span class="kw">const</span> data = <span class="kw">await</span> response.json();</div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Add Org Modal -->
+<div class="modal-overlay" id="addOrgModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Add Organization</span>
+      <button class="modal-close" onclick="UI.closeModal('addOrgModal')">✕</button>
+    </div>
+    <form id="addOrgForm">
+      <div class="form-group"><label>Name *</label><input type="text" id="ao-name" required></div>
+      <div class="form-group"><label>Code *</label><input type="text" id="ao-code" placeholder="e.g. NSSO" required></div>
+      <div class="form-group"><label>Type</label>
+        <select id="ao-type"><option value="government">Government</option><option value="school">School</option><option value="college">College</option></select>
+      </div>
+      <div class="form-group"><label>State</label><input type="text" id="ao-state"></div>
+      <div class="form-group"><label>Contact Email</label><input type="email" id="ao-email"></div>
+      <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem">
+        <button type="button" class="btn btn-secondary" onclick="UI.closeModal('addOrgModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+const user = Auth.requireAuth();
+if (user && user.role !== 'developer') Auth.redirectByRole(user);
+
+let usersPage = 1;
+let fullApiKey = null;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('sidebarName').textContent = user?.full_name || 'Developer';
+  document.getElementById('sidebarAvatar').textContent = UI.initials(user?.full_name);
+  setupSidebar('developer', user?.full_name, user?.avatar_url);
+  setupNavigation();
+  await checkHealth();
+  await loadSystemStats();
+});
+
+function setupNavigation() {
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      showPage(item.dataset.page);
+      const topbarTitle = document.querySelector('.topbar-title');
+      if (topbarTitle) topbarTitle.textContent = item.querySelector('.nav-label').textContent;
+      const handlers = {
+        'api-logs':     loadApiLogs,
+        'api-ref':      renderApiRef,
+        users:          () => { usersPage=1; loadUsers(); },
+        organizations:  loadOrganizations,
+        audit:          loadAuditLogs,
+        apikey:         loadApiKey,
+      };
+      handlers[item.dataset.page]?.();
+    });
+  });
+}
+
+async function checkHealth() {
+  const el = document.getElementById('healthIndicator');
+  try {
+    const r = await fetch('/api/health');
+    if (r.ok) { el.textContent = '● Online'; el.style.color = 'var(--success)'; }
+    else { el.textContent = '● Degraded'; el.style.color = 'var(--warning)'; }
+  } catch { el.textContent = '● Offline'; el.style.color = 'var(--danger)'; }
+}
+
+async function loadSystemStats() {
+  try {
+    const [sysStats, devStats] = await Promise.all([
+      Api.get('/developer/system-stats'),
+      Api.get('/analytics/developer'),
+    ]);
+
+    document.getElementById('sys-users').textContent       = sysStats.total_users || 0;
+    document.getElementById('sys-orgs').textContent        = sysStats.total_organizations || 0;
+    document.getElementById('sys-courses').textContent     = sysStats.total_courses || 0;
+    document.getElementById('sys-assessments').textContent = sysStats.total_assessments || 0;
+    document.getElementById('sys-enrollments').textContent = sysStats.total_enrollments || 0;
+
+    // Users by role chart
+    const roles = devStats.users_by_role || {};
+    const total = Object.values(roles).reduce((s,v) => s+v, 0) || 1;
+    const roleColors = { student:'blue', instructor:'purple', parent:'orange', organization_admin:'cyan', developer:'red' };
+    document.getElementById('userRoleChart').innerHTML = Object.entries(roles).map(([role, count]) => `
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.55rem">
+        <span style="width:110px;font-size:.78rem">${role.replace('_',' ')}</span>
+        <div style="flex:1"><div class="progress-wrap"><div class="progress-bar ${roleColors[role]||'blue'}" style="width:${Math.round((count/total)*100)}%"></div></div></div>
+        <span style="width:24px;text-align:right;font-size:.83rem;font-weight:600">${count}</span>
+      </div>`).join('') || '<p class="text-muted text-sm">No data</p>';
+
+    // API stats
+    const s = devStats.stats;
+    document.getElementById('apiStatsPanel').innerHTML = `
+      <div class="metric-row" style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.85rem">
+        <span class="text-muted">API calls (7d)</span><span class="font-600">${s.total_api_calls_7d}</span>
+      </div>
+      <div class="metric-row" style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.85rem">
+        <span class="text-muted">Avg latency</span><span class="font-600">${s.avg_latency_ms}ms</span>
+      </div>
+      <div class="metric-row" style="display:flex;justify-content:space-between;padding:.45rem 0;font-size:.85rem">
+        <span class="text-muted">Error rate</span><span class="font-600" style="color:${s.error_rate_pct>5?'var(--danger)':'var(--success)'}">${s.error_rate_pct}%</span>
+      </div>`;
+
+    // Top endpoints
+    const endpoints = devStats.endpoint_stats || [];
+    document.getElementById('topEndpoints').innerHTML = endpoints.length
+      ? endpoints.map(e => `
+          <div class="api-row">
+            <span class="api-method ${e.endpoint.startsWith('GET')?'method-get':e.endpoint.startsWith('POST')?'method-post':'method-put'}">${e.endpoint.split(' ')[0]}</span>
+            <span class="api-path">${e.endpoint.split(' ').slice(1).join(' ')}</span>
+            <span class="api-desc" style="margin-left:auto">${e.calls} calls</span>
+          </div>`).join('')
+      : '<p class="text-muted text-sm">No API calls recorded yet.</p>';
+
+  } catch (err) { Toast.error('Failed to load stats'); }
+}
+
+async function loadApiLogs() {
+  try {
+    const data = await Api.get('/analytics/developer');
+    const logs = data.recent_api_logs || [];
+    const el = document.getElementById('apiLogRows');
+    if (!logs.length) {
+      el.innerHTML = '<p class="text-muted text-sm" style="padding:1rem">No API logs found.</p>';
+      return;
+    }
+    el.innerHTML = `
+      <div class="log-row" style="font-weight:600;color:var(--text-muted);border-bottom:2px solid var(--border)">
+        <span>Time</span><span>Method</span><span>Endpoint</span><span>Status</span><span>Latency</span>
+      </div>` +
+      logs.map(l => {
+        const status = l.status_code;
+        const cls = status >= 500 ? 'status-5xx' : status >= 400 ? 'status-4xx' : 'status-2xx';
+        return `<div class="log-row">
+          <span class="text-xs text-muted">${new Date(l.created_at).toLocaleTimeString()}</span>
+          <span><span class="api-method method-${l.method?.toLowerCase()}">${l.method}</span></span>
+          <span class="api-path" style="font-size:.78rem">${l.endpoint}</span>
+          <span class="${cls} font-600">${status || '—'}</span>
+          <span class="text-muted">${l.latency_ms ? l.latency_ms+'ms' : '—'}</span>
+        </div>`;
+      }).join('');
+  } catch (err) { Toast.error(err.message); }
+}
+
+function renderApiRef() {
+  const sections = [
+    { title: 'Auth', color: 'blue', routes: [
+      ['POST','/auth/register','Register new user'],
+      ['POST','/auth/login','Login and get tokens'],
+      ['POST','/auth/refresh','Refresh access token'],
+      ['POST','/auth/logout','Logout'],
+      ['GET', '/auth/me','Get current user'],
+    ]},
+    { title: 'Profile & Competencies', color: 'green', routes: [
+      ['GET', '/profile','Get own profile'],
+      ['PUT', '/profile','Update profile'],
+      ['GET', '/competencies','List all competencies'],
+      ['GET', '/competencies/my-profile','My competency levels'],
+      ['POST','/competencies/my-profile','Update a competency'],
+    ]},
+    { title: 'Skill Gap', color: 'orange', routes: [
+      ['POST','/skill-gap/analyze','Run AI skill gap analysis'],
+      ['GET', '/skill-gap/reports','List my gap reports'],
+      ['GET', '/skill-gap/reports/:id','Get report details'],
+    ]},
+    { title: 'Learning Pathways', color: 'purple', routes: [
+      ['POST','/pathways/generate','AI generate pathway'],
+      ['GET', '/pathways','List my pathways'],
+      ['GET', '/pathways/:id','Get pathway details'],
+    ]},
+    { title: 'iGOT', color: 'cyan', routes: [
+      ['GET', '/igot/courses','Browse course catalogue'],
+      ['POST','/igot/enroll','Enroll in a course'],
+      ['GET', '/igot/my-enrollments','My enrollments'],
+      ['PUT', '/igot/progress','Update course progress'],
+      ['POST','/igot/sync','Sync from iGOT API'],
+    ]},
+    { title: 'Assessments', color: 'red', routes: [
+      ['POST','/assessments/generate','AI generate MCQs'],
+      ['GET', '/assessments','List assessments'],
+      ['GET', '/assessments/:id','Get assessment + questions'],
+      ['PUT', '/assessments/:id/publish','Publish assessment'],
+      ['POST','/assessments/:id/submit','Submit answers'],
+      ['GET', '/assessments/my/attempts','My attempts'],
+    ]},
+    { title: 'Analytics', color: 'blue', routes: [
+      ['GET', '/analytics/student','Student analytics'],
+      ['GET', '/analytics/instructor','Instructor analytics'],
+      ['GET', '/analytics/organization','Org analytics'],
+      ['GET', '/analytics/parent','Parent analytics'],
+      ['GET', '/analytics/developer','Developer analytics'],
+    ]},
+    { title: 'AI Assistant', color: 'purple', routes: [
+      ['POST','/assistant/chat','Send message to AI'],
+      ['GET', '/assistant/sessions','List chat sessions'],
+      ['GET', '/assistant/sessions/:id','Get session messages'],
+    ]},
+  ];
+
+  const methodClass = { GET:'method-get', POST:'method-post', PUT:'method-put', DELETE:'method-delete' };
+  document.getElementById('apiRefSections').innerHTML = sections.map(s => `
+    <div class="card mb-2">
+      <div class="card-title mb-2" style="color:var(--${s.color==='orange'?'warning':s.color==='red'?'danger':s.color})">${s.title}</div>
+      ${s.routes.map(([method, path, desc]) => `
+        <div class="api-row">
+          <span class="api-method ${methodClass[method]||'method-get'}">${method}</span>
+          <span class="api-path">${path}</span>
+          <span class="api-desc">${desc}</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+async function loadUsers() {
+  try {
+    const role = document.getElementById('userRoleFilter')?.value;
+    const params = new URLSearchParams({ page: usersPage, limit: 20 });
+    if (role) params.append('role', role);
+    const data = await Api.get(`/developer/users?${params}`);
+    const tbody = document.getElementById('allUsersTable');
+    if (!data.users?.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted)">No users found.</td></tr>'; return; }
+    tbody.innerHTML = data.users.map(u => `
+      <tr>
+        <td class="font-600">${u.full_name}</td>
+        <td class="text-sm">${u.email}</td>
+        <td>${UI.roleBadge(u.role)}</td>
+        <td class="text-sm">${u.organization_id || '—'}</td>
+        <td>${u.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
+        <td class="text-sm">${UI.date(u.last_login_at)}</td>
+        <td class="text-sm">${UI.date(u.created_at)}</td>
+      </tr>`).join('');
+
+    const totalPages = Math.ceil(data.total / 20);
+    const pagEl = document.getElementById('usersPagination');
+    pagEl.innerHTML = '';
+    for (let i = 1; i <= Math.min(totalPages, 10); i++) {
+      const btn = document.createElement('button');
+      btn.className = `btn btn-sm ${i===usersPage?'btn-primary':'btn-outline'}`;
+      btn.textContent = i;
+      btn.onclick = () => { usersPage=i; loadUsers(); };
+      pagEl.appendChild(btn);
+    }
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function loadOrganizations() {
+  try {
+    const data = await Api.get('/developer/organizations');
+    const tbody = document.getElementById('orgsTable');
+    if (!data.organizations?.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted)">No organizations yet.</td></tr>'; return; }
+    tbody.innerHTML = data.organizations.map(o => `
+      <tr>
+        <td class="font-600">${o.name}</td>
+        <td><code style="font-size:.8rem;background:var(--bg);padding:.1rem .35rem;border-radius:3px">${o.code}</code></td>
+        <td><span class="badge badge-gray">${o.type}</span></td>
+        <td>${o.state || '—'}</td>
+        <td>${o.contact_email || '—'}</td>
+        <td>${o.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
+      </tr>`).join('');
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function loadAuditLogs() {
+  try {
+    const data = await Api.get('/developer/audit-logs?limit=50');
+    const tbody = document.getElementById('auditTable');
+    if (!data.logs?.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No audit logs.</td></tr>'; return; }
+    tbody.innerHTML = data.logs.map(l => `
+      <tr>
+        <td class="text-sm">${l.users?.full_name || l.user_id?.slice(0,8)+'…' || 'System'}</td>
+        <td><span class="badge badge-blue">${l.action}</span></td>
+        <td class="text-sm">${l.entity || '—'}</td>
+        <td class="text-sm">${l.ip_address || '—'}</td>
+        <td class="text-sm">${UI.date(l.created_at)}</td>
+      </tr>`).join('');
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function syncIgot() {
+  const btn = document.getElementById('syncBtn');
+  btn.textContent = '⏳ Syncing…'; btn.disabled = true;
+  const resultEl = document.getElementById('syncResult');
+  try {
+    const data = await Api.post('/igot/sync', {});
+    resultEl.innerHTML = `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-sm);padding:.75rem;font-size:.85rem">✅ ${data.message}</div>`;
+    Toast.success(data.message);
+  } catch (err) {
+    resultEl.innerHTML = `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius-sm);padding:.75rem;font-size:.85rem">❌ ${err.message}</div>`;
+  } finally { btn.textContent = '🔄 Sync Now'; btn.disabled = false; }
+}
+
+async function loadApiKey() {
+  try {
+    const data = await Api.get('/developer/api-key');
+    const el = document.getElementById('currentApiKey');
+    if (data.api_key) {
+      el.textContent = data.api_key;
+      document.getElementById('keyCreatedAt').textContent = `Generated: ${UI.date(data.created_at)}`;
+    } else {
+      el.textContent = 'No API key yet. Click Regenerate to create one.';
+    }
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function copyApiKey() {
+  const text = document.getElementById('currentApiKey').textContent;
+  try { await navigator.clipboard.writeText(text); Toast.success('Copied to clipboard!'); }
+  catch { Toast.error('Could not copy'); }
+}
+
+async function regenerateKey() {
+  if (!confirm('This will invalidate your current API key. Continue?')) return;
+  try {
+    const data = await Api.post('/developer/api-key/regenerate', {});
+    document.getElementById('currentApiKey').textContent = data.api_key;
+    document.getElementById('keyCreatedAt').textContent = `Generated: ${UI.date(data.created_at)}`;
+    Toast.success('API key regenerated!');
+  } catch (err) { Toast.error(err.message); }
+}
+
+document.getElementById('addOrgForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    await Api.post('/developer/organizations', {
+      name:          document.getElementById('ao-name').value,
+      code:          document.getElementById('ao-code').value,
+      type:          document.getElementById('ao-type').value,
+      state:         document.getElementById('ao-state').value,
+      contact_email: document.getElementById('ao-email').value,
+    });
+    Toast.success('Organization created!');
+    UI.closeModal('addOrgModal');
+    loadOrganizations();
+    document.getElementById('addOrgForm').reset();
+  } catch (err) { Toast.error(err.message); }
+});
+</script>
+</body>
+</html>

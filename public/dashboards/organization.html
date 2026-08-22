@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduMantra – Organization Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">EM</div>
+      <div><div class="brand-name">EduMantra</div><div class="brand-role">Org Admin</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <button class="nav-item active" data-page="home"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
+      <button class="nav-item" data-page="members"><span class="nav-icon">👥</span><span class="nav-label">Members</span></button>
+      <button class="nav-item" data-page="competency"><span class="nav-icon">🧩</span><span class="nav-label">Competency Map</span></button>
+      <div class="nav-section-label">Learning</div>
+      <button class="nav-item" data-page="enrollments"><span class="nav-icon">📚</span><span class="nav-label">Enrollments</span></button>
+      <button class="nav-item" data-page="assessments"><span class="nav-icon">📝</span><span class="nav-label">Assessments</span></button>
+      <div class="nav-section-label">Communication</div>
+      <button class="nav-item" data-page="broadcast"><span class="nav-icon">📢</span><span class="nav-label">Broadcast</span></button>
+      <div class="nav-section-label">Settings</div>
+      <button class="nav-item" data-page="settings"><span class="nav-icon">⚙️</span><span class="nav-label">Org Settings</span></button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar" id="sidebarAvatar"></div>
+        <div class="user-info"><div class="name" id="sidebarName">Loading…</div><div class="role">Org Admin</div></div>
+      </div>
+      <button class="sidebar-logout">🚪 Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <button class="hamburger">☰</button>
+      <span class="topbar-title">Organization Overview</span>
+      <div class="topbar-actions">
+        <button class="btn btn-primary btn-sm" onclick="showPage('broadcast');navActivate('broadcast')">📢 Broadcast</button>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- OVERVIEW -->
+      <div id="page-home" class="dash-page">
+        <div class="page-header">
+          <h1 id="orgName">Organization Dashboard</h1>
+          <p>Real-time insights into your workforce's learning and competency status.</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon blue">👥</div><div class="stat-info"><div class="value" id="st-members">—</div><div class="label">Total Members</div></div></div>
+          <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-info"><div class="value" id="st-active">—</div><div class="label">Active Members</div></div></div>
+          <div class="stat-card"><div class="stat-icon orange">📚</div><div class="stat-info"><div class="value" id="st-enrollments">—</div><div class="label">Total Enrollments</div></div></div>
+          <div class="stat-card"><div class="stat-icon cyan">🎯</div><div class="stat-info"><div class="value" id="st-completion">—</div><div class="label">Completion Rate</div></div></div>
+          <div class="stat-card"><div class="stat-icon red">📉</div><div class="stat-info"><div class="value" id="st-gap">—</div><div class="label">Avg Skill Gap</div></div></div>
+          <div class="stat-card"><div class="stat-icon purple">📝</div><div class="stat-info"><div class="value" id="st-assessments">—</div><div class="label">Assessments Taken</div></div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Role Distribution</div></div>
+            <div id="roleDistChart"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Enrollment Status</div></div>
+            <div id="enrollStatusChart"></div>
+          </div>
+        </div>
+
+        <div class="card mt-2">
+          <div class="card-header">
+            <div class="card-title">Recent Members</div>
+            <button class="btn btn-sm btn-outline" onclick="showPage('members');navActivate('members')">View All</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Role</th><th>Designation</th><th>Status</th><th>Joined</th></tr></thead>
+              <tbody id="recentMembersTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEMBERS -->
+      <div id="page-members" class="dash-page hidden">
+        <div class="page-header"><h1>Members</h1><p>Manage all members in your organization.</p></div>
+        <div class="card mb-2">
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+            <input type="text" id="memberSearch" placeholder="Search by name…" style="flex:1;min-width:180px;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);outline:none">
+            <select id="memberRole" style="padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);outline:none">
+              <option value="">All Roles</option>
+              <option value="student">Student</option>
+              <option value="instructor">Instructor</option>
+              <option value="parent">Parent</option>
+            </select>
+            <button class="btn btn-primary" onclick="loadMembers()">Search</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Designation</th><th>Status</th><th>Last Login</th><th>Actions</th></tr></thead>
+              <tbody id="membersTable"></tbody>
+            </table>
+          </div>
+          <div id="membersPagination" style="display:flex;justify-content:flex-end;gap:.5rem;margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--border)"></div>
+        </div>
+      </div>
+
+      <!-- COMPETENCY MAP -->
+      <div id="page-competency" class="dash-page hidden">
+        <div class="page-header"><h1>Competency Distribution</h1><p>Organisation-wide competency level breakdown by domain.</p></div>
+        <div id="competencyMapContainer">
+          <div class="card"><p class="text-muted text-sm">Loading competency data…</p></div>
+        </div>
+      </div>
+
+      <!-- ENROLLMENTS -->
+      <div id="page-enrollments" class="dash-page hidden">
+        <div class="page-header"><h1>Course Enrollments</h1><p>Track organisation-wide learning progress.</p></div>
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="stat-card"><div class="stat-icon blue">📘</div><div class="stat-info"><div class="value" id="enr-notstarted">—</div><div class="label">Not Started</div></div></div>
+          <div class="stat-card"><div class="stat-icon orange">⏳</div><div class="stat-info"><div class="value" id="enr-inprogress">—</div><div class="label">In Progress</div></div></div>
+          <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-info"><div class="value" id="enr-completed">—</div><div class="label">Completed</div></div></div>
+        </div>
+        <div class="card mt-2">
+          <div class="card-title mb-2">Enrollment Progress Overview</div>
+          <div id="enrollmentProgressBar"></div>
+        </div>
+      </div>
+
+      <!-- ASSESSMENTS -->
+      <div id="page-assessments" class="dash-page hidden">
+        <div class="page-header"><h1>Assessments Overview</h1></div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Title</th><th>Questions</th><th>Difficulty</th><th>Published</th><th>Created</th></tr></thead>
+              <tbody id="orgAssessmentsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- BROADCAST -->
+      <div id="page-broadcast" class="dash-page hidden">
+        <div class="page-header"><h1>Broadcast Notification</h1><p>Send announcements to members in your organisation.</p></div>
+        <div class="card" style="max-width:560px">
+          <form id="broadcastForm">
+            <div class="form-group">
+              <label>Title *</label>
+              <input type="text" id="bc-title" placeholder="Notification title" required>
+            </div>
+            <div class="form-group">
+              <label>Message *</label>
+              <textarea id="bc-body" rows="4" placeholder="Write your message…" required></textarea>
+            </div>
+            <div class="form-group">
+              <label>Type</label>
+              <select id="bc-type">
+                <option value="info">ℹ️ Info</option>
+                <option value="success">✅ Success</option>
+                <option value="warning">⚠️ Warning</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Target Role (optional)</label>
+              <select id="bc-role">
+                <option value="">All Members</option>
+                <option value="student">Students Only</option>
+                <option value="instructor">Instructors Only</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">📢 Send Broadcast</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div id="page-settings" class="dash-page hidden">
+        <div class="page-header"><h1>Organisation Settings</h1></div>
+        <div class="card" style="max-width:560px">
+          <form id="orgForm">
+            <div class="form-group"><label>Organisation Name</label><input type="text" id="org-name"></div>
+            <div class="form-group"><label>Contact Email</label><input type="email" id="org-email"></div>
+            <div class="form-group"><label>Contact Phone</label><input type="tel" id="org-phone"></div>
+            <div class="form-group"><label>Address</label><textarea id="org-address" rows="2"></textarea></div>
+            <div class="form-group"><label>State</label><input type="text" id="org-state"></div>
+            <div class="form-group"><label>District</label><input type="text" id="org-district"></div>
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+const user = Auth.requireAuth();
+if (user && user.role !== 'organization_admin') Auth.redirectByRole(user);
+
+let currentPage = 1;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('sidebarName').textContent = user?.full_name || 'Admin';
+  document.getElementById('sidebarAvatar').textContent = UI.initials(user?.full_name);
+  setupSidebar('organization_admin', user?.full_name, user?.avatar_url);
+  setupNavigation();
+  await loadDashboard();
+});
+
+function navActivate(page) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+}
+
+function setupNavigation() {
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    item.addEventListener('click', () => {
+      navActivate(item.dataset.page);
+      showPage(item.dataset.page);
+      const topbarTitle = document.querySelector('.topbar-title');
+      if (topbarTitle) topbarTitle.textContent = item.querySelector('.nav-label').textContent;
+      const handlers = {
+        members:     () => { currentPage = 1; loadMembers(); },
+        competency:  loadCompetencyMap,
+        enrollments: loadEnrollmentStats,
+        assessments: loadOrgAssessments,
+        settings:    loadOrgSettings,
+      };
+      handlers[item.dataset.page]?.();
+    });
+  });
+}
+
+async function loadDashboard() {
+  try {
+    const data = await Api.get('/analytics/organization');
+    const s = data.stats;
+    document.getElementById('st-members').textContent    = s.total_members;
+    document.getElementById('st-active').textContent     = s.active_members;
+    document.getElementById('st-enrollments').textContent = s.total_enrollments;
+    document.getElementById('st-completion').textContent  = `${s.completion_rate}%`;
+    document.getElementById('st-gap').textContent         = s.avg_gap_score ? `${Math.round(s.avg_gap_score)}%` : '—';
+    document.getElementById('st-assessments').textContent = s.total_assessments_taken;
+
+    // Role distribution
+    const roles = data.role_breakdown || {};
+    const roleColors = { student:'blue', instructor:'purple', parent:'orange', organization_admin:'cyan', developer:'red' };
+    document.getElementById('roleDistChart').innerHTML = Object.entries(roles).map(([role, count]) => `
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem">
+        <span style="width:80px;font-size:.8rem;color:var(--text-secondary)">${role.replace('_',' ')}</span>
+        <div style="flex:1"><div class="progress-wrap"><div class="progress-bar blue" style="width:${Math.round((count/s.total_members)*100)}%"></div></div></div>
+        <span style="width:28px;text-align:right;font-size:.85rem;font-weight:600">${count}</span>
+      </div>`).join('') || '<p class="text-muted text-sm">No data</p>';
+
+    // Enrollment status
+    const es = data.enrollment_status_breakdown || {};
+    const total = (es.not_started||0)+(es.in_progress||0)+(es.completed||0) || 1;
+    document.getElementById('enrollStatusChart').innerHTML = `
+      <div style="display:flex;height:20px;border-radius:99px;overflow:hidden;gap:2px;margin-bottom:.75rem">
+        <div style="width:${Math.round(((es.completed||0)/total)*100)}%;background:var(--success)" title="Completed"></div>
+        <div style="width:${Math.round(((es.in_progress||0)/total)*100)}%;background:var(--primary)" title="In Progress"></div>
+        <div style="width:${Math.round(((es.not_started||0)/total)*100)}%;background:var(--border)" title="Not Started"></div>
+      </div>
+      <div style="display:flex;gap:1.25rem;font-size:.78rem">
+        <span style="color:var(--success)">■ Completed ${es.completed||0}</span>
+        <span style="color:var(--primary)">■ In Progress ${es.in_progress||0}</span>
+        <span style="color:var(--text-muted)">■ Not Started ${es.not_started||0}</span>
+      </div>`;
+
+    // Recent members
+    await loadRecentMembers();
+  } catch (err) { Toast.error('Failed to load dashboard'); }
+}
+
+async function loadRecentMembers() {
+  try {
+    const data = await Api.get('/organization/members?limit=5&page=1');
+    const tbody = document.getElementById('recentMembersTable');
+    if (!data.members?.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No members yet.</td></tr>'; return; }
+    tbody.innerHTML = data.members.map(m => `
+      <tr>
+        <td class="font-600">${m.full_name}</td>
+        <td>${UI.roleBadge(m.role)}</td>
+        <td class="text-sm">${m.designation || '—'}</td>
+        <td>${m.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
+        <td>${UI.date(m.created_at)}</td>
+      </tr>`).join('');
+  } catch (_) {}
+}
+
+async function loadMembers() {
+  const search = document.getElementById('memberSearch')?.value;
+  const role = document.getElementById('memberRole')?.value;
+  try {
+    const params = new URLSearchParams({ page: currentPage, limit: 15 });
+    if (search) params.append('search', search);
+    if (role) params.append('role', role);
+    const data = await Api.get(`/organization/members?${params}`);
+    const tbody = document.getElementById('membersTable');
+    if (!data.members?.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted)">No members found.</td></tr>'; return; }
+    tbody.innerHTML = data.members.map(m => `
+      <tr>
+        <td class="font-600">${m.full_name}</td>
+        <td class="text-sm">${m.email}</td>
+        <td>${UI.roleBadge(m.role)}</td>
+        <td class="text-sm">${m.designation || '—'}</td>
+        <td>${m.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
+        <td class="text-sm">${UI.date(m.last_login_at)}</td>
+        <td>${m.is_active ? `<button class="btn btn-sm btn-danger" onclick="deactivateMember('${m.id}',this)">Deactivate</button>` : '<span class="text-muted text-sm">Inactive</span>'}</td>
+      </tr>`).join('');
+
+    // Pagination
+    const totalPages = Math.ceil(data.total / 15);
+    const pagEl = document.getElementById('membersPagination');
+    pagEl.innerHTML = '';
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.className = `btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline'}`;
+      btn.textContent = i;
+      btn.onclick = () => { currentPage = i; loadMembers(); };
+      pagEl.appendChild(btn);
+    }
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function deactivateMember(id, btn) {
+  if (!confirm('Deactivate this member?')) return;
+  btn.textContent = '…'; btn.disabled = true;
+  try {
+    await Api.put(`/organization/members/${id}/deactivate`, {});
+    Toast.success('Member deactivated.');
+    loadMembers();
+  } catch (err) { Toast.error(err.message); btn.textContent = 'Deactivate'; btn.disabled = false; }
+}
+
+async function loadCompetencyMap() {
+  const el = document.getElementById('competencyMapContainer');
+  try {
+    const data = await Api.get('/organization/competency-distribution');
+    const dist = data.distribution || {};
+    const domains = Object.keys(dist);
+    if (!domains.length) { el.innerHTML = '<div class="card"><div class="empty-state"><div class="empty-icon">🧩</div><p>No competency data available yet.</p></div></div>'; return; }
+    const levels = ['none','beginner','intermediate','advanced','expert'];
+    const levelColors = { none:'#f1f5f9', beginner:'#dbeafe', intermediate:'#bbf7d0', advanced:'#a5f3fc', expert:'#c4b5fd' };
+    el.innerHTML = `
+      <div class="card">
+        <div class="card-title mb-2">Competency Level by Domain</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Domain</th>${levels.map(l => `<th>${l}</th>`).join('')}</tr></thead>
+            <tbody>
+              ${domains.map(domain => `
+                <tr>
+                  <td class="font-600">${domain.replace('_',' ')}</td>
+                  ${levels.map(level => {
+                    const count = dist[domain]?.[level] || 0;
+                    return `<td><span style="background:${levelColors[level]};padding:.15rem .55rem;border-radius:99px;font-size:.8rem">${count}</span></td>`;
+                  }).join('')}
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function loadEnrollmentStats() {
+  try {
+    const data = await Api.get('/analytics/organization');
+    const es = data.enrollment_status_breakdown || {};
+    document.getElementById('enr-notstarted').textContent = es.not_started || 0;
+    document.getElementById('enr-inprogress').textContent = es.in_progress || 0;
+    document.getElementById('enr-completed').textContent  = es.completed || 0;
+
+    const total = (es.not_started||0) + (es.in_progress||0) + (es.completed||0) || 1;
+    document.getElementById('enrollmentProgressBar').innerHTML = `
+      <div style="display:flex;height:32px;border-radius:8px;overflow:hidden;gap:2px">
+        <div style="width:${Math.round(((es.completed||0)/total)*100)}%;background:var(--success);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-weight:600">
+          ${Math.round(((es.completed||0)/total)*100)}%
+        </div>
+        <div style="width:${Math.round(((es.in_progress||0)/total)*100)}%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-weight:600">
+          ${Math.round(((es.in_progress||0)/total)*100)}%
+        </div>
+        <div style="flex:1;background:var(--border)"></div>
+      </div>
+      <div style="display:flex;gap:1.25rem;font-size:.78rem;margin-top:.5rem">
+        <span style="color:var(--success)">■ Completed</span>
+        <span style="color:var(--primary)">■ In Progress</span>
+        <span style="color:var(--text-muted)">■ Not Started</span>
+      </div>`;
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function loadOrgAssessments() {
+  try {
+    const data = await Api.get('/assessments');
+    const tbody = document.getElementById('orgAssessmentsTable');
+    if (!data.assessments?.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No assessments yet.</td></tr>'; return; }
+    tbody.innerHTML = data.assessments.map(a => `
+      <tr>
+        <td class="font-600">${a.title}</td>
+        <td>${a.total_questions}</td>
+        <td><span class="badge badge-${a.difficulty==='hard'?'red':a.difficulty==='medium'?'orange':'green'}">${a.difficulty}</span></td>
+        <td>${a.is_published ? '<span class="badge badge-green">Yes</span>' : '<span class="badge badge-gray">No</span>'}</td>
+        <td>${UI.date(a.created_at)}</td>
+      </tr>`).join('');
+  } catch (err) { Toast.error(err.message); }
+}
+
+async function loadOrgSettings() {
+  try {
+    const data = await Api.get('/organization/profile');
+    const o = data.organization;
+    document.getElementById('org-name').value    = o.name || '';
+    document.getElementById('org-email').value   = o.contact_email || '';
+    document.getElementById('org-phone').value   = o.contact_phone || '';
+    document.getElementById('org-address').value = o.address || '';
+    document.getElementById('org-state').value   = o.state || '';
+    document.getElementById('org-district').value = o.district || '';
+    document.getElementById('orgName').textContent = o.name || 'Organization Dashboard';
+  } catch (_) {}
+}
+
+document.getElementById('orgForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    await Api.put('/organization/profile', {
+      name: document.getElementById('org-name').value,
+      contact_email: document.getElementById('org-email').value,
+      contact_phone: document.getElementById('org-phone').value,
+      address: document.getElementById('org-address').value,
+      state: document.getElementById('org-state').value,
+      district: document.getElementById('org-district').value,
+    });
+    Toast.success('Settings saved!');
+  } catch (err) { Toast.error(err.message); }
+});
+
+document.getElementById('broadcastForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    const data = await Api.post('/notifications/broadcast', {
+      title: document.getElementById('bc-title').value,
+      body:  document.getElementById('bc-body').value,
+      type:  document.getElementById('bc-type').value,
+      role:  document.getElementById('bc-role').value || undefined,
+    });
+    Toast.success(data.message || 'Broadcast sent!');
+    document.getElementById('broadcastForm').reset();
+  } catch (err) { Toast.error(err.message); }
+});
+</script>
+</body>
+</html>
