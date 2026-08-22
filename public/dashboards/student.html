@@ -3,50 +3,66 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>EduMantra – Student</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/design-system.css">
+<style>
+  /* Bento grid variants — design-system.css uses .bento + .g* */
+  .chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 120px);background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r-lg);overflow:hidden}
+  .chat-msgs{flex:1;overflow-y:auto;padding:var(--space-lg);display:flex;flex-direction:column;gap:.75rem}
+  .chat-msg{display:flex;gap:.625rem;max-width:82%}
+  .chat-msg.user{align-self:flex-end;flex-direction:row-reverse}
+  .chat-bubble{background:var(--n-100);border:1px solid var(--n-200);border-radius:12px;padding:.625rem 1rem;font-size:.875rem;line-height:1.6}
+  .chat-msg.user .chat-bubble{background:var(--color-primary);color:#fff;border-color:var(--color-primary)}
+  .chat-avatar{width:28px;height:28px;border-radius:50%;background:var(--color-primary-xl);color:var(--color-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px}
+  .chat-input-row{border-top:1px solid var(--n-200);padding:.75rem var(--space-lg);display:flex;gap:.625rem;align-items:flex-end}
+  .chat-input-row textarea{flex:1;border:1.5px solid var(--n-200);border-radius:var(--r-md);padding:.5rem .75rem;resize:none;max-height:120px;font-family:inherit;font-size:.875rem;line-height:1.5;outline:none;transition:border-color var(--t-base)}
+  .chat-input-row textarea:focus{border-color:var(--color-primary)}
+</style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 <div class="app-shell">
 
 <!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
+<aside class="sidebar" id="sidebar" aria-label="Navigation">
   <div class="sidebar-header">
     <div class="brand-mark">EM</div>
-    <div class="brand-text">
-      <div class="brand-name">EduMantra</div>
-      <div class="brand-role">Student</div>
-    </div>
+    <div><div class="brand-name">EduMantra</div><div class="brand-role">Student</div></div>
   </div>
-  <nav class="sidebar-nav">
-    <div class="nav-section">Main</div>
-    <button class="nav-item" data-page="home"><span class="nav-icon"></span><span class="nav-label">Dashboard</span></button>
-    <button class="nav-item" data-page="objectives"><span class="nav-icon"></span><span class="nav-label">Daily Objectives</span></button>
-    <button class="nav-item" data-page="pathway"><span class="nav-icon"></span><span class="nav-label">Learning Path</span></button>
-    <button class="nav-item" data-page="courses"><span class="nav-icon"></span><span class="nav-label">My Courses</span></button>
+  <nav class="sidebar-nav" aria-label="Main navigation">
+    <div class="nav-group-label">Main</div>
+    <button class="nav-item" data-page="home"><span id="ni-home"></span><span class="nav-label">Dashboard</span></button>
+    <button class="nav-item" data-page="objectives"><span id="ni-obj"></span><span class="nav-label">Daily Objectives</span></button>
+    <button class="nav-item" data-page="pathway"><span id="ni-path"></span><span class="nav-label">Learning Path</span></button>
+    <button class="nav-item" data-page="courses"><span id="ni-courses"></span><span class="nav-label">My Courses</span></button>
 
-    <div class="nav-section">Assessment</div>
-    <button class="nav-item" data-page="assessments"><span class="nav-icon"></span><span class="nav-label">AI Assessments</span></button>
-    <button class="nav-item" data-page="skillgap"><span class="nav-icon"></span><span class="nav-label">Skill Gap</span></button>
-    <button class="nav-item" data-page="competency"><span class="nav-icon"></span><span class="nav-label">Competency Profile</span></button>
+    <div class="nav-group-label">Assessment</div>
+    <button class="nav-item" data-page="assessments"><span id="ni-assess"></span><span class="nav-label">AI Assessments</span></button>
+    <button class="nav-item" data-page="skillgap"><span id="ni-gap"></span><span class="nav-label">Skill Gap</span></button>
+    <button class="nav-item" data-page="competency"><span id="ni-comp"></span><span class="nav-label">Competency Profile</span></button>
 
-    <div class="nav-section">Tools</div>
-    <button class="nav-item" data-page="assistant"><span class="nav-icon"></span><span class="nav-label">Study Assistant</span><span class="nav-count" id="navAiDot" style="display:none">AI</span></button>
-    <button class="nav-item" data-page="notes"><span class="nav-icon"></span><span class="nav-label">Notes</span></button>
-    <button class="nav-item" data-page="certificates"><span class="nav-icon"></span><span class="nav-label">Certificates</span></button>
+    <div class="nav-group-label">Tools</div>
+    <button class="nav-item" data-page="assistant"><span id="ni-ai"></span><span class="nav-label">Study Assistant</span></button>
+    <button class="nav-item" data-page="notes"><span id="ni-notes"></span><span class="nav-label">Notes</span></button>
+    <button class="nav-item" data-page="certificates"><span id="ni-certs"></span><span class="nav-label">Certificates</span></button>
 
-    <div class="nav-section">Account</div>
-    <button class="nav-item" data-page="notifications"><span class="nav-icon"></span><span class="nav-count" id="navNotifCount" style="display:none">0</span><span class="nav-label">Notifications</span></button>
-    <button class="nav-item" data-page="profile"><span class="nav-icon"></span><span class="nav-label">My Profile</span></button>
+    <div class="nav-group-label">Account</div>
+    <button class="nav-item" data-page="notifications">
+      <span id="ni-notif"></span>
+      <span class="nav-label">Notifications</span>
+      <span class="nav-badge" id="notifBadge" style="display:none">0</span>
+    </button>
+    <button class="nav-item" data-page="profile"><span id="ni-profile"></span><span class="nav-label">My Profile</span></button>
   </nav>
   <div class="sidebar-footer">
-    <div class="user-chip">
+    <div class="user-row">
       <div class="user-avatar" id="sidebarAvatar"></div>
-      <div class="user-info">
+      <div style="flex:1;min-width:0">
         <div class="user-name" id="sidebarName">Loading…</div>
         <div class="user-role" id="sidebarRole">student</div>
       </div>
-      <button class="logout-btn" title="Sign out"></button>
+      <button class="logout-btn" aria-label="Sign out"></button>
     </div>
   </div>
 </aside>
@@ -54,111 +70,118 @@
 <!-- MAIN -->
 <div class="main-area">
   <header class="topbar">
-    <button class="menu-toggle" aria-label="Toggle menu"></button>
-    <span class="topbar-title">Dashboard</span>
+    <button class="menu-toggle" aria-label="Toggle navigation"></button>
+    <span class="topbar-title" aria-live="polite">Dashboard</span>
     <div class="topbar-actions">
-      <button class="btn btn-secondary btn-sm" onclick="switchPage('skillgap',pageHandlers)" style="gap:6px">Run Skill Gap</button>
-      <button class="btn btn-icon btn-secondary" id="notifBell" title="Notifications" aria-label="Notifications" onclick="switchPage('notifications',pageHandlers)" style="position:relative">
+      <button class="btn btn-secondary btn-sm" onclick="goPage('skillgap',pageHandlers)">Run Skill Gap</button>
+      <button class="btn btn-ghost btn-icon" aria-label="Notifications" onclick="goPage('notifications',pageHandlers)">
         <span id="bellIcon"></span>
-        <span id="bellDot" style="position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--c-danger-500);border-radius:50%;border:1.5px solid #fff;display:none"></span>
       </button>
     </div>
   </header>
 
-  <main class="page-body">
+  <main class="page-body" id="main-content">
 
-    <!-- HOME -->
-    <div class="dash-page" id="page-home">
+    <!-- ── HOME ────────────────────────────────────────── -->
+    <div class="dash-page active" id="page-home">
       <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
         <div>
-          <h1 class="page-title display" id="welcomeHeading">Good morning!</h1>
+          <h1 class="page-title" id="welcomeHeading">Welcome back!</h1>
           <p class="page-subtitle">Here's your learning overview for today.</p>
         </div>
-        <button class="btn btn-primary" onclick="switchPage('pathway',pageHandlers)">
-          <span id="btnArrow"></span> Continue Learning
+        <button class="btn btn-primary" onclick="goPage('pathway',pageHandlers)">
+          <span id="continueIcon"></span> Continue Learning
         </button>
       </div>
 
-      <!-- Stats -->
-      <div class="bento bento-4" style="margin-bottom:1.5rem" id="statsRow">
-        <div class="stat-card"><div class="stat-icon si-indigo" id="icon-enrolled"></div><div class="stat-info"><div class="stat-value" id="st-enrolled">—</div><div class="stat-label">Courses Enrolled</div></div></div>
-        <div class="stat-card"><div class="stat-icon si-emerald" id="icon-done"></div><div class="stat-info"><div class="stat-value" id="st-done">—</div><div class="stat-label">Completed</div></div></div>
-        <div class="stat-card"><div class="stat-icon si-amber" id="icon-hours"></div><div class="stat-info"><div class="stat-value" id="st-hours">—</div><div class="stat-label">Learning Hours</div></div></div>
-        <div class="stat-card"><div class="stat-icon si-violet" id="icon-score"></div><div class="stat-info"><div class="stat-value" id="st-score">—</div><div class="stat-label">Avg Score</div></div></div>
+      <!-- KPI row -->
+      <div class="bento g4" style="margin-bottom:1.25rem">
+        <div class="stat-card">
+          <div class="stat-icon" id="si-enrolled"></div>
+          <div><div class="stat-value" id="st-enrolled">—</div><div class="stat-label">Courses Enrolled</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-green" id="si-done"></div>
+          <div><div class="stat-value" id="st-done">—</div><div class="stat-label">Completed</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-amber" id="si-hours"></div>
+          <div><div class="stat-value" id="st-hours">—</div><div class="stat-label">Learning Hours</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-red" id="si-score"></div>
+          <div><div class="stat-value" id="st-score">—</div><div class="stat-label">Avg Score</div></div>
+        </div>
       </div>
 
-      <div class="bento bento-2" style="margin-bottom:1.5rem">
-        <!-- Today's objectives -->
+      <div class="bento g2" style="margin-bottom:1.25rem">
         <div class="card">
           <div class="card-header">
-            <div><div class="card-title">Today's Objectives</div><div class="card-subtitle">Daily learning targets</div></div>
-            <button class="btn btn-ghost btn-sm" onclick="switchPage('objectives',pageHandlers)">View all</button>
+            <div><div class="card-title">Today's Objectives</div></div>
+            <button class="btn btn-ghost btn-sm" onclick="goPage('objectives',pageHandlers)">View all</button>
           </div>
           <div id="todayObjectives"></div>
         </div>
-        <!-- Pathway progress -->
         <div class="card">
           <div class="card-header">
             <div><div class="card-title">My Learning Path</div><div class="card-subtitle" id="pathwaySubtitle">AI-personalized for you</div></div>
-            <button class="btn btn-ghost btn-sm" onclick="switchPage('pathway',pageHandlers)">View path</button>
+            <button class="btn btn-ghost btn-sm" onclick="goPage('pathway',pageHandlers)">View path</button>
           </div>
           <div id="pathwayPreview"></div>
         </div>
       </div>
 
-      <div class="bento bento-2">
-        <!-- Recent courses -->
+      <div class="bento g2">
         <div class="card">
           <div class="card-header">
             <div class="card-title">Active Courses</div>
-            <button class="btn btn-ghost btn-sm" onclick="switchPage('courses',pageHandlers)">All courses</button>
+            <button class="btn btn-ghost btn-sm" onclick="goPage('courses',pageHandlers)">All courses</button>
           </div>
           <div id="activeCoursesList"></div>
         </div>
-        <!-- Recent assessments -->
         <div class="card">
           <div class="card-header">
             <div class="card-title">Recent Quiz Results</div>
-            <button class="btn btn-ghost btn-sm" onclick="switchPage('assessments',pageHandlers)">All assessments</button>
+            <button class="btn btn-ghost btn-sm" onclick="goPage('assessments',pageHandlers)">All assessments</button>
           </div>
           <div id="recentAttempts"></div>
         </div>
       </div>
     </div>
 
-    <!-- OBJECTIVES -->
+    <!-- ── OBJECTIVES ───────────────────────────────────── -->
     <div class="dash-page" id="page-objectives">
       <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
         <div><h1 class="page-title">Daily Objectives</h1><p class="page-subtitle">Track your daily and monthly learning goals.</p></div>
-        <button class="btn btn-primary" onclick="Modal.open('addObjectiveModal')"><span id="objPlusIcon"></span>Add Objective</button>
+        <button class="btn btn-primary" onclick="Modal.open('addObjModal')"><span id="objPlusIcon"></span> Add Objective</button>
       </div>
-      <div class="bento bento-3" style="margin-bottom:1.5rem">
-        <div class="stat-card"><div class="stat-icon si-emerald"></div><div class="stat-info"><div class="stat-value" id="obj-done">0</div><div class="stat-label">Completed Today</div></div></div>
-        <div class="stat-card"><div class="stat-icon si-amber"></div><div class="stat-info"><div class="stat-value" id="obj-pending">0</div><div class="stat-label">Pending</div></div></div>
-        <div class="stat-card"><div class="stat-icon si-indigo"></div><div class="stat-info"><div class="stat-value" id="obj-streak">—</div><div class="stat-label">Day Streak</div></div></div>
+      <div class="bento g3" style="margin-bottom:1.25rem">
+        <div class="stat-card"><div class="stat-icon si-green" id="si-obj-done"></div><div><div class="stat-value" id="obj-done-val">0</div><div class="stat-label">Done Today</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-amber" id="si-obj-pend"></div><div><div class="stat-value" id="obj-pend-val">0</div><div class="stat-label">Pending</div></div></div>
+        <div class="stat-card"><div class="stat-icon si-red" id="si-obj-over"></div><div><div class="stat-value" id="obj-streak">—</div><div class="stat-label">Day Streak</div></div></div>
       </div>
-      <div class="card" id="objectivesContainer">
-        <div class="card-header"><div class="card-title">Today</div></div>
-        <div id="objectivesList"></div>
-      </div>
+      <div class="card"><div id="objectivesList"></div></div>
     </div>
 
-    <!-- LEARNING PATHWAY -->
+    <!-- ── PATHWAY ──────────────────────────────────────── -->
     <div class="dash-page" id="page-pathway">
       <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
         <div><h1 class="page-title">Learning Pathway</h1><p class="page-subtitle">Your AI-curated sequence of courses and training programmes.</p></div>
-        <button class="btn btn-primary" id="generatePathBtn">Generate / Refresh</button>
+        <button class="btn btn-primary" id="genPathBtn"><span id="genPathIcon"></span> Generate / Refresh</button>
       </div>
-      <div id="pathwayContainer"></div>
+      <div id="pathwayFull"></div>
     </div>
 
-    <!-- COURSES -->
+    <!-- ── COURSES ──────────────────────────────────────── -->
     <div class="dash-page" id="page-courses">
       <div class="page-header"><h1 class="page-title">iGOT Courses</h1><p class="page-subtitle">Browse and enrol in courses from the iGOT Karmayogi catalogue.</p></div>
       <div class="card" style="margin-bottom:1rem">
         <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
-          <div class="input-group" style="flex:1;min-width:200px"><span class="input-icon" id="searchIconCourse"></span><input class="input" id="courseSearchInput" placeholder="Search courses…" style="padding-left:2.25rem"></div>
-          <select class="input" id="courseDomainFilter" style="width:200px">
+          <div class="input-wrap" style="flex:1;min-width:180px">
+            <span class="input-icon-l" id="courseSearchIcon"></span>
+            <input class="input" id="courseSearchInput" placeholder="Search courses…">
+          </div>
+          <select class="input" id="courseDomainFilter" style="width:190px">
             <option value="">All Domains</option>
             <option value="statistical">Statistical</option>
             <option value="technical">Technical</option>
@@ -169,101 +192,111 @@
           <button class="btn btn-secondary" onclick="loadMyEnrollments()">My Enrolled</button>
         </div>
       </div>
-      <div class="bento bento-auto" id="coursesGrid"></div>
+      <div class="bento g-auto" id="coursesGrid"></div>
     </div>
 
-    <!-- SKILL GAP -->
+    <!-- ── SKILL GAP ─────────────────────────────────────── -->
     <div class="dash-page" id="page-skillgap">
-      <div class="page-header"><h1 class="page-title">Skill Gap Analysis</h1><p class="page-subtitle">AI-powered comparison of your current competencies vs your job-role requirements.</p></div>
-      <div class="card" style="margin-bottom:1.5rem">
+      <div class="page-header"><h1 class="page-title">Skill Gap Analysis</h1><p class="page-subtitle">AI-powered comparison of your competencies vs job-role requirements.</p></div>
+      <div class="card" style="margin-bottom:1.25rem">
         <div class="card-header"><div><div class="card-title">Run Analysis</div><div class="card-subtitle">Takes 5–15 seconds</div></div></div>
-        <p style="font-size:.875rem;color:var(--text-secondary);margin-bottom:1rem">The AI engine will compare your competency profile against your assigned job-role framework and generate a prioritised gap report with LLM-powered recommendations.</p>
+        <p style="font-size:.875rem;color:var(--n-500);margin-bottom:1rem">Compares your profile against the competency framework for your job role. Generates a prioritised report with AI-powered recommendations.</p>
         <button class="btn btn-primary" id="runGapBtn">Analyse My Skills</button>
       </div>
-      <div id="gapReportContainer"></div>
+      <div id="gapReportEl"></div>
     </div>
 
-    <!-- COMPETENCY PROFILE -->
+    <!-- ── COMPETENCY PROFILE ───────────────────────────── -->
     <div class="dash-page" id="page-competency">
       <div class="page-header"><h1 class="page-title">Competency Profile</h1><p class="page-subtitle">Your assessed competency levels across all domains.</p></div>
-      <div class="bento bento-2" id="competencyProfileGrid"></div>
+      <div class="bento g2" id="compGrid"></div>
     </div>
 
-    <!-- ASSESSMENTS -->
+    <!-- ── ASSESSMENTS ──────────────────────────────────── -->
     <div class="dash-page" id="page-assessments">
       <div class="page-header"><h1 class="page-title">AI Assessments</h1><p class="page-subtitle">Test your knowledge with AI-generated quizzes.</p></div>
-      <div class="tabs" data-tabs id="assessTabs">
-        <button class="tab active" data-tab="available" data-onactivate="loadPublishedAssessments">Available</button>
-        <button class="tab" data-tab="my-attempts" data-onactivate="loadMyAttempts">My Attempts</button>
+      <div class="tab-bar" data-tabs id="assessTabBar">
+        <button class="tab active" data-tab="available" data-fn="loadPublishedAssessments">Available</button>
+        <button class="tab" data-tab="my-attempts" data-fn="loadMyAttempts">My Attempts</button>
       </div>
-      <div class="tab-panel active" data-tab="available"><div class="bento bento-auto" id="assessmentsList"></div></div>
+      <div class="tab-panel active" data-tab="available">
+        <div class="bento g-auto" id="assessGrid"></div>
+      </div>
       <div class="tab-panel" data-tab="my-attempts">
-        <div class="table-wrap"><table class="table"><thead><tr><th>Assessment</th><th>Score</th><th>Result</th><th>Date</th></tr></thead><tbody id="attemptsTable"></tbody></table></div>
+        <div class="table-wrap">
+          <table class="table" aria-label="My assessment attempts">
+            <thead><tr><th>Assessment</th><th>Score</th><th>Result</th><th>Date</th></tr></thead>
+            <tbody id="attemptsTable"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- STUDY ASSISTANT -->
+    <!-- ── STUDY ASSISTANT ──────────────────────────────── -->
     <div class="dash-page" id="page-assistant">
       <div class="page-header"><h1 class="page-title">AI Study Assistant</h1><p class="page-subtitle">Ask anything about your learning journey, courses, or statistical concepts.</p></div>
-      <div class="chat-wrap" id="chatWrap">
+      <div class="chat-wrap">
         <div class="chat-msgs" id="chatMsgs">
-          <div class="chat-msg" style="max-width:100%">
-            <div class="chat-avatar" style="background:var(--c-primary-50);color:var(--c-primary-600)"></div>
-            <div class="chat-bubble">Hello! I'm your EduMantra AI assistant. I can help you understand statistical concepts, recommend courses, explain your skill gaps, or answer any questions about your learning journey. What would you like to explore?</div>
+          <div class="chat-msg">
+            <div class="chat-avatar"><span id="botAvatarIcon"></span></div>
+            <div class="chat-bubble">Hello! I'm your EduMantra AI assistant. I can help you understand statistical concepts, recommend courses, explain skill gaps, or answer any questions about your learning journey. What would you like to explore?</div>
           </div>
         </div>
-        <div class="chat-input-wrap">
-          <textarea id="chatInput" placeholder="Ask a question…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
-          <button class="btn btn-primary btn-icon" id="chatSendBtn" onclick="sendChat()" aria-label="Send"></button>
+        <div class="chat-input-row">
+          <textarea id="chatInput" rows="1" placeholder="Ask a question…"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+          <button class="btn btn-primary btn-icon" id="chatSendBtn" aria-label="Send message" onclick="sendChat()"></button>
         </div>
       </div>
     </div>
 
-    <!-- NOTES -->
+    <!-- ── NOTES ─────────────────────────────────────────── -->
     <div class="dash-page" id="page-notes">
       <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
         <div><h1 class="page-title">Notes</h1><p class="page-subtitle">Capture and organise your learning notes.</p></div>
-        <button class="btn btn-primary" onclick="Modal.open('addNoteModal')">New Note</button>
+        <button class="btn btn-primary" onclick="Modal.open('addNoteModal')"><span id="notePlusIcon"></span> New Note</button>
       </div>
-      <div class="bento bento-auto" id="notesGrid">
-        <div class="empty-state"><div class="empty-icon" id="noteEmptyIcon"></div><div class="empty-title">No notes yet</div><p class="empty-desc">Start capturing key concepts and insights from your courses.</p><button class="btn btn-primary" onclick="Modal.open('addNoteModal')">Create First Note</button></div>
-      </div>
+      <div class="bento g-auto" id="notesGrid"></div>
     </div>
 
-    <!-- CERTIFICATES -->
+    <!-- ── CERTIFICATES ──────────────────────────────────── -->
     <div class="dash-page" id="page-certificates">
       <div class="page-header"><h1 class="page-title">Certificates & Badges</h1><p class="page-subtitle">Your earned credentials and achievements.</p></div>
-      <div id="certificatesContainer"></div>
+      <div id="certsContainer"></div>
     </div>
 
-    <!-- NOTIFICATIONS -->
+    <!-- ── NOTIFICATIONS ─────────────────────────────────── -->
     <div class="dash-page" id="page-notifications">
       <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
         <div><h1 class="page-title">Notifications</h1></div>
-        <button class="btn btn-secondary btn-sm" onclick="markAllRead()">Mark all read</button>
+        <button class="btn btn-ghost btn-sm" onclick="markAllRead()">Mark all read</button>
       </div>
-      <div class="card" id="notificationsContainer"></div>
+      <div class="card" id="notifsEl"></div>
     </div>
 
-    <!-- PROFILE -->
+    <!-- ── PROFILE ───────────────────────────────────────── -->
     <div class="dash-page" id="page-profile">
-      <div class="page-header"><h1 class="page-title">My Profile</h1><p class="page-subtitle">Update your personal and professional information.</p></div>
-      <div class="bento bento-2">
+      <div class="page-header"><h1 class="page-title">My Profile</h1></div>
+      <div class="bento g2">
         <div class="card">
           <div class="card-header"><div class="card-title">Personal Information</div></div>
-          <form id="profileForm">
-            <div class="form-field"><label class="form-label">Full Name</label><input class="input" id="pf-name"></div>
-            <div class="form-field"><label class="form-label">Designation</label><input class="input" id="pf-desig"></div>
-            <div class="form-field"><label class="form-label">Phone</label><input class="input" type="tel" id="pf-phone"></div>
-            <div class="form-field"><label class="form-label">Education Level</label>
+          <form id="profileForm" novalidate>
+            <div class="form-group"><label class="form-label" for="pf-name">Full Name</label><input class="input" id="pf-name" type="text"></div>
+            <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-desig">Designation</label><input class="input" id="pf-desig" type="text"></div>
+            <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-phone">Phone</label><input class="input" id="pf-phone" type="tel"></div>
+            <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-edu">Education Level</label>
               <select class="input" id="pf-edu"><option value="">Select</option><option>High School</option><option>Diploma</option><option>Bachelor's</option><option>Master's</option><option>PhD</option></select>
             </div>
-            <div class="form-field"><label class="form-label">Field of Study</label><input class="input" id="pf-field"></div>
-            <div class="form-field"><label class="form-label">Years of Experience</label><input class="input" type="number" id="pf-exp" min="0"></div>
-            <div class="form-field"><label class="form-label">Preferred Language</label>
-              <select class="input" id="pf-lang"><option value="en">English</option><option value="hi">हिन्दी</option><option value="ta">தமிழ்</option><option value="te">తెలుగు</option><option value="bn">বাংলা</option><option value="mr">मराठी</option></select>
+            <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-field">Field of Study</label><input class="input" id="pf-field" type="text"></div>
+            <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-exp">Years of Experience</label><input class="input" id="pf-exp" type="number" min="0"></div>
+            <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-lang">Preferred Language</label>
+              <select class="input" id="pf-lang">
+                <option value="en">English</option><option value="hi">हिन्दी</option>
+                <option value="ta">தமிழ்</option><option value="te">తెలుగు</option>
+                <option value="bn">বাংলা</option><option value="mr">मराठी</option>
+              </select>
             </div>
-            <div style="margin-top:1.25rem"><button type="submit" class="btn btn-primary">Save Changes</button></div>
+            <div style="margin-top:var(--space-lg)"><button type="submit" class="btn btn-primary">Save Changes</button></div>
           </form>
         </div>
         <div>
@@ -283,42 +316,47 @@
 </div>
 </div>
 
-<!-- MODALS -->
-<div class="modal-backdrop" id="quizModal">
-  <div class="modal-box" style="max-width:700px">
-    <div class="modal-header"><span class="modal-title" id="quizModalTitle">Quiz</span><button class="modal-close" data-modal-close>✕</button></div>
+<!-- ── MODALS ────────────────────────────────────────────── -->
+
+<!-- Quiz modal -->
+<div class="modal-ov" id="quizModal">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-hd">
+      <span class="modal-title" id="quizModalTitle">Quiz</span>
+      <button class="modal-close" data-close aria-label="Close">✕</button>
+    </div>
     <div class="modal-body" id="quizModalBody"></div>
   </div>
 </div>
 
-<div class="modal-backdrop" id="addNoteModal">
-  <div class="modal-box">
-    <div class="modal-header"><span class="modal-title">New Note</span><button class="modal-close" data-modal-close>✕</button></div>
+<!-- Add note modal -->
+<div class="modal-ov" id="addNoteModal">
+  <div class="modal">
+    <div class="modal-hd"><span class="modal-title">New Note</span><button class="modal-close" data-close aria-label="Close">✕</button></div>
     <div class="modal-body">
-      <form id="noteForm">
-        <div class="form-field"><label class="form-label">Title</label><input class="input" id="note-title" placeholder="Note title"></div>
-        <div class="form-field"><label class="form-label">Content</label><textarea class="input" id="note-content" rows="5" placeholder="Write your note…"></textarea></div>
-        <div class="form-field"><label class="form-label">Tag</label><input class="input" id="note-tag" placeholder="e.g. Survey Design"></div>
-      </form>
+      <div class="form-group"><label class="form-label" for="note-title">Title</label><input class="input" id="note-title" placeholder="Note title"></div>
+      <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="note-content">Content</label><textarea class="input" id="note-content" rows="5" placeholder="Write your note…"></textarea></div>
+      <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="note-tag">Tag</label><input class="input" id="note-tag" placeholder="e.g. Survey Design"></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" data-modal-close>Cancel</button>
+      <button class="btn btn-secondary" data-close>Cancel</button>
       <button class="btn btn-primary" onclick="saveNote()">Save Note</button>
     </div>
   </div>
 </div>
 
-<div class="modal-backdrop" id="addObjectiveModal">
-  <div class="modal-box">
-    <div class="modal-header"><span class="modal-title">Add Objective</span><button class="modal-close" data-modal-close>✕</button></div>
+<!-- Add objective modal -->
+<div class="modal-ov" id="addObjModal">
+  <div class="modal">
+    <div class="modal-hd"><span class="modal-title">Add Objective</span><button class="modal-close" data-close aria-label="Close">✕</button></div>
     <div class="modal-body">
-      <div class="form-field"><label class="form-label">Objective</label><input class="input" id="obj-input" placeholder="e.g. Complete Python module 3"></div>
-      <div class="form-field"><label class="form-label">Due</label>
+      <div class="form-group"><label class="form-label" for="obj-text">Objective</label><input class="input" id="obj-text" placeholder="e.g. Complete Python module 3"></div>
+      <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="obj-due">Due</label>
         <select class="input" id="obj-due"><option value="today">Today</option><option value="week">This Week</option><option value="month">This Month</option></select>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" data-modal-close>Cancel</button>
+      <button class="btn btn-secondary" data-close>Cancel</button>
       <button class="btn btn-primary" onclick="addObjective()">Add</button>
     </div>
   </div>
@@ -327,57 +365,83 @@
 <script src="/js/api.js"></script>
 <script src="/js/shell.js"></script>
 <script>
+// ── Auth guard ────────────────────────────────────────────
 const user = Auth.guard();
 if (user && user.role !== 'student') Auth.redirect(user);
 
 let chatSessionId = null;
-const notes = JSON.parse(localStorage.getItem('em_notes') || '[]');
+const notes      = JSON.parse(localStorage.getItem('em_notes')      || '[]');
 const objectives = JSON.parse(localStorage.getItem('em_objectives') || '[]');
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // Inject icons into nav
-  const iconMap = { home:'house', objectives:'check', pathway:'path', courses:'book', assessments:'clipboard', skillgap:'brain', competency:'sparkle', assistant:'robot', notes:'file', certificates:'medal', notifications:'bell', profile:'user' };
+// ── Init ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Inject Lucide icons — using L.* (shell.js v2 exports icon set as L)
+  const navIcons = {
+    home:'home', objectives:'checkSquare', pathway:'map', courses:'book',
+    assessments:'clipboard', skillgap:'brain', competency:'sparkles',
+    assistant:'messageSquare', notes:'file', certificates:'award',
+    notifications:'bell', profile:'user'
+  };
   document.querySelectorAll('.nav-item[data-page]').forEach(item => {
-    const iconEl = item.querySelector('.nav-icon');
-    if (iconEl && iconMap[item.dataset.page]) iconEl.innerHTML = Icon[iconMap[item.dataset.page]]();
+    const id = `ni-${item.dataset.page.replace('-','').replace('skillgap','gap').replace('competency','comp').replace('objectives','obj').replace('assessments','assess').replace('pathway','path').replace('certificates','certs').replace('notifications','notif').replace('assistant','ai').replace('courses','courses').replace('profile','profile')}`;
+    const el = document.getElementById(id);
+    const iconName = navIcons[item.dataset.page];
+    if (el && iconName && L[iconName]) el.innerHTML = L[iconName]();
   });
-  document.getElementById('btnArrow').innerHTML = Icon.arrowRight();
-  document.getElementById('searchIconCourse').innerHTML = Icon.search();
-  document.getElementById('chatSendBtn').innerHTML = Icon.send();
-  document.getElementById('bellIcon').innerHTML = Icon.bell();
-  document.getElementById('objPlusIcon').innerHTML = Icon.plus();
-  document.getElementById('noteEmptyIcon').innerHTML = Icon.file(32);
 
-  // Init shell
-  buildSidebar({ role: user?.role, name: user?.full_name, avatarUrl: user?.avatar_url });
+  // Topbar / action icons
+  document.getElementById('bellIcon').innerHTML       = L.bell();
+  document.getElementById('continueIcon').innerHTML   = L.arrowRight();
+  document.getElementById('genPathIcon').innerHTML    = L.sparkles();
+  document.getElementById('objPlusIcon').innerHTML    = L.plus();
+  document.getElementById('notePlusIcon').innerHTML   = L.plus();
+  document.getElementById('courseSearchIcon').innerHTML = L.search();
+  document.getElementById('chatSendBtn').innerHTML    = L.send();
+  document.getElementById('botAvatarIcon').innerHTML  = L.cpu(14);
+  document.getElementById('si-enrolled').innerHTML    = L.book();
+  document.getElementById('si-done').innerHTML        = L.checkCircle();
+  document.getElementById('si-hours').innerHTML       = L.activity();
+  document.getElementById('si-score').innerHTML       = L.star();
+  document.getElementById('si-obj-done').innerHTML    = L.checkCircle();
+  document.getElementById('si-obj-pend').innerHTML    = L.alertTriangle();
+  document.getElementById('si-obj-over').innerHTML    = L.trendingUp();
+
+  // Shell (correct function name is initShell, not buildSidebar)
+  initShell({ name: user?.full_name, role: user?.role, avatarUrl: user?.avatar_url });
   document.getElementById('sidebarName').textContent = user?.full_name || 'Student';
 
   const hour = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   document.getElementById('welcomeHeading').textContent = `${greet}, ${user?.full_name?.split(' ')[0] || 'there'}!`;
 
-  initNav('home', pageHandlers);
-  initTabs(document.getElementById('page-assessments'));
-  Modal.init('quizModal'); Modal.init('addNoteModal'); Modal.init('addObjectiveModal');
+  // Modals — close button uses data-close (matching shell.js Modal.init)
+  Modal.init('quizModal'); Modal.init('addNoteModal'); Modal.init('addObjModal');
 
-  await loadDashboard();
+  // Tabs
+  initTabs(document.getElementById('page-assessments'));
+
+  // Navigation
+  initNav('home', pageHandlers);
+
+  // Load initial data
+  loadDashboard();
   renderObjectives();
   renderNotes();
   loadPublishedAssessments();
 });
 
 const pageHandlers = {
-  courses:      () => loadMyEnrollments(),
-  pathway:      () => loadPathway(),
-  skillgap:     () => loadLastGapReport(),
-  competency:   () => loadCompetencyProfile(),
-  assessments:  () => loadPublishedAssessments(),
-  certificates: () => loadCertificates(),
-  notifications:() => loadNotifications(),
-  profile:      () => loadProfile(),
+  courses:      loadMyEnrollments,
+  pathway:      loadPathway,
+  skillgap:     loadLastGapReport,
+  competency:   loadCompetencyProfile,
+  assessments:  loadPublishedAssessments,
+  certificates: loadCertificates,
+  notifications:loadNotifications,
+  profile:      loadProfile,
 };
 
-/* ── Dashboard ───────────────────────────────────────────── */
+// ── Dashboard ─────────────────────────────────────────────
 async function loadDashboard() {
   try {
     const d = await Api.get('/analytics/student');
@@ -385,154 +449,178 @@ async function loadDashboard() {
     document.getElementById('st-enrolled').textContent = s.total_courses_enrolled ?? '—';
     document.getElementById('st-done').textContent     = s.completed_courses ?? '—';
     document.getElementById('st-hours').textContent    = fmtHours(s.total_learning_hours);
-    document.getElementById('st-score').textContent    = s.avg_assessment_score ? `${s.avg_assessment_score}%` : '—';
+    document.getElementById('st-score').textContent    = s.avg_assessment_score != null ? `${s.avg_assessment_score}%` : '—';
 
-    // Notif badge
     if (s.unread_notifications > 0) {
-      document.getElementById('bellDot').style.display = 'block';
-      document.getElementById('navNotifCount').textContent = s.unread_notifications;
-      document.getElementById('navNotifCount').style.display = 'inline-block';
+      document.getElementById('notifBadge').textContent = s.unread_notifications;
+      document.getElementById('notifBadge').style.display = 'inline-block';
     }
 
-    renderActiveCoursesList(d.recent_courses || []);
+    renderActiveCourses(d.recent_courses || []);
     renderRecentAttempts(d.recent_attempts || []);
-    if (d.latest_pathway) renderPathwayPreviewCard(d.latest_pathway);
-    else document.getElementById('pathwayPreview').innerHTML = `<div class="empty-state" style="padding:1.5rem 0"><div class="empty-title">No pathway yet</div><p class="empty-desc">Run a skill gap analysis to generate your personalized pathway.</p><button class="btn btn-primary btn-sm" onclick="switchPage('skillgap',pageHandlers)">Analyse Skills</button></div>`;
+    if (d.latest_pathway) renderPathwayPreview(d.latest_pathway);
+    else document.getElementById('pathwayPreview').innerHTML =
+      `<p style="font-size:.875rem;color:var(--n-400);padding:.5rem 0">No pathway yet. <button class="btn btn-primary btn-sm" onclick="goPage('skillgap',pageHandlers)">Analyse skills</button></p>`;
 
-    // Objectives preview
     renderObjectivesPreview();
-  } catch (e) { Toast.error('Failed to load dashboard'); }
+  } catch(e) { Toast.error('Failed to load dashboard'); }
 }
 
-function renderActiveCoursesList(courses) {
+function renderActiveCourses(courses) {
   const el = document.getElementById('activeCoursesList');
-  const active = (courses||[]).filter(c => c.status === 'in_progress');
-  if (!active.length) { el.innerHTML = `<div style="padding:1.5rem 0;text-align:center;color:var(--text-muted);font-size:.875rem">No active courses yet.<br><button class="btn btn-primary btn-sm" style="margin-top:.75rem" onclick="switchPage('courses',pageHandlers)">Browse Courses</button></div>`; return; }
+  const active = (courses || []).filter(c => c.status === 'in_progress');
+  if (!active.length) {
+    el.innerHTML = `<p style="font-size:.875rem;color:var(--n-400);padding:.75rem 0">No active courses yet. <button class="btn btn-primary btn-sm" style="margin-left:.5rem" onclick="goPage('courses',pageHandlers)">Browse courses</button></p>`;
+    return;
+  }
   el.innerHTML = active.slice(0,4).map(c => `
-    <div style="display:flex;align-items:center;gap:.75rem;padding:.65rem 0;border-bottom:1px solid var(--border-default)">
-      <div style="width:36px;height:36px;border-radius:8px;background:var(--c-primary-50);display:flex;align-items:center;justify-content:center;color:var(--c-primary-600);flex-shrink:0">${Icon.book()}</div>
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem 0;border-bottom:1px solid var(--n-100)">
+      <div style="color:var(--color-primary);flex-shrink:0">${L.book(16)}</div>
       <div style="flex:1;min-width:0">
-        <div style="font-size:.855rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.igot_courses?.title || 'Course'}</div>
-        <div style="margin-top:4px">${progressBar(c.progress_pct)}</div>
+        <div style="font-size:.875rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.igot_courses?.title||'Course'}</div>
+        <div style="margin-top:3px">${progBar(c.progress_pct)}</div>
       </div>
-      <span style="font-size:.78rem;color:var(--text-muted);flex-shrink:0">${Math.round(c.progress_pct||0)}%</span>
+      <span style="font-size:.75rem;color:var(--n-400);flex-shrink:0;font-family:'Fira Code',monospace">${Math.round(c.progress_pct||0)}%</span>
     </div>`).join('');
 }
 
 function renderRecentAttempts(attempts) {
   const el = document.getElementById('recentAttempts');
-  if (!attempts?.length) { el.innerHTML = `<div style="padding:1.5rem 0;text-align:center;color:var(--text-muted);font-size:.875rem">No attempts yet.</div>`; return; }
+  if (!attempts?.length) {
+    el.innerHTML = `<p style="font-size:.875rem;color:var(--n-400);padding:.75rem 0">No quiz attempts yet.</p>`;
+    return;
+  }
   el.innerHTML = attempts.slice(0,5).map(a => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--border-default)">
-      <span style="font-size:.855rem;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.assessments?.title || 'Quiz'}</span>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--n-100)">
+      <span style="font-size:.875rem;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.assessments?.title||'Quiz'}</span>
       <div style="display:flex;align-items:center;gap:.5rem;flex-shrink:0">
-        <span style="font-weight:700;font-size:.875rem">${a.score||0}%</span>
-        ${a.passed ? '<span class="badge badge-completed">Pass</span>' : '<span class="badge badge-red">Fail</span>'}
+        <span style="font-family:'Fira Code',monospace;font-weight:700">${a.score||0}%</span>
+        ${a.passed ? '<span class="badge badge-active">Pass</span>' : '<span class="badge badge-red">Fail</span>'}
       </div>
     </div>`).join('');
 }
 
-function renderPathwayPreviewCard(pathway) {
+function renderPathwayPreview(pathway) {
   const items = pathway.pathway_items || [];
   const completed = items.filter(i => i.status === 'completed').length;
   document.getElementById('pathwaySubtitle').textContent = `${completed}/${items.length} courses complete`;
   document.getElementById('pathwayPreview').innerHTML = `
-    <div style="margin-bottom:.75rem">${progressBar((completed/Math.max(items.length,1))*100)}</div>
-    <div style="display:flex;flex-direction:column;gap:.4rem">
-      ${items.slice(0,3).map((item,i) => `
-        <div style="display:flex;align-items:center;gap:.65rem;padding:.4rem 0">
-          <div style="width:22px;height:22px;border-radius:50%;background:${i===0?'var(--c-primary-600)':'var(--c-slate-200)'};display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:${i===0?'#fff':'var(--text-muted)'};flex-shrink:0">${i+1}</div>
-          <span style="font-size:.8rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.igot_courses?.title || 'Course'}</span>
-          ${i===0?'<span class="badge badge-progress">Current</span>':''}
-        </div>`).join('')}
-      ${items.length > 3 ? `<div style="font-size:.75rem;color:var(--text-muted);padding:.2rem 0">+${items.length-3} more courses</div>` : ''}
-    </div>`;
+    <div style="margin-bottom:.75rem">${progBar((completed/Math.max(items.length,1))*100)}</div>
+    ${items.slice(0,3).map((item,i) => `
+      <div style="display:flex;align-items:center;gap:.625rem;padding:.375rem 0">
+        <div style="width:20px;height:20px;border-radius:50%;background:${i===0?'var(--color-primary)':'var(--n-200)'};display:flex;align-items:center;justify-content:center;font-size:.625rem;font-weight:700;color:${i===0?'#fff':'var(--n-500)'};flex-shrink:0">${i+1}</div>
+        <span style="font-size:.8125rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.igot_courses?.title||'Course'}</span>
+        ${i===0?'<span class="badge badge-progress">Current</span>':''}
+      </div>`).join('')}
+    ${items.length>3?`<p style="font-size:.75rem;color:var(--n-400);margin-top:.25rem">+${items.length-3} more courses</p>`:''}`;
 }
 
-/* ── Objectives ──────────────────────────────────────────── */
+// ── Objectives ────────────────────────────────────────────
 function renderObjectives() {
   const list = document.getElementById('objectivesList');
-  if (!objectives.length) { list.innerHTML = emptyState('No objectives', 'Add your daily learning goals.', `<button class="btn btn-primary btn-sm" onclick="Modal.open('addObjectiveModal')">Add Objective</button>`); return; }
   const done = objectives.filter(o=>o.done).length;
-  document.getElementById('obj-done').textContent = done;
-  document.getElementById('obj-pending').textContent = objectives.length - done;
+  document.getElementById('obj-done-val').textContent = done;
+  document.getElementById('obj-pend-val').textContent = objectives.length - done;
+  if (!objectives.length) {
+    list.innerHTML = `<div style="padding:1.5rem;text-align:center;color:var(--n-400)">No objectives yet. <button class="btn btn-primary btn-sm" style="margin-left:.5rem" onclick="Modal.open('addObjModal')">Add one</button></div>`;
+    return;
+  }
   list.innerHTML = objectives.map((o,i) => `
-    <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--border-default)">
-      <label class="switch" title="Mark done"><input type="checkbox" ${o.done?'checked':''} onchange="toggleObjective(${i})"><span class="switch-track"></span></label>
-      <span style="flex:1;font-size:.875rem;${o.done?'text-decoration:line-through;color:var(--text-muted)':''}">${o.text}</span>
-      <span class="badge ${o.due==='today'?'badge-rose':o.due==='week'?'badge-amber':'badge-slate'}">${o.due||'today'}</span>
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--n-100)">
+      <label class="switch" title="Mark done" aria-label="Mark ${o.text} done">
+        <input type="checkbox" ${o.done?'checked':''} onchange="toggleObj(${i})">
+        <span class="switch-track"></span>
+      </label>
+      <span style="flex:1;font-size:.875rem;${o.done?'text-decoration:line-through;color:var(--n-400)':''}">${o.text}</span>
+      <span class="badge ${o.due==='today'?'badge-red':o.due==='week'?'badge-amber':'badge-slate'}">${o.due}</span>
+      <button onclick="deleteObj(${i})" style="background:none;border:none;cursor:pointer;color:var(--n-300);padding:.2rem" aria-label="Delete objective">${L.trash(14)}</button>
     </div>`).join('');
 }
+
 function renderObjectivesPreview() {
   const el = document.getElementById('todayObjectives');
   const today = objectives.filter(o => o.due !== 'month').slice(0,4);
-  if (!today.length) { el.innerHTML = `<div style="padding:1.5rem 0;text-align:center;font-size:.875rem;color:var(--text-muted)">No objectives today.<br><button class="btn btn-primary btn-sm" style="margin-top:.5rem" onclick="Modal.open('addObjectiveModal')">Add one</button></div>`; return; }
+  if (!today.length) {
+    el.innerHTML = `<p style="font-size:.875rem;color:var(--n-400);padding:.5rem 0">No objectives today. <button class="btn btn-primary btn-sm" style="margin-left:.25rem" onclick="Modal.open('addObjModal')">Add one</button></p>`;
+    return;
+  }
   el.innerHTML = today.map(o => `
-    <div style="display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--border-default)">
-      <div style="width:18px;height:18px;border-radius:50%;border:2px solid ${o.done?'var(--c-success-500)':'var(--border-strong)'};background:${o.done?'var(--c-success-50)':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${o.done?`<svg width="10" height="10" viewBox="0 0 256 256" fill="var(--c-success-600)"><path d="M229.66 77.66l-128 128a8 8 0 0 1-11.32 0l-56-56a8 8 0 0 1 11.32-11.32L96 188.69 218.34 66.34a8 8 0 0 1 11.32 11.32Z"/></svg>`:''}</div>
-      <span style="font-size:.82rem;${o.done?'text-decoration:line-through;color:var(--text-muted)':''}">${o.text}</span>
+    <div style="display:flex;align-items:center;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--n-100)">
+      <div style="width:16px;height:16px;border-radius:50%;border:2px solid ${o.done?'var(--color-success)':'var(--n-300)'};background:${o.done?'var(--color-success-l)':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--color-success)">
+        ${o.done?L.checkCircle(10):''}
+      </div>
+      <span style="font-size:.8125rem;${o.done?'text-decoration:line-through;color:var(--n-400)':''}">${o.text}</span>
     </div>`).join('');
 }
+
 function addObjective() {
-  const text = document.getElementById('obj-input').value.trim();
+  const text = document.getElementById('obj-text').value.trim();
   const due  = document.getElementById('obj-due').value;
-  if (!text) return;
+  if (!text) { Toast.error('Please enter an objective'); return; }
   objectives.push({ text, due, done: false, created: new Date().toISOString() });
   localStorage.setItem('em_objectives', JSON.stringify(objectives));
-  document.getElementById('obj-input').value = '';
-  Modal.close('addObjectiveModal');
+  document.getElementById('obj-text').value = '';
+  Modal.close('addObjModal');
   renderObjectives(); renderObjectivesPreview();
   Toast.success('Objective added!');
 }
-function toggleObjective(i) {
+function toggleObj(i) {
   objectives[i].done = !objectives[i].done;
   localStorage.setItem('em_objectives', JSON.stringify(objectives));
   renderObjectives(); renderObjectivesPreview();
 }
+function deleteObj(i) {
+  objectives.splice(i,1);
+  localStorage.setItem('em_objectives', JSON.stringify(objectives));
+  renderObjectives();
+}
 
-/* ── Pathway ─────────────────────────────────────────────── */
+// ── Pathway ───────────────────────────────────────────────
 async function loadPathway() {
-  document.getElementById('pathwayContainer').innerHTML = `<div class="skeleton" style="height:200px"></div>`;
+  document.getElementById('pathwayFull').innerHTML = `<div class="skeleton" style="height:200px"></div>`;
   try {
     const d = await Api.get('/pathways');
     if (!d.pathways?.length) {
-      document.getElementById('pathwayContainer').innerHTML = emptyState('No pathway yet','Run a skill gap analysis first, then generate your personalized pathway.',`<button class="btn btn-primary" id="generatePathBtn2">Generate Pathway</button>`);
-      document.getElementById('generatePathBtn2')?.addEventListener('click', generatePathway);
+      document.getElementById('pathwayFull').innerHTML = emptyState(
+        'No pathway yet',
+        'Run a skill gap analysis first, then generate your personalised pathway.',
+        `<button class="btn btn-primary" onclick="generatePathway()"><span>${L.sparkles()}</span> Generate Pathway</button>`
+      );
     } else renderPathwayFull(d.pathways[0]);
   } catch(e) { Toast.error(e.message); }
 }
 
-document.getElementById('generatePathBtn').addEventListener('click', generatePathway);
+document.getElementById('genPathBtn').addEventListener('click', generatePathway);
 
 async function generatePathway() {
-  const btn = document.getElementById('generatePathBtn');
+  const btn = document.getElementById('genPathBtn');
   btn.textContent = 'Generating…'; btn.disabled = true;
   try {
     const d = await Api.post('/pathways/generate', {});
-    if (d.pathway) { renderPathwayFull(d.pathway); renderPathwayPreviewCard(d.pathway); Toast.success('Pathway generated!'); }
-    else Toast.info(d.message || 'No gaps found — you're up to date!');
+    if (d.pathway) { renderPathwayFull(d.pathway); renderPathwayPreview(d.pathway); Toast.success('Pathway generated!'); }
+    else Toast.info(d.message || 'No gaps found — competencies are up to date!');
   } catch(e) { Toast.error(e.message); }
-  finally { btn.innerHTML = `${Icon.arrowRight()} Generate / Refresh`; btn.disabled = false; }
+  finally { btn.innerHTML = `${L.sparkles()} Generate / Refresh`; btn.disabled = false; }
 }
 
 function renderPathwayFull(pathway) {
-  const items = (pathway.pathway_items || []).sort((a,b) => a.sequence_order - b.sequence_order);
-  document.getElementById('pathwayContainer').innerHTML = `
-    <div class="card" style="margin-bottom:1rem">
+  const items = (pathway.pathway_items||[]).sort((a,b)=>a.sequence_order-b.sequence_order);
+  document.getElementById('pathwayFull').innerHTML = `
+    <div class="card">
       <div class="card-header">
         <div><div class="card-title">${pathway.title}</div><div class="card-subtitle">${pathway.ai_rationale||''}</div></div>
-        <span class="badge badge-indigo">Target: ${fmtDate(pathway.target_completion)}</span>
+        <span class="badge badge-blue">Target: ${fmtDate(pathway.target_completion)}</span>
       </div>
-      <div class="timeline" style="margin-top:.5rem">
+      <div class="timeline">
         ${items.map((item,i) => `
           <div class="tl-item">
-            <div class="tl-dot ${i===0?'active':''}">${i+1}</div>
-            <div class="tl-content">
-              <div class="tl-title">${item.igot_courses?.title || 'Course'}</div>
-              <div class="tl-subtitle">${item.ai_reason||''} ${item.igot_courses?.duration_hours ? `• ${fmtHours(item.igot_courses.duration_hours)}` : ''}</div>
-              <div style="display:flex;gap:.4rem;margin-top:.4rem;flex-wrap:wrap">
-                ${item.is_mandatory ? '<span class="badge badge-rose">Mandatory</span>' : '<span class="badge badge-slate">Optional</span>'}
-                ${item.igot_courses?.url ? `<a href="${item.igot_courses.url}" target="_blank" class="badge badge-indigo" style="cursor:pointer">Open in iGOT ↗</a>` : ''}
+            <div class="tl-dot ${i===0?'act':''}">${i===0?L.activity(14):String(i+1)}</div>
+            <div class="tl-body">
+              <div class="tl-title">${item.igot_courses?.title||'Course'}</div>
+              <div class="tl-sub">${item.ai_reason||''} ${item.igot_courses?.duration_hours?'• '+fmtHours(item.igot_courses.duration_hours):''}</div>
+              <div style="display:flex;gap:.35rem;margin-top:.4rem;flex-wrap:wrap">
+                ${item.is_mandatory?'<span class="badge badge-red">Mandatory</span>':'<span class="badge badge-slate">Optional</span>'}
+                ${item.igot_courses?.url?`<a href="${item.igot_courses.url}" target="_blank" rel="noopener" class="badge badge-blue">Open in iGOT ${L.externalLink(10)}</a>`:''}
               </div>
             </div>
           </div>`).join('')}
@@ -540,11 +628,12 @@ function renderPathwayFull(pathway) {
     </div>`;
 }
 
-/* ── Courses ─────────────────────────────────────────────── */
+// ── Courses ───────────────────────────────────────────────
 async function searchCourses() {
   const q = document.getElementById('courseSearchInput').value;
   const domain = document.getElementById('courseDomainFilter').value;
-  renderCoursesLoading();
+  const grid = document.getElementById('coursesGrid');
+  grid.innerHTML = Array(6).fill(`<div class="skeleton" style="height:180px;border-radius:var(--r-lg)"></div>`).join('');
   try {
     const p = new URLSearchParams({ limit: 20 });
     if (q) p.set('search', q);
@@ -553,104 +642,112 @@ async function searchCourses() {
     renderCoursesGrid(d.courses || [], false);
   } catch(e) { Toast.error(e.message); }
 }
+
 async function loadMyEnrollments() {
-  renderCoursesLoading();
+  const grid = document.getElementById('coursesGrid');
+  grid.innerHTML = Array(6).fill(`<div class="skeleton" style="height:180px;border-radius:var(--r-lg)"></div>`).join('');
   try {
     const d = await Api.get('/igot/my-enrollments');
-    renderCoursesGrid((d.enrollments||[]).map(e => ({ ...e.igot_courses, enrollment: e })), true);
+    renderCoursesGrid((d.enrollments||[]).map(e=>({...e.igot_courses, enrollment:e})), true);
   } catch(e) { Toast.error(e.message); }
 }
-function renderCoursesLoading() {
-  document.getElementById('coursesGrid').innerHTML = Array(6).fill(`<div class="skeleton" style="height:180px;border-radius:var(--radius-lg)"></div>`).join('');
-}
+
 function renderCoursesGrid(courses, isEnrolled) {
   const grid = document.getElementById('coursesGrid');
-  if (!courses.length) { grid.innerHTML = emptyState('No courses found','Try a different search term.'); return; }
+  if (!courses.length) { grid.innerHTML = emptyState('No courses found','Try a different search term or browse all courses.'); return; }
   grid.innerHTML = courses.map(c => `
-    <div class="card card-hover" style="overflow:hidden">
-      <div style="height:110px;background:linear-gradient(135deg,var(--c-primary-50),var(--c-primary-100));display:flex;align-items:center;justify-content:center;margin:-1.25rem -1.25rem 1rem;color:var(--c-primary-400)">
-        ${c.thumbnail_url ? `<img src="${c.thumbnail_url}" style="width:100%;height:100%;object-fit:cover">` : Icon.book(32)}
+    <div class="card card-hover">
+      <div style="height:100px;background:var(--color-primary-xl);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;margin:-var(--space-lg) -var(--space-lg) var(--space-md);color:var(--color-primary);margin:-1.25rem -1.25rem 1rem">
+        ${c.thumbnail_url?`<img src="${c.thumbnail_url}" alt="${c.title}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--r-md) var(--r-md) 0 0">`:`${L.book(32)}`}
       </div>
       <div style="font-size:.875rem;font-weight:600;margin-bottom:.35rem;line-height:1.3">${c.title}</div>
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem">
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.625rem">
         <span class="badge badge-slate">${fmtHours(c.duration_hours)}</span>
-        <span class="badge badge-indigo">${c.level||'All levels'}</span>
+        <span class="badge badge-blue">${c.level||'All levels'}</span>
       </div>
-      ${c.enrollment ? progressBar(c.enrollment.progress_pct) + `<div style="font-size:.75rem;color:var(--text-muted);margin-top:3px">${Math.round(c.enrollment.progress_pct||0)}% complete</div>` : ''}
+      ${c.enrollment ? progBar(c.enrollment.progress_pct)+`<div style="font-size:.75rem;color:var(--n-400);margin-top:2px;font-family:'Fira Code',monospace">${Math.round(c.enrollment.progress_pct||0)}% complete</div>` : ''}
       <div style="display:flex;gap:.5rem;margin-top:.85rem;flex-wrap:wrap">
-        ${!c.enrollment ? `<button class="btn btn-primary btn-sm" onclick="enrollCourse('${c.id}',this)">Enrol</button>` : statusBadge(c.enrollment.status)}
-        ${c.url ? `<a href="${c.url}" target="_blank" class="btn btn-secondary btn-sm">Open ↗</a>` : ''}
+        ${!c.enrollment?`<button class="btn btn-primary btn-sm" onclick="enrollCourse('${c.id}',this)">Enrol</button>`:statusBadge(c.enrollment.status)}
+        ${c.url?`<a href="${c.url}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Open ${L.externalLink(12)}</a>`:''}
       </div>
     </div>`).join('');
 }
+
 async function enrollCourse(id, btn) {
   btn.textContent='…'; btn.disabled=true;
-  try {
-    await Api.post('/igot/enroll', { igot_course_id: id });
-    Toast.success('Enrolled successfully!');
-    loadMyEnrollments();
-  } catch(e) { Toast.error(e.message); btn.textContent='Enrol'; btn.disabled=false; }
+  try { await Api.post('/igot/enroll',{igot_course_id:id}); Toast.success('Enrolled!'); loadMyEnrollments(); }
+  catch(e) { Toast.error(e.message); btn.textContent='Enrol'; btn.disabled=false; }
 }
 
-/* ── Skill Gap ───────────────────────────────────────────── */
+// ── Skill Gap ─────────────────────────────────────────────
 async function loadLastGapReport() {
   try {
     const d = await Api.get('/skill-gap/reports');
-    if (d.reports?.length) { const detail = await Api.get(`/skill-gap/reports/${d.reports[0].id}`); renderGapReport(detail.report); }
-  } catch(e) {}
+    if (d.reports?.length) {
+      const detail = await Api.get(`/skill-gap/reports/${d.reports[0].id}`);
+      renderGapReport(detail.report);
+    }
+  } catch(_) {}
 }
+
 document.getElementById('runGapBtn').addEventListener('click', async () => {
   const btn = document.getElementById('runGapBtn');
-  btn.textContent = 'Analysing…'; btn.disabled = true;
+  btn.textContent='Analysing…'; btn.disabled=true;
   try {
-    const d = await Api.post('/skill-gap/analyze', {});
+    const d = await Api.post('/skill-gap/analyze',{});
     renderGapReport(d.report);
     Toast.success('Analysis complete!');
   } catch(e) { Toast.error(e.message); }
-  finally { btn.textContent = 'Analyse My Skills'; btn.disabled = false; }
+  finally { btn.textContent='Analyse My Skills'; btn.disabled=false; }
 });
+
 function renderGapReport(report) {
-  const gaps = report.details || report.gaps || [];
+  const gaps  = report.details || report.gaps || [];
   const score = Math.round(report.overall_gap_score||0);
-  const scoreColor = score > 60 ? 'var(--c-danger-500)' : score > 30 ? 'var(--c-warning-500)' : 'var(--c-success-500)';
-  document.getElementById('gapReportContainer').innerHTML = `
+  const col   = score>60?'var(--color-danger)':score>30?'var(--color-warning)':'var(--color-success)';
+  document.getElementById('gapReportEl').innerHTML = `
     <div class="card" style="margin-bottom:1rem">
       <div class="card-header">
         <div><div class="card-title">Skill Gap Report</div><div class="card-subtitle">${fmtDate(report.generated_at)}</div></div>
-        <div style="font-size:2rem;font-weight:800;color:${scoreColor}">${score}%</div>
+        <div style="font-size:2rem;font-weight:700;font-family:'Fira Code',monospace;color:${col}">${score}%</div>
       </div>
-      ${report.ai_insights?.summary ? `<div style="background:var(--c-primary-50);border-radius:var(--radius-md);padding:.85rem;font-size:.855rem;color:var(--c-primary-700);margin-bottom:1rem">${Icon.sparkle()} ${report.ai_insights.summary}</div>` : ''}
-      ${report.ai_insights?.priorities?.length ? `<div style="margin-bottom:1rem"><div class="label" style="margin-bottom:.5rem">AI Recommendations</div>${report.ai_insights.priorities.map(p=>`<div style="display:flex;align-items:flex-start;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--border-default);font-size:.82rem"><div style="color:var(--c-primary-500);flex-shrink:0">${Icon.arrowRight(14)}</div><div><strong>${p.area}</strong>: ${p.action} <span class="badge badge-slate">${p.hours}h est.</span></div></div>`).join('')}</div>` : ''}
+      ${report.ai_insights?.summary?`<div style="background:var(--color-primary-xl);border-left:3px solid var(--color-primary);border-radius:0 var(--r-md) var(--r-md) 0;padding:.75rem 1rem;font-size:.875rem;color:var(--color-text);margin-bottom:1rem">${report.ai_insights.summary}</div>`:''}
+      ${(report.ai_insights?.priorities||[]).length?`
+        <div style="margin-bottom:.75rem"><div class="label-cap" style="margin-bottom:.5rem">AI Recommendations</div>
+        ${report.ai_insights.priorities.map(p=>`<div style="display:flex;align-items:flex-start;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--n-100);font-size:.8125rem"><span style="color:var(--color-primary);flex-shrink:0;margin-top:1px">${L.arrowRight(14)}</span><div><strong>${p.area}</strong>: ${p.action} <span class="badge badge-slate">${p.hours}h est.</span></div></div>`).join('')}
+        </div>`:''}
     </div>
     <div class="table-wrap">
-      <table class="table"><thead><tr><th>Competency</th><th>Domain</th><th>Current</th><th>Required</th><th>Gap</th></tr></thead>
-      <tbody>${gaps.map(g=>`<tr>
-        <td data-label="Competency" style="font-weight:600">${g.competency_framework?.name||g.name}</td>
-        <td data-label="Domain"><span class="badge badge-slate">${g.competency_framework?.domain||g.domain}</span></td>
-        <td data-label="Current">${compPips(g.current_level)}</td>
-        <td data-label="Required">${compPips(g.required_level)}</td>
-        <td data-label="Gap">${severityBadge(g.severity)}</td>
-      </tr>`).join('')}</tbody></table>
+      <table class="table" aria-label="Skill gaps">
+        <thead><tr><th>Competency</th><th>Domain</th><th>Current</th><th>Required</th><th>Gap</th></tr></thead>
+        <tbody>${gaps.map(g=>`<tr>
+          <td data-label="Competency" style="font-weight:600">${g.competency_framework?.name||g.name||'—'}</td>
+          <td data-label="Domain"><span class="badge badge-slate">${g.competency_framework?.domain||g.domain||'—'}</span></td>
+          <td data-label="Current">${compPips(g.current_level)}</td>
+          <td data-label="Required">${compPips(g.required_level)}</td>
+          <td data-label="Gap">${severityBadge(g.severity)}</td>
+        </tr>`).join('')}</tbody>
+      </table>
     </div>`;
 }
 
-/* ── Competency Profile ──────────────────────────────────── */
+// ── Competency Profile ────────────────────────────────────
 async function loadCompetencyProfile() {
-  const grid = document.getElementById('competencyProfileGrid');
+  const grid = document.getElementById('compGrid');
   grid.innerHTML = `<div class="skeleton" style="height:200px"></div><div class="skeleton" style="height:200px"></div>`;
   try {
     const d = await Api.get('/competencies/my-profile');
     const comps = d.competency_profile || [];
-    if (!comps.length) { grid.innerHTML = emptyState('No competencies recorded','Complete assessments and courses to build your competency profile.'); return; }
-    const byDomain = comps.reduce((acc,c) => { const dom = c.competency_framework?.domain||'other'; (acc[dom]=acc[dom]||[]).push(c); return acc; }, {});
-    grid.innerHTML = Object.entries(byDomain).map(([domain, items]) => `
+    if (!comps.length) { grid.innerHTML = emptyState('No competencies recorded','Complete assessments to build your profile.'); return; }
+    const byDomain = comps.reduce((acc,c)=>{ const dom=c.competency_framework?.domain||'other'; (acc[dom]=acc[dom]||[]).push(c); return acc; },{});
+    grid.innerHTML = Object.entries(byDomain).map(([domain,items])=>`
       <div class="card">
-        <div class="card-header"><div><div class="card-title" style="text-transform:capitalize">${domain.replace('_',' ')}</div></div></div>
-        ${items.map(c => `
-          <div style="margin-bottom:.65rem">
-            <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.3rem">
-              <span style="font-weight:500">${c.competency_framework?.name}</span>
-              <span style="color:var(--text-muted);font-size:.75rem;text-transform:capitalize">${c.current_level}</span>
+        <div class="card-header"><div class="card-title" style="text-transform:capitalize">${domain.replace(/_/g,' ')}</div></div>
+        ${items.map(c=>`
+          <div style="margin-bottom:.75rem">
+            <div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.3rem">
+              <span style="font-weight:500">${c.competency_framework?.name||'—'}</span>
+              <span style="color:var(--n-400);font-family:'Fira Code',monospace;font-size:.75rem;text-transform:capitalize">${c.current_level}</span>
             </div>
             ${compPips(c.current_level)}
           </div>`).join('')}
@@ -658,22 +755,22 @@ async function loadCompetencyProfile() {
   } catch(e) { Toast.error(e.message); }
 }
 
-/* ── Assessments ─────────────────────────────────────────── */
+// ── Assessments ───────────────────────────────────────────
 async function loadPublishedAssessments() {
-  const list = document.getElementById('assessmentsList');
-  list.innerHTML = Array(4).fill(`<div class="skeleton" style="height:160px;border-radius:var(--radius-lg)"></div>`).join('');
+  const grid = document.getElementById('assessGrid');
+  grid.innerHTML = Array(4).fill(`<div class="skeleton" style="height:160px;border-radius:var(--r-lg)"></div>`).join('');
   try {
     const d = await Api.get('/assessments');
-    if (!d.assessments?.length) { list.innerHTML = emptyState('No assessments available','Check back soon — instructors are creating new quizzes.'); return; }
-    list.innerHTML = d.assessments.map(a => `
+    if (!d.assessments?.length) { grid.innerHTML = emptyState('No assessments yet','Instructors are creating new quizzes. Check back soon.'); return; }
+    grid.innerHTML = d.assessments.map(a=>`
       <div class="card card-hover">
-        <div style="width:42px;height:42px;border-radius:var(--radius-md);background:var(--c-primary-50);color:var(--c-primary-600);display:flex;align-items:center;justify-content:center;margin-bottom:.75rem">${Icon.clipboard()}</div>
-        <div style="font-weight:600;font-size:.895rem;margin-bottom:.3rem">${a.title}</div>
-        <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.75rem">${a.description||''}</div>
-        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.85rem">
-          <span class="badge badge-slate">${a.total_questions} Qs</span>
-          <span class="badge badge-${a.difficulty==='hard'?'rose':a.difficulty==='medium'?'amber':'emerald'}">${a.difficulty}</span>
-          ${a.time_limit_mins ? `<span class="badge badge-slate">${a.time_limit_mins} min</span>` : ''}
+        <div style="width:40px;height:40px;border-radius:var(--r-md);background:var(--color-primary-xl);color:var(--color-primary);display:flex;align-items:center;justify-content:center;margin-bottom:.75rem">${L.clipboard()}</div>
+        <div style="font-weight:600;font-size:.9375rem;margin-bottom:.25rem">${a.title}</div>
+        <div style="font-size:.8125rem;color:var(--n-500);margin-bottom:.75rem">${a.description||''}</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.875rem">
+          <span class="badge badge-slate">${a.total_questions} questions</span>
+          <span class="badge ${a.difficulty==='hard'?'badge-red':a.difficulty==='medium'?'badge-amber':'badge-active'}">${a.difficulty}</span>
+          ${a.time_limit_mins?`<span class="badge badge-slate">${a.time_limit_mins} min</span>`:''}
         </div>
         <button class="btn btn-primary btn-sm" onclick="openQuiz('${a.id}','${a.title.replace(/'/g,'`')}')">Start Quiz</button>
       </div>`).join('');
@@ -684,12 +781,12 @@ async function loadMyAttempts() {
   const tbody = document.getElementById('attemptsTable');
   try {
     const d = await Api.get('/assessments/my/attempts');
-    if (!d.attempts?.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:2rem">No attempts yet.</td></tr>'; return; }
-    tbody.innerHTML = d.attempts.map(a => `<tr>
+    if (!d.attempts?.length) { tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--n-400)">No attempts yet.</td></tr>'; return; }
+    tbody.innerHTML = d.attempts.map(a=>`<tr>
       <td data-label="Assessment" style="font-weight:600">${a.assessments?.title||'Quiz'}</td>
-      <td data-label="Score">${a.score||0}%</td>
-      <td data-label="Result">${a.passed ? '<span class="badge badge-completed">Pass</span>' : '<span class="badge badge-red">Fail</span>'}</td>
-      <td data-label="Date">${fmtDate(a.created_at)}</td>
+      <td data-label="Score" style="font-family:'Fira Code',monospace;font-weight:600">${a.score||0}%</td>
+      <td data-label="Result">${a.passed?'<span class="badge badge-active">Pass</span>':'<span class="badge badge-red">Fail</span>'}</td>
+      <td data-label="Date" style="color:var(--n-400)">${fmtDate(a.created_at)}</td>
     </tr>`).join('');
   } catch(e) { Toast.error(e.message); }
 }
@@ -697,147 +794,143 @@ async function loadMyAttempts() {
 async function openQuiz(id, title) {
   Modal.open('quizModal');
   document.getElementById('quizModalTitle').textContent = title;
-  document.getElementById('quizModalBody').innerHTML = `<div class="skeleton" style="height:300px"></div>`;
+  document.getElementById('quizModalBody').innerHTML = `<div class="skeleton" style="height:280px"></div>`;
   try {
     const d = await Api.get(`/assessments/${id}`);
     const questions = d.questions || [];
     document.getElementById('quizModalBody').innerHTML = `
-      <div style="max-height:440px;overflow-y:auto;padding-right:.5rem">
-        ${questions.map((q,i) => `
-          <div style="margin-bottom:1.25rem">
+      <div style="max-height:420px;overflow-y:auto;padding-right:.25rem">
+        ${questions.map((q,i)=>`
+          <div style="margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--n-100)">
             <p style="font-size:.875rem;font-weight:600;margin-bottom:.5rem">${i+1}. ${q.question_text}</p>
-            ${(q.options||[]).map(opt => `
-              <label style="display:flex;align-items:center;gap:.5rem;padding:.4rem .5rem;border-radius:var(--radius-sm);cursor:pointer;font-size:.855rem;transition:background .15s" onmouseover="this.style.background='var(--surface-subtle)'" onmouseout="this.style.background='transparent'">
+            ${(q.options||[]).map(opt=>`
+              <label style="display:flex;align-items:center;gap:.5rem;padding:.375rem .5rem;border-radius:var(--r-sm);cursor:pointer;font-size:.875rem;transition:background var(--t-fast)" onmouseover="this.style.background='var(--n-100)'" onmouseout="this.style.background='transparent'">
                 <input type="radio" name="q_${q.id}" value="${opt.key}"> ${opt.key}. ${opt.text}
               </label>`).join('')}
           </div>`).join('')}
       </div>
-      <div style="display:flex;justify-content:flex-end;gap:.5rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-default)">
-        <button class="btn btn-secondary" data-modal-close>Cancel</button>
-        <button class="btn btn-primary" onclick="submitQuiz('${id}',${JSON.stringify(questions.map(q=>q.id))})">Submit</button>
+      <div style="display:flex;justify-content:flex-end;gap:.5rem;margin-top:1rem">
+        <button class="btn btn-secondary" data-close onclick="Modal.close('quizModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitQuiz('${id}',${JSON.stringify(questions.map(q=>q.id))})">Submit Answers</button>
       </div>`;
-  } catch(e) { document.getElementById('quizModalBody').innerHTML = `<p style="color:var(--c-danger-600)">${e.message}</p>`; }
+  } catch(e) { document.getElementById('quizModalBody').innerHTML=`<p style="color:var(--color-danger)">${e.message}</p>`; }
 }
 
 async function submitQuiz(assessId, qIds) {
   const answers = {};
-  qIds.forEach(qId => { const sel = document.querySelector(`input[name="q_${qId}"]:checked`); if (sel) answers[qId] = sel.value; });
+  qIds.forEach(qId => { const sel=document.querySelector(`input[name="q_${qId}"]:checked`); if(sel) answers[qId]=sel.value; });
   try {
-    const r = await Api.post(`/assessments/${assessId}/submit`, { answers });
+    const r = await Api.post(`/assessments/${assessId}/submit`,{answers});
     document.getElementById('quizModalBody').innerHTML = `
-      <div style="text-align:center;padding:1.5rem 0">
-        <div style="font-size:3rem;margin-bottom:.75rem">${r.passed ? '🏆' : '📚'}</div>
-        <div style="font-size:2.5rem;font-weight:800;color:${r.passed?'var(--c-success-600)':'var(--c-danger-500)'}">${r.score}%</div>
-        <div style="margin:.5rem 0;color:var(--text-secondary)">${r.correct}/${r.total} correct • ${r.passed?'Passed ✓':'Not passed'}</div>
-        ${r.ai_feedback ? `<div style="background:var(--c-primary-50);border-radius:var(--radius-md);padding:.85rem;margin:.75rem 0;font-size:.855rem;text-align:left;color:var(--c-primary-700)">${r.ai_feedback}</div>` : ''}
+      <div style="text-align:center;padding:1.5rem">
+        <div style="color:${r.passed?'var(--color-success)':'var(--color-danger)'};margin-bottom:.75rem">${r.passed?L.checkCircle(48):L.xCircle(48)}</div>
+        <div style="font-size:2.5rem;font-weight:700;font-family:'Fira Code',monospace;color:${r.passed?'var(--color-success)':'var(--color-danger)'}">${r.score}%</div>
+        <div style="margin:.5rem 0;color:var(--n-500)">${r.correct}/${r.total} correct • ${r.passed?'Passed':'Not passed'}</div>
+        ${r.ai_feedback?`<div style="background:var(--color-primary-xl);border-radius:var(--r-md);padding:.85rem;margin:.75rem 0;font-size:.875rem;text-align:left;color:var(--color-text)">${r.ai_feedback}</div>`:''}
         <button class="btn btn-primary" onclick="Modal.close('quizModal');loadMyAttempts()">Done</button>
       </div>`;
   } catch(e) { Toast.error(e.message); }
 }
 
-/* ── AI Assistant ────────────────────────────────────────── */
+// ── AI Assistant ──────────────────────────────────────────
 async function sendChat() {
   const inp = document.getElementById('chatInput');
   const msg = inp.value.trim();
   if (!msg) return;
   inp.value = '';
   appendMsg('user', msg);
-  appendMsg('assistant', '<em style="color:var(--text-muted)">Thinking…</em>', 'typing');
+  appendMsg('assistant', '<em style="color:var(--n-400)">Thinking…</em>', 'typing');
   try {
-    const d = await Api.post('/assistant/chat', { message: msg, session_id: chatSessionId });
+    const d = await Api.post('/assistant/chat',{message:msg, session_id:chatSessionId});
     chatSessionId = d.session_id;
     document.getElementById('typing')?.remove();
     appendMsg('assistant', d.reply);
-  } catch(e) { document.getElementById('typing')?.remove(); appendMsg('assistant', 'Sorry, I couldn\'t process that. Please try again.'); }
+  } catch(e) { document.getElementById('typing')?.remove(); appendMsg('assistant','Sorry, I couldn\'t process that. Please try again.'); }
 }
+
 function appendMsg(role, content, id) {
   const wrap = document.getElementById('chatMsgs');
-  const div = document.createElement('div');
-  div.className = `chat-msg${role==='user'?' u':''}`;
+  const div  = document.createElement('div');
+  div.className = `chat-msg${role==='user'?' user':''}`;
   if (id) div.id = id;
-  const avatarHtml = role === 'user' ? `<div class="chat-avatar" style="background:var(--c-slate-100)">${Icon.user(16)}</div>` : `<div class="chat-avatar" style="background:var(--c-primary-50);color:var(--c-primary-600)">${Icon.robot(16)}</div>`;
-  div.innerHTML = role === 'user'
-    ? `<div class="chat-bubble">${content}</div>${avatarHtml}`
-    : `${avatarHtml}<div class="chat-bubble">${content}</div>`;
+  div.innerHTML = role==='user'
+    ? `<div class="chat-bubble">${content}</div><div class="chat-avatar" style="background:var(--n-200);color:var(--n-600)">${L.user(14)}</div>`
+    : `<div class="chat-avatar">${L.cpu(14)}</div><div class="chat-bubble">${content}</div>`;
   wrap.appendChild(div);
   wrap.scrollTop = wrap.scrollHeight;
 }
 
-/* ── Notes ───────────────────────────────────────────────── */
+// ── Notes ─────────────────────────────────────────────────
 function renderNotes() {
   const grid = document.getElementById('notesGrid');
-  if (!notes.length) return;
-  grid.innerHTML = notes.map((n,i) => `
+  if (!notes.length) { grid.innerHTML = emptyState('No notes yet','Start capturing key concepts from your courses.', `<button class="btn btn-primary" onclick="Modal.open('addNoteModal')">Create First Note</button>`); return; }
+  grid.innerHTML = notes.map((n,i)=>`
     <div class="card card-hover" style="position:relative">
-      <div style="font-weight:600;margin-bottom:.35rem;font-size:.895rem">${n.title}</div>
-      ${n.tag ? `<span class="badge badge-indigo" style="margin-bottom:.5rem">${n.tag}</span>` : ''}
-      <p style="font-size:.82rem;color:var(--text-secondary);line-height:1.6">${n.content.slice(0,120)}${n.content.length>120?'…':''}</p>
-      <div style="margin-top:.75rem;font-size:.72rem;color:var(--text-muted)">${fmtDate(n.created)}</div>
-      <button onclick="deleteNote(${i})" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;cursor:pointer;color:var(--text-muted)">${Icon.trash(14)}</button>
+      <div style="font-weight:600;margin-bottom:.35rem">${n.title}</div>
+      ${n.tag?`<span class="badge badge-blue" style="margin-bottom:.5rem">${n.tag}</span>`:''}
+      <p style="font-size:.8125rem;color:var(--n-500);line-height:1.6">${n.content.slice(0,120)}${n.content.length>120?'…':''}</p>
+      <div style="margin-top:.75rem;font-size:.75rem;color:var(--n-400)">${fmtDate(n.created)}</div>
+      <button onclick="deleteNote(${i})" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;cursor:pointer;color:var(--n-300)" aria-label="Delete note">${L.trash(14)}</button>
     </div>`).join('');
 }
+
 function saveNote() {
-  const title = document.getElementById('note-title').value.trim();
+  const title   = document.getElementById('note-title').value.trim();
   const content = document.getElementById('note-content').value.trim();
-  if (!title || !content) { Toast.error('Title and content required'); return; }
-  notes.unshift({ title, content, tag: document.getElementById('note-tag').value, created: new Date().toISOString() });
+  if (!title||!content) { Toast.error('Title and content required'); return; }
+  notes.unshift({title,content,tag:document.getElementById('note-tag').value,created:new Date().toISOString()});
   localStorage.setItem('em_notes', JSON.stringify(notes));
   Modal.close('addNoteModal');
   renderNotes();
   Toast.success('Note saved!');
 }
-function deleteNote(i) {
-  notes.splice(i, 1);
-  localStorage.setItem('em_notes', JSON.stringify(notes));
-  renderNotes();
-}
+function deleteNote(i) { notes.splice(i,1); localStorage.setItem('em_notes',JSON.stringify(notes)); renderNotes(); }
 
-/* ── Certificates ────────────────────────────────────────── */
+// ── Certificates ──────────────────────────────────────────
 async function loadCertificates() {
-  const el = document.getElementById('certificatesContainer');
+  const el = document.getElementById('certsContainer');
   try {
     const d = await Api.get('/igot/my-enrollments');
-    const completed = (d.enrollments||[]).filter(e => e.status === 'completed');
+    const completed = (d.enrollments||[]).filter(e=>e.status==='completed');
     if (!completed.length) { el.innerHTML = emptyState('No certificates yet','Complete courses to earn certificates and badges.'); return; }
-    el.innerHTML = `<div class="bento bento-auto">${completed.map(e => `
+    el.innerHTML = `<div class="bento g-auto">${completed.map(e=>`
       <div class="card" style="text-align:center;padding:1.5rem">
-        <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--c-warning-500),var(--c-primary-600));display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;color:#fff">${Icon.medal(28)}</div>
-        <div style="font-weight:700;font-size:.92rem;margin-bottom:.25rem">${e.igot_courses?.title||'Course'}</div>
-        <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:.75rem">${fmtDate(e.completed_at)}</div>
-        <span class="badge badge-completed">Completed</span>
-        ${e.certificate_url ? `<a href="${e.certificate_url}" target="_blank" class="btn btn-secondary btn-sm" style="margin-top:.75rem;width:100%">${Icon.download(14)} Download</a>` : ''}
-      </div>`).join('')}
-    </div>`;
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--color-cta),var(--color-primary));display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;color:#fff">${L.award(24)}</div>
+        <div style="font-weight:700;font-size:.9375rem;margin-bottom:.25rem">${e.igot_courses?.title||'Course'}</div>
+        <div style="font-size:.8125rem;color:var(--n-400);margin-bottom:.75rem">${fmtDate(e.completed_at)}</div>
+        <span class="badge badge-active">Completed</span>
+        ${e.certificate_url?`<a href="${e.certificate_url}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="margin-top:.75rem;width:100%">${L.download(14)} Download</a>`:''}
+      </div>`).join('')}</div>`;
   } catch(e) { Toast.error(e.message); }
 }
 
-/* ── Notifications ───────────────────────────────────────── */
+// ── Notifications ─────────────────────────────────────────
 async function loadNotifications() {
-  const el = document.getElementById('notificationsContainer');
+  const el = document.getElementById('notifsEl');
   try {
     const d = await Api.get('/notifications');
-    const notifs = d.notifications || [];
-    if (!notifs.length) { el.innerHTML = emptyState('No notifications','You\'re all caught up!'); return; }
-    el.innerHTML = notifs.map(n => `
-      <div style="display:flex;align-items:flex-start;gap:.75rem;padding:.85rem 0;border-bottom:1px solid var(--border-default);${!n.is_read?'background:var(--c-primary-50);margin:0 -.25rem;padding:0.85rem .25rem;border-radius:var(--radius-sm)':''}">
-        <div style="width:8px;height:8px;border-radius:50%;margin-top:6px;background:${!n.is_read?'var(--c-primary-500)':'transparent'};flex-shrink:0"></div>
+    if (!d.notifications?.length) { el.innerHTML = emptyState('All clear','No notifications right now.'); return; }
+    el.innerHTML = d.notifications.map(n=>`
+      <div style="display:flex;align-items:flex-start;gap:.75rem;padding:.85rem 0;border-bottom:1px solid var(--n-100)">
+        <div style="width:8px;height:8px;border-radius:50%;margin-top:.4rem;background:${!n.is_read?'var(--color-primary)':'transparent'};border:${!n.is_read?'none':'1px solid var(--n-200)'};flex-shrink:0"></div>
         <div style="flex:1">
           <div style="font-size:.875rem;font-weight:600">${n.title}</div>
-          <div style="font-size:.82rem;color:var(--text-secondary)">${n.body}</div>
-          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.25rem">${timeAgo(n.created_at)}</div>
+          <div style="font-size:.8125rem;color:var(--n-500)">${n.body}</div>
+          <div style="font-size:.75rem;color:var(--n-400);margin-top:.25rem">${timeAgo(n.created_at)}</div>
         </div>
-        ${!n.is_read ? `<button class="btn btn-ghost btn-sm" onclick="markRead('${n.id}',this)">Mark read</button>` : ''}
+        ${!n.is_read?`<button class="btn btn-ghost btn-sm" onclick="markRead('${n.id}',this)">Mark read</button>`:''}
       </div>`).join('');
   } catch(e) { Toast.error(e.message); }
 }
+
 async function markRead(id, btn) {
-  try { await Api.put(`/notifications/${id}/read`, {}); btn.closest('div[style]').style.background = ''; btn.remove(); } catch(e) {}
+  try { await Api.put(`/notifications/${id}/read`,{}); btn.closest('div').querySelector('div[style]').style.background='transparent'; btn.remove(); } catch(e) {}
 }
 async function markAllRead() {
-  try { await Api.put('/notifications/read-all', {}); document.getElementById('bellDot').style.display='none'; loadNotifications(); Toast.success('All marked as read'); } catch(e) {}
+  try { await Api.put('/notifications/read-all',{}); document.getElementById('notifBadge').style.display='none'; loadNotifications(); } catch(e) {}
 }
 
-/* ── Profile ─────────────────────────────────────────────── */
+// ── Profile ───────────────────────────────────────────────
 async function loadProfile() {
   try {
     const d = await Api.get('/profile');
@@ -850,21 +943,28 @@ async function loadProfile() {
     document.getElementById('pf-exp').value   = p.years_of_experience||0;
     document.getElementById('pf-lang').value  = p.preferred_language||'en';
     document.getElementById('profileStats').innerHTML = `
-      <div style="display:flex;flex-direction:column;gap:.4rem">
-        <div class="health-row"><span style="font-size:.855rem">Designation</span><span style="font-size:.855rem;font-weight:500">${p.designation||'—'}</span></div>
-        <div class="health-row"><span style="font-size:.855rem">Department</span><span style="font-size:.855rem;font-weight:500">${p.departments?.name||'—'}</span></div>
-        <div class="health-row"><span style="font-size:.855rem">Experience</span><span style="font-size:.855rem;font-weight:500">${p.years_of_experience||0} years</span></div>
-        <div class="health-row"><span style="font-size:.855rem">Language</span><span style="font-size:.855rem;font-weight:500">${p.preferred_language||'en'}</span></div>
-        <div class="health-row"><span style="font-size:.855rem">Last login</span><span style="font-size:.855rem;color:var(--text-muted)">${fmtDate(p.last_login_at)}</span></div>
+      <div style="display:flex;flex-direction:column;gap:.35rem">
+        <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--n-100);font-size:.875rem"><span style="color:var(--n-500)">Designation</span><span style="font-weight:500">${p.designation||'—'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--n-100);font-size:.875rem"><span style="color:var(--n-500)">Experience</span><span style="font-weight:500;font-family:'Fira Code',monospace">${p.years_of_experience||0} yrs</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--n-100);font-size:.875rem"><span style="color:var(--n-500)">Language</span><span style="font-weight:500">${p.preferred_language||'en'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem 0;font-size:.875rem"><span style="color:var(--n-500)">Last login</span><span style="color:var(--n-400)">${fmtDate(p.last_login_at)}</span></div>
       </div>`;
-    document.getElementById('leaderboardWidget').innerHTML = `<div class="empty-state" style="padding:1rem 0"><div class="empty-title" style="font-size:.875rem">Leaderboard coming soon</div></div>`;
-  } catch(e) {}
+    document.getElementById('leaderboardWidget').innerHTML = `<p style="font-size:.875rem;color:var(--n-400);padding:.5rem 0">Leaderboard coming soon.</p>`;
+  } catch(_) {}
 }
 
 document.getElementById('profileForm').addEventListener('submit', async e => {
   e.preventDefault();
   try {
-    await Api.put('/profile', { full_name:document.getElementById('pf-name').value, designation:document.getElementById('pf-desig').value, phone:document.getElementById('pf-phone').value, education_level:document.getElementById('pf-edu').value, field_of_study:document.getElementById('pf-field').value, years_of_experience:parseInt(document.getElementById('pf-exp').value), preferred_language:document.getElementById('pf-lang').value });
+    await Api.put('/profile',{
+      full_name:           document.getElementById('pf-name').value,
+      designation:         document.getElementById('pf-desig').value,
+      phone:               document.getElementById('pf-phone').value,
+      education_level:     document.getElementById('pf-edu').value,
+      field_of_study:      document.getElementById('pf-field').value,
+      years_of_experience: parseInt(document.getElementById('pf-exp').value)||0,
+      preferred_language:  document.getElementById('pf-lang').value,
+    });
     Toast.success('Profile saved!');
   } catch(e) { Toast.error(e.message); }
 });
