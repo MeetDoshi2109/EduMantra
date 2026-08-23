@@ -5,7 +5,11 @@ const { OPENAI_API_KEY, OPENAI_MODEL } = require('../config/env');
 const OpenAI = require('openai');
 
 const router = express.Router();
-const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+
+function getOpenAI() {
+  if (!OPENAI_API_KEY) return null;
+  return new OpenAI({ apiKey: OPENAI_API_KEY });
+}
 
 // ── POST /api/v1/pathways/generate ──────────────────────
 // AI generates a personalized learning pathway from latest gap report
