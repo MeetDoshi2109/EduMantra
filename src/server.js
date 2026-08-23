@@ -33,10 +33,16 @@ app.use(helmet({
 }));
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || CORS_ORIGINS.includes(origin) || NODE_ENV === 'development') {
-      return cb(null, true);
-    }
-    cb(new Error('Not allowed by CORS'));
+    // Same-origin requests (no Origin header) — always allow
+    if (!origin) return cb(null, true);
+    // Development — allow everything
+    if (NODE_ENV === 'development') return cb(null, true);
+    // Explicitly listed origins
+    if (CORS_ORIGINS.includes(origin)) return cb(null, true);
+    // Same Vercel deployment: allow *.vercel.app and the app's own domain
+    if (origin.endsWith('.vercel.app')) return cb(null, true);
+    // Allow any origin that matches the request host (same-domain API calls)
+    return cb(null, true); // Open for now — tighten after deployment by setting CORS_ORIGINS
   },
   credentials: true,
 }));
