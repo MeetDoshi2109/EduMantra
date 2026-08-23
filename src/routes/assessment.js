@@ -83,6 +83,11 @@ Return ONLY valid JSON in this exact format:
   ]
 }`;
 
+      const openai = getOpenAI();
+      if (!openai) {
+        return res.status(400).json({ error: 'OPENAI_API_KEY not configured. Cannot generate questions.' });
+      }
+
       const completion = await openai.chat.completions.create({
         model: OPENAI_MODEL,
         messages: [{ role: 'user', content: prompt }],
@@ -232,13 +237,13 @@ router.post('/:id/submit', authenticate, async (req, res) => {
     if (OPENAI_API_KEY) {
       try {
         const incorrectCount = questions.length - correct;
+        const openai = getOpenAI();
+        if (!openai) throw new Error('no key');
         const completion = await openai.chat.completions.create({
           model: OPENAI_MODEL,
           messages: [{
             role: 'user',
-            content: `A learner scored ${score}% (${correct}/${questions.length} correct) on a "${assessment?.title}" assessment. 
-They got ${incorrectCount} questions wrong.
-Write 2-3 sentences of personalized, encouraging feedback with specific study recommendations.`,
+            content: `A learner scored ${score}% (${correct}/${questions.length} correct) on a "${assessment?.title}" assessment. They got ${incorrectCount} questions wrong. Write 2-3 sentences of personalized, encouraging feedback with specific study recommendations.`,
           }],
           max_tokens: 200,
         });

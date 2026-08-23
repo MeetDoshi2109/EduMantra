@@ -75,6 +75,8 @@ Create a logical, sequenced 3-month learning pathway. Return JSON:
   ]
 }`;
 
+        const openai = getOpenAI();
+        if (!openai) throw new Error('OPENAI_API_KEY not configured');
         const completion = await openai.chat.completions.create({
           model: OPENAI_MODEL,
           messages: [{ role: 'user', content: prompt }],

@@ -5,7 +5,11 @@ const { OPENAI_API_KEY, OPENAI_MODEL } = require('../config/env');
 const OpenAI = require('openai');
 
 const router = express.Router();
-const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+
+function getOpenAI() {
+  if (!OPENAI_API_KEY) return null;
+  return new OpenAI({ apiKey: OPENAI_API_KEY });
+}
 
 const SYSTEM_PROMPT = `You are EduMantra AI Assistant, an expert learning advisor for government officials in India's Official Statistical System. You help users:
 - Understand their skill gaps and competency requirements
@@ -59,6 +63,11 @@ router.post('/chat', authenticate, async (req, res) => {
       ...(history || []),
       { role: 'user', content: message },
     ];
+
+    const openai = getOpenAI();
+    if (!openai) {
+      return res.status(400).json({ error: 'AI assistant not configured. OPENAI_API_KEY missing.' });
+    }
 
     const completion = await openai.chat.completions.create({
       model: OPENAI_MODEL,

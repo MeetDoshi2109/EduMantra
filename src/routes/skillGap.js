@@ -88,6 +88,8 @@ Provide:
 
 Respond as JSON: { summary, priorities: [{area, action, hours}], recommended_actions }`;
 
+        const openai = getOpenAI();
+        if (!openai) throw new Error('OPENAI_API_KEY not configured');
         const completion = await openai.chat.completions.create({
           model: OPENAI_MODEL,
           messages: [{ role: 'user', content: prompt }],
