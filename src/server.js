@@ -76,7 +76,17 @@ app.use('/api/v1/notifications', notificationRoutes);
 
 // ── Health check ───────────────────────────────────────────
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', env: NODE_ENV, timestamp: new Date().toISOString() });
+  const missing = [];
+  if (!process.env.SUPABASE_URL)              missing.push('SUPABASE_URL');
+  if (!process.env.SUPABASE_ANON_KEY)         missing.push('SUPABASE_ANON_KEY');
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) missing.push('SUPABASE_SERVICE_ROLE_KEY');
+
+  res.json({
+    status: missing.length === 0 ? 'ok' : 'degraded',
+    env: NODE_ENV,
+    timestamp: new Date().toISOString(),
+    missing_env: missing.length > 0 ? missing : undefined,
+  });
 });
 
 // ── SPA fallback for frontend routes ──────────────────────
