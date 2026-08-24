@@ -73,13 +73,30 @@ router.post('/login', [
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return res.status(401).json({ error: error.message });
+    if (!data || !data.session) {
+      return res.status(401).json({ error: 'Login succeeded but session token was not returned. Please check email confirmation settings.' });
+    }
 
-    // Fetch profile
-    const { data: profile } = await supabaseAdmin
+    // Fetch profile or fallback
+    let { data: profile } = await supabaseAdmin
       .from('users')
       .select('id, full_name, email, role, organization_id, avatar_url, designation, preferred_language')
       .eq('id', data.user.id)
       .single();
+
+    if (!profile) {
+      profile = {
+        id: data.user.id,
+        email: data.user.email,
+        full_name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User',
+        role: data.user.user_metadata?.role || 'student',
+        organization_id: null,
+        avatar_url: null,
+        designation: data.user.user_metadata?.designation || null,
+        preferred_language: 'en',
+      };
+      await supabaseAdmin.from('users').upsert(profile).catch(() => {});
+    }
 
     // Update last_login_at
     await supabaseAdmin
@@ -95,7 +112,7 @@ router.post('/login', [
     });
   } catch (err) {
     logger.error('Login error', { error: err.message });
-    res.status(500).json({ error: 'Login failed' });
+    res.status(500).json({ error: 'Login failed: ' + err.message });
   }
 });
 
@@ -105,6 +122,7 @@ router.post('/refresh', [body('refresh_token').notEmpty()], validate, async (req
   try {
     const { data, error } = await supabase.auth.refreshSession({ refresh_token });
     if (error) return res.status(401).json({ error: error.message });
+    if (!data || !data.session) return res.status(401).json({ error: 'Invalid refresh session' });
     res.json({
       access_token: data.session.access_token,
       refresh_token: data.session.refresh_token,

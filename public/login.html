@@ -132,8 +132,12 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
   btn.textContent = 'Signing in…'; btn.disabled = true;
   try {
     const d = await Api.post('/auth/login',{ email: document.getElementById('l-email').value, password: document.getElementById('l-pass').value });
+    if (!d || !d.access_token) {
+      throw new Error(d?.error || 'Login response missing access token.');
+    }
     Auth.save(d);
-    Toast.success('Welcome back, '+d.user.full_name+'!');
+    const name = d.user?.full_name || d.user?.email || 'User';
+    Toast.success('Welcome back, '+name+'!');
     setTimeout(()=>Auth.redirect(d.user), 600);
   } catch(err){ Toast.error(err.message); btn.textContent='Sign In →'; btn.disabled=false; }
 });

@@ -32,9 +32,10 @@ const Api = (() => {
 /* ── Auth ────────────────────────────────────────────────── */
 const Auth = {
   save(d) {
-    localStorage.setItem('em_token', d.access_token);
-    localStorage.setItem('em_refresh', d.refresh_token);
-    localStorage.setItem('em_user', JSON.stringify(d.user));
+    if (!d) return;
+    if (d.access_token) localStorage.setItem('em_token', d.access_token);
+    if (d.refresh_token) localStorage.setItem('em_refresh', d.refresh_token);
+    if (d.user) localStorage.setItem('em_user', JSON.stringify(d.user));
   },
   user() { try { return JSON.parse(localStorage.getItem('em_user')||'null'); } catch { return null; } },
   loggedIn() { return !!localStorage.getItem('em_token'); },
