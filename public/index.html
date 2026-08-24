@@ -3,171 +3,636 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>EduMantra – AI Skill Intelligence Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="description" content="AI-powered competency assessment, personalized learning pathways, and seamless iGOT Karmayogi integration for India's Official Statistical System.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/lucide-static@latest/font/lucide.css" rel="stylesheet">
 <style>
-:root{--p:#2563eb;--pd:#1d4ed8;--pl:#eff6ff;--s:#7c3aed;--g:#16a34a;--w:#d97706;--d:#dc2626;--c:#0891b2;--bg:#f8fafc;--sur:#fff;--brd:#e2e8f0;--txt:#0f172a;--txs:#64748b;--txm:#94a3b8;--r:12px;--rs:8px;--sh:0 1px 3px rgba(0,0,0,.08);--shm:0 4px 16px rgba(0,0,0,.1);--shl:0 8px 40px rgba(0,0,0,.14);--t:.2s ease}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:15px;scroll-behavior:smooth}
-body{font-family:'Inter',system-ui,sans-serif;color:var(--txt);background:var(--bg);line-height:1.6}
-a{color:inherit;text-decoration:none}
-img{max-width:100%;display:block}
+/* ══════════════════════════════════════════════════════════
+   EduMantra – Premium Landing Page Stylesheet
+   Design: Glassmorphism + Gradient + Micro-Animations
+   ══════════════════════════════════════════════════════════ */
 
-/* ── NAV ── */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--brd);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{display:flex;align-items:center;gap:.65rem}
-.logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--p),var(--s));border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.9rem}
-.nav-logo span{font-weight:700;font-size:1.05rem}
-.nav-links{display:flex;gap:.25rem;align-items:center}
-.nav-links a{padding:.4rem .8rem;border-radius:var(--rs);color:var(--txs);font-size:.875rem;font-weight:500;transition:background var(--t),color var(--t)}
-.nav-links a:hover{background:var(--bg);color:var(--txt)}
-.nav-right{display:flex;align-items:center;gap:.6rem}
-.lang-sel{padding:.35rem .7rem;border:1.5px solid var(--brd);border-radius:var(--rs);font-size:.8rem;cursor:pointer;background:var(--sur)}
-.btn{display:inline-flex;align-items:center;gap:.35rem;padding:.5rem 1.1rem;border:none;border-radius:var(--rs);font-size:.875rem;font-weight:500;cursor:pointer;transition:background var(--t);white-space:nowrap}
-.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--pd)}
-.btn-out{background:transparent;border:1.5px solid var(--brd);color:var(--txt)}.btn-out:hover{background:var(--bg)}
-.btn-lg{padding:.7rem 1.6rem;font-size:1rem}
-.btn-xl{padding:.85rem 2rem;font-size:1.05rem;border-radius:10px}
+:root {
+  /* Brand Palette */
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-light: #3b82f6;
+  --primary-glow: rgba(37, 99, 235, 0.25);
+  --accent: #7c3aed;
+  --accent-light: #a78bfa;
+  --teal: #0891b2;
+  --emerald: #10b981;
+  --amber: #f59e0b;
+  --rose: #f43f5e;
 
-/* ── HERO ── */
-.hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 45%,#4c1d95 100%);color:#fff;padding:6rem 2rem 5rem;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(124,58,237,.35),transparent 60%)}
-.hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:.35rem 1rem;font-size:.78rem;margin-bottom:1.5rem}
-.hero h1{font-size:3rem;font-weight:800;line-height:1.12;max-width:780px;margin:0 auto 1.25rem}
-.hero h1 span{background:linear-gradient(90deg,#60a5fa,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero p{font-size:1.1rem;opacity:.85;max-width:580px;margin:0 auto 2.25rem;line-height:1.7}
-.hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
-.hero-stats{display:flex;justify-content:center;gap:3rem;margin-top:3.5rem;flex-wrap:wrap}
-.hs-item{text-align:center}
-.hs-val{font-size:1.85rem;font-weight:800}
-.hs-lbl{font-size:.8rem;opacity:.7}
+  /* Surfaces */
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-elevated: rgba(255,255,255,0.72);
+  --border: rgba(226, 232, 240, 0.8);
+  --border-light: rgba(226, 232, 240, 0.5);
 
-/* ── SECTIONS ── */
-section{padding:5rem 2rem}
-.container{max-width:1160px;margin:0 auto}
-.section-tag{display:inline-flex;align-items:center;gap:.4rem;background:var(--pl);color:var(--p);border-radius:99px;padding:.3rem .9rem;font-size:.75rem;font-weight:600;margin-bottom:.75rem}
-.section-title{font-size:2rem;font-weight:800;line-height:1.2;margin-bottom:.75rem}
-.section-sub{color:var(--txs);font-size:1rem;line-height:1.7;max-width:560px}
+  /* Text */
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
 
-/* ── ROLE CARDS ── */
-.roles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.25rem;margin-top:2.5rem}
-.role-card{background:var(--sur);border:2px solid var(--brd);border-radius:var(--r);padding:1.5rem;text-align:center;cursor:pointer;transition:border-color var(--t),transform var(--t),box-shadow var(--t)}
-.role-card:hover{border-color:var(--p);transform:translateY(-3px);box-shadow:var(--shm)}
-.role-icon{font-size:2.2rem;margin-bottom:.75rem}
-.role-name{font-weight:700;font-size:.95rem;margin-bottom:.3rem}
-.role-desc{font-size:.78rem;color:var(--txs);line-height:1.5}
-.role-card .rc-badge{display:inline-block;margin-top:.75rem;background:var(--pl);color:var(--p);font-size:.7rem;font-weight:600;padding:.2rem .65rem;border-radius:99px}
+  /* Effects */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.12);
+  --shadow-glow: 0 0 40px var(--primary-glow);
+  --blur: blur(20px);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-/* ── HOW IT WORKS ── */
-.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem;margin-top:2.5rem;counter-reset:step}
-.step-card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:1.5rem;position:relative;box-shadow:var(--sh)}
-.step-card::before{counter-increment:step;content:counter(step);position:absolute;top:-14px;left:1.25rem;width:28px;height:28px;background:var(--p);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700}
-.step-icon{font-size:1.8rem;margin-bottom:.6rem}
-.step-title{font-weight:700;margin-bottom:.3rem;font-size:.92rem}
-.step-desc{font-size:.8rem;color:var(--txs);line-height:1.55}
+  /* Hero gradients */
+  --hero-bg: linear-gradient(135deg, #0c1222 0%, #111d42 30%, #1e3a8a 60%, #312e81 100%);
+}
 
-/* ── SERVICE FLOW ── */
-.flow-wrap{display:flex;align-items:flex-start;gap:0;overflow-x:auto;margin-top:2.5rem;padding-bottom:.5rem}
-.flow-item{display:flex;flex-direction:column;align-items:center;min-width:140px;flex:1}
-.flow-dot{width:48px;height:48px;background:linear-gradient(135deg,var(--p),var(--s));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;flex-shrink:0}
-.flow-line{flex:1;height:2px;background:linear-gradient(90deg,var(--p),var(--s));margin-top:23px;min-width:30px}
-.flow-label{font-size:.75rem;font-weight:600;margin-top:.6rem;text-align:center;color:var(--txt);max-width:120px}
-.flow-sub{font-size:.68rem;color:var(--txs);text-align:center;margin-top:.2rem;max-width:120px}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body { font-family: 'Inter', system-ui, -apple-system, sans-serif; color: var(--text); background: var(--bg); line-height: 1.6; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
 
-/* ── FEATURES GRID ── */
-.features{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;margin-top:2.5rem}
-.feat-card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:1.5rem;box-shadow:var(--sh);transition:box-shadow var(--t)}
-.feat-card:hover{box-shadow:var(--shm)}
-.feat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:.85rem}
-.feat-title{font-weight:700;font-size:.92rem;margin-bottom:.35rem}
-.feat-desc{font-size:.8rem;color:var(--txs);line-height:1.55}
+/* ── SCROLL ANIMATIONS ─────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
 
-/* ── PROGRAM CARDS ── */
-.prog-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
-.prog-card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
-.prog-header{padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem}
-.prog-logo{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
-.prog-body{padding:0 1.5rem 1.5rem}
-.prog-body ul{list-style:none;display:flex;flex-direction:column;gap:.4rem}
-.prog-body ul li{font-size:.82rem;color:var(--txs);display:flex;align-items:flex-start;gap:.4rem}
-.prog-body ul li::before{content:'✓';color:var(--g);font-weight:700;flex-shrink:0}
+/* ── NAVBAR ────────────────────────────────────────────── */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: 72px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+  background: rgba(255,255,255,0.75); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.4s, box-shadow 0.4s;
+}
+.navbar.scrolled { background: rgba(255,255,255,0.95); box-shadow: var(--shadow-sm); }
+.nav-brand { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; }
+.nav-brand-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 800; font-size: 1rem; font-family: 'Plus Jakarta Sans', sans-serif;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+}
+.nav-brand-text { font-weight: 800; font-size: 1.15rem; font-family: 'Plus Jakarta Sans', sans-serif; }
+.nav-links { display: flex; align-items: center; gap: 0.25rem; }
+.nav-links a {
+  padding: 0.45rem 0.85rem; border-radius: var(--radius-xs); color: var(--text-secondary);
+  font-size: 0.875rem; font-weight: 500; transition: color var(--transition), background var(--transition);
+  position: relative;
+}
+.nav-links a:hover { color: var(--text); background: rgba(37,99,235,0.06); }
+.nav-actions { display: flex; align-items: center; gap: 0.65rem; }
+.lang-select {
+  padding: 0.4rem 0.7rem; border: 1.5px solid var(--border); border-radius: var(--radius-xs);
+  font-size: 0.8rem; cursor: pointer; background: var(--surface); color: var(--text);
+  font-family: 'Inter', sans-serif; transition: border-color var(--transition);
+}
+.lang-select:hover { border-color: var(--primary); }
 
-/* ── GRAPH PREVIEW ── */
-.graph-section{background:linear-gradient(135deg,var(--p) 0%,var(--s) 100%);color:#fff}
-.graph-section .section-tag{background:rgba(255,255,255,.15);color:#fff}
-.graph-section .section-title,.graph-section .section-sub{color:#fff}
-.graph-section .section-sub{opacity:.85}
-.graph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.25rem;margin-top:2rem}
-.graph-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:var(--r);padding:1.25rem;backdrop-filter:blur(8px)}
-.graph-title{font-size:.85rem;font-weight:600;margin-bottom:1rem;opacity:.9}
-.mini-bars{display:flex;align-items:flex-end;gap:.35rem;height:80px}
-.mb-col{display:flex;flex-direction:column;align-items:center;gap:.25rem;flex:1}
-.mb-bar{width:100%;border-radius:3px 3px 0 0;background:rgba(255,255,255,.4)}
-.mb-lbl{font-size:.6rem;opacity:.7;text-align:center}
-.donut-demo{display:flex;align-items:center;gap:1.25rem}
-.dd-legend{font-size:.73rem;display:flex;flex-direction:column;gap:.35rem}
-.dd-row{display:flex;align-items:center;gap:.4rem}
-.dd-dot{width:8px;height:8px;border-radius:50%}
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  padding: 0.55rem 1.2rem; border: none; border-radius: var(--radius-sm);
+  font-size: 0.875rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+  font-family: 'Inter', sans-serif; transition: all var(--transition); position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0);
+  transition: background 0.3s;
+}
+.btn:hover::after { background: rgba(255,255,255,0.1); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff; box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+}
+.btn-primary:hover { box-shadow: 0 6px 20px rgba(37,99,235,0.45); transform: translateY(-1px); }
+.btn-outline {
+  background: transparent; border: 1.5px solid var(--border); color: var(--text);
+}
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); background: rgba(37,99,235,0.04); }
+.btn-ghost {
+  background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.35); }
+.btn-lg { padding: 0.75rem 1.7rem; font-size: 1rem; border-radius: 12px; }
+.btn-xl { padding: 0.9rem 2.2rem; font-size: 1.05rem; border-radius: 14px; }
 
-/* ── TESTIMONIALS ── */
-.testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;margin-top:2rem}
-.testi-card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:1.5rem;box-shadow:var(--sh)}
-.testi-quote{font-size:.875rem;color:var(--txs);line-height:1.7;margin-bottom:1rem;font-style:italic}
-.testi-author{display:flex;align-items:center;gap:.65rem}
-.testi-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--s));display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:700}
-.testi-name{font-size:.85rem;font-weight:600}
-.testi-role{font-size:.72rem;color:var(--txm)}
+/* Hamburger */
+.hamburger {
+  display: none; flex-direction: column; gap: 5px; cursor: pointer;
+  background: none; border: none; padding: 4px; z-index: 1001;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px; background: var(--text);
+  border-radius: 2px; transition: all 0.3s;
+}
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
-/* ── METRICS ── */
-.metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-top:2rem}
-.metric-card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:1.25rem;text-align:center;box-shadow:var(--sh)}
-.metric-val{font-size:2rem;font-weight:800;color:var(--p);margin-bottom:.2rem}
-.metric-lbl{font-size:.78rem;color:var(--txs)}
+/* ── HERO ──────────────────────────────────────────────── */
+.hero {
+  position: relative; min-height: 100vh; display: flex; align-items: center;
+  justify-content: center; padding: 7rem 2rem 5rem; text-align: center;
+  background: var(--hero-bg); color: #fff; overflow: hidden;
+}
+.hero-bg-effects {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+}
+.hero-orb {
+  position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4;
+  animation: orbFloat 12s ease-in-out infinite;
+}
+.hero-orb-1 { width: 600px; height: 600px; background: rgba(37,99,235,0.35); top: -10%; right: -10%; animation-delay: 0s; }
+.hero-orb-2 { width: 400px; height: 400px; background: rgba(124,58,237,0.3); bottom: -5%; left: -5%; animation-delay: -4s; }
+.hero-orb-3 { width: 300px; height: 300px; background: rgba(8,145,178,0.25); top: 40%; left: 50%; animation-delay: -8s; }
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -30px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
 
-/* ── FAQ ── */
-.faq-list{display:flex;flex-direction:column;gap:.5rem;margin-top:2rem;max-width:760px}
-.faq-item{border:1px solid var(--brd);border-radius:var(--r);overflow:hidden}
-.faq-q{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;cursor:pointer;font-weight:500;font-size:.895rem;background:var(--sur);user-select:none}
-.faq-q span{transition:transform .2s}
-.faq-item.open .faq-q span{transform:rotate(180deg)}
-.faq-a{display:none;padding:0 1.25rem 1rem;font-size:.855rem;color:var(--txs);line-height:1.7}
-.faq-item.open .faq-a{display:block}
+/* Grid pattern overlay */
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 32px 32px; opacity: 0.5;
+}
 
-/* ── FOOTER ── */
-footer{background:#0f172a;color:rgba(255,255,255,.75);padding:3.5rem 2rem 2rem}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;max-width:1160px;margin:0 auto 2.5rem}
-.footer-brand p{font-size:.82rem;line-height:1.7;margin-top:.6rem;opacity:.7}
-.footer-col h4{font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.85rem;text-transform:uppercase;letter-spacing:.06em}
-.footer-col a{display:block;font-size:.82rem;margin-bottom:.45rem;opacity:.7;transition:opacity .18s;cursor:pointer}
-.footer-col a:hover{opacity:1}
-.footer-bottom{max-width:1160px;margin:0 auto;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem;font-size:.78rem;opacity:.6}
+.hero-content { position: relative; z-index: 2; max-width: 860px; margin: 0 auto; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 99px; padding: 0.4rem 1.1rem 0.4rem 0.7rem;
+  font-size: 0.82rem; font-weight: 500; margin-bottom: 1.75rem;
+  backdrop-filter: blur(12px); animation: fadeInDown 0.8s ease-out;
+}
+.hero-badge-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--emerald);
+  box-shadow: 0 0 8px rgba(16,185,129,0.6); animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ── MODAL ── */
-.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .2s}
-.modal-ov.open{opacity:1;pointer-events:auto}
-.modal-box{background:#fff;border-radius:16px;padding:2rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);transform:translateY(16px);transition:transform .2s}
-.modal-ov.open .modal-box{transform:none}
+.hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1;
+  margin-bottom: 1.35rem; animation: fadeInUp 0.8s ease-out 0.15s backwards;
+}
+.hero h1 .gradient-text {
+  background: linear-gradient(135deg, #60a5fa, #a78bfa, #c084fc);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-subtitle {
+  font-size: clamp(1rem, 1.5vw, 1.15rem); opacity: 0.82; max-width: 600px;
+  margin: 0 auto 2.5rem; line-height: 1.75;
+  animation: fadeInUp 0.8s ease-out 0.3s backwards;
+}
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
-@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}.prog-grid{grid-template-columns:1fr}}
-@media(max-width:600px){.hero h1{font-size:1.9rem}.nav-links{display:none}.hero-stats{gap:1.5rem}.section-title{font-size:1.5rem}}
+.hero-cta {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  animation: fadeInUp 0.8s ease-out 0.45s backwards;
+}
+.hero-stats {
+  display: flex; justify-content: center; gap: clamp(1.5rem, 4vw, 3.5rem);
+  margin-top: 4rem; flex-wrap: wrap;
+  animation: fadeInUp 0.8s ease-out 0.6s backwards;
+}
+.hero-stat { text-align: center; }
+.hero-stat-value {
+  font-size: 2rem; font-weight: 800; font-family: 'Plus Jakarta Sans', sans-serif;
+  line-height: 1.2;
+}
+.hero-stat-label { font-size: 0.78rem; opacity: 0.6; margin-top: 0.25rem; }
+
+/* ── SECTIONS ──────────────────────────────────────────── */
+section { padding: clamp(4rem, 8vw, 6rem) clamp(1rem, 4vw, 2rem); }
+.container { max-width: 1180px; margin: 0 auto; }
+.section-header { margin-bottom: 3rem; }
+.section-tag {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(124,58,237,0.1));
+  color: var(--primary); border: 1px solid rgba(37,99,235,0.15);
+  border-radius: 99px; padding: 0.35rem 1rem;
+  font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+  margin-bottom: 0.85rem;
+}
+.section-tag svg, .section-tag .lucide { width: 14px; height: 14px; }
+.section-title {
+  font-size: clamp(1.6rem, 3vw, 2.25rem); font-weight: 800; line-height: 1.15;
+  margin-bottom: 0.85rem; color: var(--text);
+}
+.section-subtitle {
+  color: var(--text-secondary); font-size: 1rem; line-height: 1.75;
+  max-width: 560px;
+}
+
+/* ── ROLE CARDS ────────────────────────────────────────── */
+.roles-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1.25rem; margin-top: 0.5rem;
+}
+.role-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 1.75rem 1.5rem; text-align: center;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.role-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(37,99,235,0.03), rgba(124,58,237,0.03));
+  opacity: 0; transition: opacity 0.4s;
+}
+.role-card:hover::before { opacity: 1; }
+.role-card:hover {
+  border-color: var(--primary-light); transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(37,99,235,0.12);
+}
+.role-icon-wrap {
+  width: 56px; height: 56px; border-radius: 14px; display: flex;
+  align-items: center; justify-content: center; margin: 0 auto 1rem;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.role-card:hover .role-icon-wrap { transform: scale(1.08) translateY(-2px); }
+.role-icon-wrap svg { width: 26px; height: 26px; }
+.role-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; font-family: 'Plus Jakarta Sans', sans-serif; }
+.role-desc { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; }
+.role-badge {
+  display: inline-block; margin-top: 0.85rem;
+  background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(124,58,237,0.08));
+  color: var(--primary); font-size: 0.7rem; font-weight: 600;
+  padding: 0.22rem 0.7rem; border-radius: 99px;
+}
+
+/* ── HOW IT WORKS ──────────────────────────────────────── */
+/* Flow diagram */
+.flow-wrap {
+  display: flex; align-items: flex-start; gap: 0; margin: 2.5rem 0;
+  overflow-x: auto; padding-bottom: 0.5rem;
+}
+.flow-node {
+  display: flex; flex-direction: column; align-items: center; min-width: 130px; flex: 1;
+}
+.flow-dot-wrap {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.3); flex-shrink: 0;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.flow-node:hover .flow-dot-wrap { transform: scale(1.1); box-shadow: 0 6px 24px rgba(37,99,235,0.4); }
+.flow-dot-wrap svg { width: 22px; height: 22px; color: #fff; stroke-width: 2; }
+.flow-connector {
+  flex: 1; height: 2px; min-width: 20px; margin-top: 25px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  opacity: 0.4;
+}
+.flow-text { font-size: 0.78rem; font-weight: 600; margin-top: 0.7rem; text-align: center; color: var(--text); max-width: 110px; }
+.flow-sub { font-size: 0.68rem; color: var(--text-muted); text-align: center; margin-top: 0.2rem; max-width: 110px; }
+
+/* Step cards */
+.steps-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.35rem; counter-reset: step;
+}
+.step-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.75rem 1.5rem 1.5rem;
+  position: relative; box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.step-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.step-number {
+  counter-increment: step; position: absolute; top: -14px; left: 1.25rem;
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 0.8rem; font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  box-shadow: 0 3px 10px rgba(37,99,235,0.3);
+}
+.step-number::after { content: counter(step); }
+.step-icon { margin-bottom: 0.65rem; color: var(--primary); }
+.step-icon svg { width: 28px; height: 28px; stroke-width: 1.8; }
+.step-title { font-weight: 700; margin-bottom: 0.35rem; font-size: 0.95rem; font-family: 'Plus Jakarta Sans', sans-serif; }
+.step-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+
+/* ── FEATURES GRID ─────────────────────────────────────── */
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.35rem;
+}
+.feat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.75rem; position: relative;
+  overflow: hidden; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.feat-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  opacity: 0; transition: opacity 0.4s;
+}
+.feat-card:hover::after { opacity: 1; }
+.feat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+.feat-icon-wrap {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem;
+}
+.feat-icon-wrap svg { width: 22px; height: 22px; stroke-width: 1.8; }
+.feat-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; font-family: 'Plus Jakarta Sans', sans-serif; }
+.feat-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+
+/* ── PROGRAM CARDS ─────────────────────────────────────── */
+.prog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.prog-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.prog-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.prog-header { padding: 1.35rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+.prog-logo {
+  width: 52px; height: 52px; border-radius: 14px; display: flex;
+  align-items: center; justify-content: center; font-size: 1.3rem;
+  font-weight: 800; flex-shrink: 0; font-family: 'Plus Jakarta Sans', sans-serif;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.prog-header-text h3 { font-size: 1rem; font-weight: 700; }
+.prog-header-text p { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem; }
+.prog-body { padding: 0 1.5rem 1.5rem; }
+.prog-body ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.prog-body ul li {
+  font-size: 0.84rem; color: var(--text-secondary); display: flex;
+  align-items: flex-start; gap: 0.5rem; line-height: 1.5;
+}
+.prog-check {
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+}
+.prog-check svg { width: 12px; height: 12px; stroke-width: 3; }
+
+/* ── ANALYTICS PREVIEW ─────────────────────────────────── */
+.analytics-section {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%);
+  color: #fff; position: relative; overflow: hidden;
+}
+.analytics-section::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.analytics-section .section-tag {
+  background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.15);
+}
+.analytics-section .section-title,
+.analytics-section .section-subtitle { color: #fff; }
+.analytics-section .section-subtitle { opacity: 0.8; }
+.analytics-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.35rem; position: relative; z-index: 1;
+}
+.graph-card {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius); padding: 1.35rem; backdrop-filter: blur(12px);
+  transition: background 0.3s, border-color 0.3s;
+}
+.graph-card:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+.graph-title {
+  font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; opacity: 0.9;
+  display: flex; align-items: center; gap: 0.45rem;
+}
+.graph-title svg { width: 16px; height: 16px; opacity: 0.8; }
+.mini-bars { display: flex; align-items: flex-end; gap: 0.4rem; height: 85px; }
+.mb-col { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; flex: 1; }
+.mb-bar { width: 100%; border-radius: 4px 4px 0 0; transition: height 1s cubic-bezier(0.4, 0, 0.2, 1); }
+.mb-lbl { font-size: 0.62rem; opacity: 0.6; text-align: center; }
+.donut-demo { display: flex; align-items: center; gap: 1.25rem; }
+.dd-legend { font-size: 0.73rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.dd-row { display: flex; align-items: center; gap: 0.45rem; }
+.dd-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.progress-bar-wrap {
+  display: flex; flex-direction: column; gap: 0.65rem; margin-top: 0.25rem;
+}
+.progress-item label {
+  display: flex; justify-content: space-between; font-size: 0.73rem;
+  margin-bottom: 0.3rem; opacity: 0.85;
+}
+.progress-track { background: rgba(255,255,255,0.12); border-radius: 99px; height: 6px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 99px; transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* ── METRICS ───────────────────────────────────────────── */
+.metrics-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem; margin-bottom: 2.5rem;
+}
+.metric-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.35rem; text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.metric-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.metric-value {
+  font-size: 2.2rem; font-weight: 800; font-family: 'Plus Jakarta Sans', sans-serif;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1.2; margin-bottom: 0.3rem;
+}
+.metric-label { font-size: 0.8rem; color: var(--text-secondary); }
+
+/* ── TESTIMONIALS ──────────────────────────────────────── */
+.testi-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.35rem;
+}
+.testi-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.75rem; box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.testi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.testi-stars { display: flex; gap: 0.15rem; margin-bottom: 0.85rem; }
+.testi-star { color: var(--amber); width: 16px; height: 16px; }
+.testi-quote {
+  font-size: 0.9rem; color: var(--text-secondary); line-height: 1.75;
+  margin-bottom: 1.25rem; position: relative;
+}
+.testi-author { display: flex; align-items: center; gap: 0.75rem; }
+.testi-avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 0.85rem; font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.testi-name { font-size: 0.88rem; font-weight: 600; }
+.testi-role { font-size: 0.74rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+/* ── FAQ ───────────────────────────────────────────────── */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 780px; }
+.faq-item {
+  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.faq-item:hover { border-color: rgba(37,99,235,0.25); }
+.faq-item.open { border-color: var(--primary-light); box-shadow: 0 4px 16px rgba(37,99,235,0.08); }
+.faq-q {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 1.35rem; cursor: pointer; font-weight: 600; font-size: 0.92rem;
+  background: var(--surface); user-select: none;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: background var(--transition);
+}
+.faq-q:hover { background: rgba(37,99,235,0.02); }
+.faq-chevron {
+  width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+}
+.faq-item.open .faq-chevron { transform: rotate(180deg); color: var(--primary); }
+.faq-a {
+  max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+  padding 0.4s; padding: 0 1.35rem;
+}
+.faq-item.open .faq-a { max-height: 300px; padding: 0 1.35rem 1.25rem; }
+.faq-a-inner { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.75; }
+
+/* ── CTA BANNER ────────────────────────────────────────── */
+.cta-banner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%);
+  color: #fff; text-align: center; position: relative; overflow: hidden;
+}
+.cta-banner::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.cta-content { position: relative; z-index: 1; }
+.cta-content h2 { font-size: clamp(1.6rem, 3vw, 2.25rem); font-weight: 800; margin-bottom: 0.85rem; }
+.cta-content p { opacity: 0.8; max-width: 500px; margin: 0 auto 2rem; font-size: 1rem; line-height: 1.7; }
+
+/* ── FOOTER ────────────────────────────────────────────── */
+footer {
+  background: #0c1222; color: rgba(255,255,255,0.7);
+  padding: 4rem clamp(1rem, 4vw, 2rem) 2rem;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2.5rem; max-width: 1180px; margin: 0 auto 3rem;
+}
+.footer-brand-text { font-size: 0.84rem; line-height: 1.75; margin-top: 0.75rem; opacity: 0.65; }
+.footer-col h4 {
+  font-size: 0.78rem; font-weight: 700; color: #fff; margin-bottom: 1rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.footer-col a {
+  display: block; font-size: 0.84rem; margin-bottom: 0.55rem; opacity: 0.6;
+  transition: opacity var(--transition), color var(--transition); cursor: pointer;
+}
+.footer-col a:hover { opacity: 1; color: var(--primary-light); }
+.footer-bottom {
+  max-width: 1180px; margin: 0 auto; padding-top: 1.75rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex; justify-content: space-between; flex-wrap: wrap;
+  gap: 0.75rem; font-size: 0.78rem; opacity: 0.5;
+}
+
+/* ── MODAL ─────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px); z-index: 2000;
+  display: flex; align-items: center; justify-content: center; padding: 1rem;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal-box {
+  background: var(--surface); border-radius: 20px; padding: 2rem;
+  width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+  transform: translateY(20px) scale(0.98); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.modal-overlay.open .modal-box { transform: translateY(0) scale(1); }
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;
+}
+.modal-header h3 { font-size: 1.1rem; font-weight: 700; }
+.modal-close {
+  background: none; border: none; cursor: pointer; padding: 4px; color: var(--text-muted);
+  border-radius: 8px; transition: background 0.2s, color 0.2s;
+}
+.modal-close:hover { background: rgba(0,0,0,0.05); color: var(--text); }
+.modal-close svg { width: 20px; height: 20px; }
+.modal-content { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.8; }
+.modal-content strong { color: var(--text); }
+.modal-content p { margin-bottom: 0.85rem; }
+
+/* ── RESPONSIVE ────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .prog-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-links.mobile-open {
+    display: flex; flex-direction: column; position: fixed;
+    top: 72px; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.97);
+    backdrop-filter: var(--blur); padding: 1.5rem;
+    animation: slideDown 0.3s ease-out;
+    z-index: 999;
+  }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  .nav-links.mobile-open a {
+    padding: 0.85rem 1rem; font-size: 1rem; border-radius: var(--radius-sm);
+  }
+  .hero-stats { gap: 1.25rem; }
+  .hero-stat-value { font-size: 1.5rem; }
+  .features-grid { grid-template-columns: 1fr; }
+  .analytics-grid { grid-template-columns: 1fr 1fr; }
+  .testi-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 500px) {
+  .hero h1 { font-size: 1.8rem; }
+  .nav-actions .btn-outline { display: none; }
+  .analytics-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .roles-grid { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">
-    <div class="logo-mark">EM</div>
-    <span>EduMantra</span>
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <div class="nav-brand-icon">EM</div>
+    <span class="nav-brand-text">EduMantra</span>
   </div>
-  <div class="nav-links">
+  <div class="nav-links" id="navLinks">
     <a href="#about">About</a>
     <a href="#how">How It Works</a>
     <a href="#features">Features</a>
     <a href="#programs">Programs</a>
     <a href="#faq">FAQ</a>
   </div>
-  <div class="nav-right">
-    <select class="lang-sel" onchange="changeLang(this.value)" id="langSel">
+  <div class="nav-actions">
+    <select class="lang-select" onchange="changeLang(this.value)" id="langSel">
       <option value="en">🌐 English</option>
       <option value="hi">हि Hindi</option>
       <option value="ta">த Tamil</option>
@@ -175,164 +640,251 @@ footer{background:#0f172a;color:rgba(255,255,255,.75);padding:3.5rem 2rem 2rem}
       <option value="bn">বা Bengali</option>
       <option value="mr">म Marathi</option>
     </select>
-    <a href="/login.html" class="btn btn-out" style="font-size:.855rem">Sign In</a>
-    <a href="/login.html" class="btn btn-p" style="font-size:.855rem">Get Started →</a>
+    <a href="/login.html" class="btn btn-outline" style="font-size:.84rem">Sign In</a>
+    <a href="/login.html" class="btn btn-primary" style="font-size:.84rem">Get Started
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- ═══════════════ HERO ═══════════════ -->
 <section class="hero">
-  <div class="hero-badge">🇮🇳 Ministry of Statistics &amp; Programme Implementation</div>
-  <h1>Bridging the <span>Skill Gap</span> in India's Statistical System</h1>
-  <p>AI-powered competency assessment, personalized learning pathways, and seamless iGOT Karmayogi integration — built for government officials in the Official Statistical System.</p>
-  <div class="hero-cta">
-    <a href="/login.html" class="btn btn-p btn-xl">Start Learning Now →</a>
-    <button class="btn btn-xl" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3)" onclick="openDemo()">▶ Watch Demo</button>
+  <div class="hero-bg-effects">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
   </div>
-  <div class="hero-stats">
-    <div class="hs-item"><div class="hs-val">29+</div><div class="hs-lbl">Competency Domains</div></div>
-    <div class="hs-item"><div class="hs-val">5</div><div class="hs-lbl">User Roles</div></div>
-    <div class="hs-item"><div class="hs-val">AI-Powered</div><div class="hs-lbl">Skill Gap Analysis</div></div>
-    <div class="hs-item"><div class="hs-val">iGOT</div><div class="hs-lbl">Karmayogi Integrated</div></div>
-    <div class="hs-item"><div class="hs-val">TPAC</div><div class="hs-lbl">NSSTA Programs</div></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Ministry of Statistics &amp; Programme Implementation
+    </div>
+    <h1>Bridging the <span class="gradient-text">Skill Gap</span> in India's Statistical System</h1>
+    <p class="hero-subtitle">AI-powered competency assessment, personalized learning pathways, and seamless iGOT Karmayogi integration — built for government officials in the Official Statistical System.</p>
+    <div class="hero-cta">
+      <a href="/login.html" class="btn btn-primary btn-xl">
+        Start Learning Now
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <button class="btn btn-ghost btn-xl" onclick="openModal('demoModal')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+        Watch Demo
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-value" data-count="29">0</div><div class="hero-stat-label">Competency Domains</div></div>
+      <div class="hero-stat"><div class="hero-stat-value" data-count="5">0</div><div class="hero-stat-label">User Roles</div></div>
+      <div class="hero-stat"><div class="hero-stat-value">AI-Powered</div><div class="hero-stat-label">Skill Gap Analysis</div></div>
+      <div class="hero-stat"><div class="hero-stat-value">iGOT</div><div class="hero-stat-label">Karmayogi Integrated</div></div>
+      <div class="hero-stat"><div class="hero-stat-value">TPAC</div><div class="hero-stat-label">NSSTA Programs</div></div>
+    </div>
   </div>
 </section>
 
-<!-- ROLE SELECTION -->
-<section id="about" style="background:var(--sur)">
+<!-- ═══════════════ ROLE SELECTION ═══════════════ -->
+<section id="about" style="background:var(--surface)">
   <div class="container">
-    <div class="section-tag">👤 Role-Based Access</div>
-    <h2 class="section-title" data-i18n="roles_title">Who Uses EduMantra?</h2>
-    <p class="section-sub" data-i18n="roles_sub">Five distinct dashboards tailored to every stakeholder in the capacity-building ecosystem.</p>
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Role-Based Access
+      </div>
+      <h2 class="section-title" data-i18n="roles_title">Who Uses EduMantra?</h2>
+      <p class="section-subtitle" data-i18n="roles_sub">Five distinct dashboards tailored to every stakeholder in the capacity-building ecosystem.</p>
+    </div>
     <div class="roles-grid">
-      <div class="role-card" onclick="window.location.href='/login.html'">
-        <div class="role-icon">🎓</div>
+      <div class="role-card reveal reveal-delay-1" onclick="window.location.href='/login.html'">
+        <div class="role-icon-wrap" style="background:rgba(37,99,235,0.1)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1 4 3 6 3s6-2 6-3v-5"/></svg>
+        </div>
         <div class="role-name">Student / Official</div>
         <div class="role-desc">Access personalized learning paths, track competencies, take AI assessments and chat with the study assistant.</div>
-        <span class="rc-badge">Learner</span>
+        <span class="role-badge">Learner</span>
       </div>
-      <div class="role-card" onclick="window.location.href='/login.html'">
-        <div class="role-icon">👨‍🏫</div>
+      <div class="role-card reveal reveal-delay-2" onclick="window.location.href='/login.html'">
+        <div class="role-icon-wrap" style="background:rgba(124,58,237,0.1)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
         <div class="role-name">Educator / Instructor</div>
         <div class="role-desc">Create AI-powered quizzes, manage students, host virtual labs and provide feedback.</div>
-        <span class="rc-badge">Instructor</span>
+        <span class="role-badge">Instructor</span>
       </div>
-      <div class="role-card" onclick="window.location.href='/login.html'">
-        <div class="role-icon">🔍</div>
+      <div class="role-card reveal reveal-delay-3" onclick="window.location.href='/login.html'">
+        <div class="role-icon-wrap" style="background:rgba(8,145,178,0.1)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
         <div class="role-name">Supervisor</div>
         <div class="role-desc">Monitor learner progress, review skill gaps, track projected development and communicate with instructors.</div>
-        <span class="rc-badge">Supervisor</span>
+        <span class="role-badge">Supervisor</span>
       </div>
-      <div class="role-card" onclick="window.location.href='/login.html'">
-        <div class="role-icon">🏛️</div>
+      <div class="role-card reveal reveal-delay-4" onclick="window.location.href='/login.html'">
+        <div class="role-icon-wrap" style="background:rgba(245,158,11,0.1)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
         <div class="role-name">Organisation Admin</div>
         <div class="role-desc">Manage workforce competencies, track training effectiveness, analyse skill gaps across departments.</div>
-        <span class="rc-badge">Admin</span>
+        <span class="role-badge">Admin</span>
       </div>
-      <div class="role-card" onclick="window.location.href='/login.html'">
-        <div class="role-icon">💻</div>
+      <div class="role-card reveal reveal-delay-4" onclick="window.location.href='/login.html'">
+        <div class="role-icon-wrap" style="background:rgba(244,63,94,0.1)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
         <div class="role-name">Developer</div>
         <div class="role-desc">System monitoring, API management, deployment logs, security controls and platform configuration.</div>
-        <span class="rc-badge">Developer</span>
+        <span class="role-badge">Developer</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
+<!-- ═══════════════ HOW IT WORKS ═══════════════ -->
 <section id="how">
   <div class="container">
-    <div class="section-tag">⚙️ Process</div>
-    <h2 class="section-title">How It Works</h2>
-    <p class="section-sub">From onboarding to competency mastery in five intelligent steps.</p>
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Process
+      </div>
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-subtitle">From onboarding to competency mastery in five intelligent steps.</p>
+    </div>
 
     <!-- Flow diagram -->
-    <div class="flow-wrap">
-      <div class="flow-item"><div class="flow-dot">👤</div><div class="flow-label">Create Profile</div><div class="flow-sub">Role, experience, education</div></div>
-      <div class="flow-line"></div>
-      <div class="flow-item"><div class="flow-dot">🧩</div><div class="flow-label">Competency Map</div><div class="flow-sub">AI analyses your current levels</div></div>
-      <div class="flow-line"></div>
-      <div class="flow-item"><div class="flow-dot">📊</div><div class="flow-label">Gap Analysis</div><div class="flow-sub">vs job-role requirements</div></div>
-      <div class="flow-line"></div>
-      <div class="flow-item"><div class="flow-dot">🗺️</div><div class="flow-label">Learning Path</div><div class="flow-sub">AI curates iGOT + TPAC courses</div></div>
-      <div class="flow-line"></div>
-      <div class="flow-item"><div class="flow-dot">📈</div><div class="flow-label">Track &amp; Grow</div><div class="flow-sub">Continuous assessment &amp; feedback</div></div>
+    <div class="flow-wrap reveal">
+      <div class="flow-node">
+        <div class="flow-dot-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div class="flow-text">Create Profile</div><div class="flow-sub">Role, experience, education</div>
+      </div>
+      <div class="flow-connector"></div>
+      <div class="flow-node">
+        <div class="flow-dot-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+        <div class="flow-text">Competency Map</div><div class="flow-sub">AI analyses your levels</div>
+      </div>
+      <div class="flow-connector"></div>
+      <div class="flow-node">
+        <div class="flow-dot-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg></div>
+        <div class="flow-text">Gap Analysis</div><div class="flow-sub">vs job-role requirements</div>
+      </div>
+      <div class="flow-connector"></div>
+      <div class="flow-node">
+        <div class="flow-dot-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg></div>
+        <div class="flow-text">Learning Path</div><div class="flow-sub">AI curates iGOT + TPAC</div>
+      </div>
+      <div class="flow-connector"></div>
+      <div class="flow-node">
+        <div class="flow-dot-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+        <div class="flow-text">Track &amp; Grow</div><div class="flow-sub">Continuous assessment</div>
+      </div>
     </div>
 
     <!-- Steps -->
-    <div class="steps">
-      <div class="step-card"><div class="step-icon">📝</div><div class="step-title">Register &amp; Set Up Profile</div><div class="step-desc">Enter your designation, department, qualifications, experience and job role to build your official profile.</div></div>
-      <div class="step-card"><div class="step-icon">🤖</div><div class="step-title">AI Competency Assessment</div><div class="step-desc">Our AI engine maps your profile against 29+ competency indicators across 4 domains using NLP and ML.</div></div>
-      <div class="step-card"><div class="step-icon">🔍</div><div class="step-title">Skill Gap Identification</div><div class="step-desc">Visual breakdown of critical, high, medium and low gaps with LLM-generated action recommendations.</div></div>
-      <div class="step-card"><div class="step-icon">📚</div><div class="step-title">Personalised Pathway</div><div class="step-desc">Receive a curated sequence of iGOT Karmayogi courses and NSSTA TPAC programmes tailored to your gaps.</div></div>
-      <div class="step-card"><div class="step-icon">🎯</div><div class="step-title">Learn &amp; Get Assessed</div><div class="step-desc">Complete courses, take AI-generated MCQ quizzes with instant feedback and update your competency scores.</div></div>
-      <div class="step-card"><div class="step-icon">📊</div><div class="step-title">Analytics &amp; Reporting</div><div class="step-desc">Dashboards for learners, supervisors and admins with predictive analytics for future skill requirements.</div></div>
+    <div class="steps-grid">
+      <div class="step-card reveal"><div class="step-number"></div><div class="step-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div class="step-title">Register &amp; Set Up Profile</div><div class="step-desc">Enter your designation, department, qualifications, experience and job role to build your official profile.</div></div>
+      <div class="step-card reveal reveal-delay-1"><div class="step-number"></div><div class="step-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></div><div class="step-title">AI Competency Assessment</div><div class="step-desc">Our AI engine maps your profile against 29+ competency indicators across 4 domains using NLP and ML.</div></div>
+      <div class="step-card reveal reveal-delay-2"><div class="step-number"></div><div class="step-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div><div class="step-title">Skill Gap Identification</div><div class="step-desc">Visual breakdown of critical, high, medium and low gaps with LLM-generated action recommendations.</div></div>
+      <div class="step-card reveal reveal-delay-3"><div class="step-number"></div><div class="step-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div><div class="step-title">Personalised Pathway</div><div class="step-desc">Receive a curated sequence of iGOT Karmayogi courses and NSSTA TPAC programmes tailored to your gaps.</div></div>
+      <div class="step-card reveal reveal-delay-4"><div class="step-number"></div><div class="step-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="step-title">Learn &amp; Get Assessed</div><div class="step-desc">Complete courses, take AI-generated MCQ quizzes with instant feedback and update your competency scores.</div></div>
+      <div class="step-card reveal reveal-delay-4"><div class="step-number"></div><div class="step-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg></div><div class="step-title">Analytics &amp; Reporting</div><div class="step-desc">Dashboards for learners, supervisors and admins with predictive analytics for future skill requirements.</div></div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section id="features" style="background:var(--sur)">
+<!-- ═══════════════ FEATURES ═══════════════ -->
+<section id="features" style="background:var(--surface)">
   <div class="container">
-    <div class="section-tag">✨ Capabilities</div>
-    <h2 class="section-title">Platform Features</h2>
-    <p class="section-sub">Everything needed to build a future-ready statistical workforce.</p>
-    <div class="features">
-      <div class="feat-card"><div class="feat-icon" style="background:#eff6ff">🤖</div><div class="feat-title">AI Competency Assessment</div><div class="feat-desc">Automatic profiling using designation, education, experience and role. Continuously updated as you learn.</div></div>
-      <div class="feat-card"><div class="feat-icon" style="background:#f0fdf4">📊</div><div class="feat-title">Skill Gap Analysis</div><div class="feat-desc">LLM-generated insights comparing your levels against predefined job-role competency frameworks.</div></div>
-      <div class="feat-card"><div class="feat-icon" style="background:#f5f3ff">🗺️</div><div class="feat-title">Personalised Learning Paths</div><div class="feat-desc">AI selects and sequences courses from iGOT Karmayogi and TPAC based on your specific gaps.</div></div>
-      <div class="feat-card"><div class="feat-icon" style="background:#fffbeb">📝</div><div class="feat-title">AI MCQ Generator</div><div class="feat-desc">Upload any document or presentation — AI instantly creates quiz questions with explanations and feedback.</div></div>
-      <div class="feat-card"><div class="feat-icon" style="background:#ecfeff">🔗</div><div class="feat-title">iGOT Karmayogi Integration</div><div class="feat-desc">Live course catalogue sync, direct enrolment, progress tracking and completion certificates.</div></div>
-      <div class="feat-card"><div class="feat-icon" style="background:#fff1f2">🏛️</div><div class="feat-title">NSSTA TPAC Programmes</div><div class="feat-desc">Full integration with TPAC-recommended training programmes including schedules, modes and contacts.</div></div>
-      <div class="feat-card"><div class="feat-icon" style="background:#f0fdf4">💬</div><div class="feat-title">AI Virtual Assistant</div><div class="feat-desc">24/7 learning support for statistical concepts, course guidance and career questions in multiple languages.</div></div>
-      <div class="feat-card"><div class="feat-icon" style="background:#fdf4ff">🔒</div><div class="feat-title">Secure &amp; Compliant</div><div class="feat-desc">Role-based access control, RLS policies, SSO-ready, rate limiting and full audit trails.</div></div>
-      <div class="feat-card"><div class="feat-icon" style="background:#eff6ff">🌐</div><div class="feat-title">Multilingual Support</div><div class="feat-desc">English, Hindi, Tamil, Telugu, Bengali and Marathi — making learning accessible across India.</div></div>
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Capabilities
+      </div>
+      <h2 class="section-title">Platform Features</h2>
+      <p class="section-subtitle">Everything needed to build a future-ready statistical workforce.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card reveal">
+        <div class="feat-icon-wrap" style="background:rgba(37,99,235,0.08)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></div>
+        <div class="feat-title">AI Competency Assessment</div><div class="feat-desc">Automatic profiling using designation, education, experience and role. Continuously updated as you learn.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-1">
+        <div class="feat-icon-wrap" style="background:rgba(16,185,129,0.08)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg></div>
+        <div class="feat-title">Skill Gap Analysis</div><div class="feat-desc">LLM-generated insights comparing your levels against predefined job-role competency frameworks.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-2">
+        <div class="feat-icon-wrap" style="background:rgba(124,58,237,0.08)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg></div>
+        <div class="feat-title">Personalised Learning Paths</div><div class="feat-desc">AI selects and sequences courses from iGOT Karmayogi and TPAC based on your specific gaps.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-1">
+        <div class="feat-icon-wrap" style="background:rgba(245,158,11,0.08)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <div class="feat-title">AI MCQ Generator</div><div class="feat-desc">Upload any document or presentation — AI instantly creates quiz questions with explanations and feedback.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-2">
+        <div class="feat-icon-wrap" style="background:rgba(8,145,178,0.08)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+        <div class="feat-title">iGOT Karmayogi Integration</div><div class="feat-desc">Live course catalogue sync, direct enrolment, progress tracking and completion certificates.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-3">
+        <div class="feat-icon-wrap" style="background:rgba(244,63,94,0.08)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <div class="feat-title">NSSTA TPAC Programmes</div><div class="feat-desc">Full integration with TPAC-recommended training programmes including schedules, modes and contacts.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-2">
+        <div class="feat-icon-wrap" style="background:rgba(16,185,129,0.08)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="feat-title">AI Virtual Assistant</div><div class="feat-desc">24/7 learning support for statistical concepts, course guidance and career questions in multiple languages.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-3">
+        <div class="feat-icon-wrap" style="background:rgba(124,58,237,0.08)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="feat-title">Secure &amp; Compliant</div><div class="feat-desc">Role-based access control, RLS policies, SSO-ready, rate limiting and full audit trails.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-4">
+        <div class="feat-icon-wrap" style="background:rgba(37,99,235,0.08)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="feat-title">Multilingual Support</div><div class="feat-desc">English, Hindi, Tamil, Telugu, Bengali and Marathi — making learning accessible across India.</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- PROGRAMS -->
+<!-- ═══════════════ PROGRAMS ═══════════════ -->
 <section id="programs">
   <div class="container">
-    <div class="section-tag">📚 Integrated Programs</div>
-    <h2 class="section-title">Learning Ecosystem</h2>
-    <p class="section-sub">Two powerful training platforms integrated into one seamless experience.</p>
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+        Integrated Programs
+      </div>
+      <h2 class="section-title">Learning Ecosystem</h2>
+      <p class="section-subtitle">Two powerful training platforms integrated into one seamless experience.</p>
+    </div>
     <div class="prog-grid">
-      <div class="prog-card">
-        <div class="prog-header" style="background:#eff6ff">
-          <div class="prog-logo" style="background:var(--p);color:#fff">iG</div>
-          <div>
-            <div style="font-weight:700">iGOT Karmayogi</div>
-            <div style="font-size:.78rem;color:var(--txs)">Government of India Learning Platform</div>
-          </div>
+      <div class="prog-card reveal">
+        <div class="prog-header" style="background:linear-gradient(135deg,rgba(37,99,235,0.06),rgba(37,99,235,0.02))">
+          <div class="prog-logo" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff">iG</div>
+          <div class="prog-header-text"><h3>iGOT Karmayogi</h3><p>Government of India Learning Platform</p></div>
         </div>
         <div class="prog-body" style="padding-top:1rem">
           <ul>
-            <li>10,000+ courses across all domains</li>
-            <li>Live course catalogue synchronisation</li>
-            <li>Direct enrolment from EduMantra</li>
-            <li>Progress and completion tracking</li>
-            <li>Certificate and badge management</li>
-            <li>Competency-tagged course discovery</li>
+            <li><span class="prog-check" style="background:rgba(16,185,129,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>10,000+ courses across all domains</li>
+            <li><span class="prog-check" style="background:rgba(16,185,129,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Live course catalogue synchronisation</li>
+            <li><span class="prog-check" style="background:rgba(16,185,129,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Direct enrolment from EduMantra</li>
+            <li><span class="prog-check" style="background:rgba(16,185,129,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Progress and completion tracking</li>
+            <li><span class="prog-check" style="background:rgba(16,185,129,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Certificate and badge management</li>
+            <li><span class="prog-check" style="background:rgba(16,185,129,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Competency-tagged course discovery</li>
           </ul>
         </div>
       </div>
-      <div class="prog-card">
-        <div class="prog-header" style="background:#f5f3ff">
-          <div class="prog-logo" style="background:var(--s);color:#fff">TP</div>
-          <div>
-            <div style="font-weight:700">NSSTA TPAC</div>
-            <div style="font-size:.78rem;color:var(--txs)">Training Programme Advisory Committee</div>
-          </div>
+      <div class="prog-card reveal reveal-delay-2">
+        <div class="prog-header" style="background:linear-gradient(135deg,rgba(124,58,237,0.06),rgba(124,58,237,0.02))">
+          <div class="prog-logo" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff">TP</div>
+          <div class="prog-header-text"><h3>NSSTA TPAC</h3><p>Training Programme Advisory Committee</p></div>
         </div>
         <div class="prog-body" style="padding-top:1rem">
           <ul>
-            <li>Official statistics specialised training</li>
-            <li>Survey design and methodology courses</li>
-            <li>National accounts and price statistics</li>
-            <li>Upcoming batch schedules and venues</li>
-            <li>Online, offline and hybrid modes</li>
-            <li>Recommended by NSSTA experts</li>
+            <li><span class="prog-check" style="background:rgba(124,58,237,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Official statistics specialised training</li>
+            <li><span class="prog-check" style="background:rgba(124,58,237,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Survey design and methodology courses</li>
+            <li><span class="prog-check" style="background:rgba(124,58,237,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>National accounts and price statistics</li>
+            <li><span class="prog-check" style="background:rgba(124,58,237,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Upcoming batch schedules and venues</li>
+            <li><span class="prog-check" style="background:rgba(124,58,237,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Online, offline and hybrid modes</li>
+            <li><span class="prog-check" style="background:rgba(124,58,237,0.1)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Recommended by NSSTA experts</li>
           </ul>
         </div>
       </div>
@@ -340,24 +892,29 @@ footer{background:#0f172a;color:rgba(255,255,255,.75);padding:3.5rem 2rem 2rem}
   </div>
 </section>
 
-<!-- GRAPH PREVIEW -->
-<section class="graph-section">
+<!-- ═══════════════ ANALYTICS PREVIEW ═══════════════ -->
+<section class="analytics-section">
   <div class="container">
-    <div class="section-tag">📈 Analytics</div>
-    <h2 class="section-title">Data-Driven Insights</h2>
-    <p class="section-sub">Visualise workforce competencies, track training effectiveness and predict future skill needs.</p>
-    <div class="graph-grid">
-      <div class="graph-card">
-        <div class="graph-title">📊 Competency Levels by Domain</div>
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        Analytics
+      </div>
+      <h2 class="section-title">Data-Driven Insights</h2>
+      <p class="section-subtitle">Visualise workforce competencies, track training effectiveness and predict future skill needs.</p>
+    </div>
+    <div class="analytics-grid">
+      <div class="graph-card reveal">
+        <div class="graph-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg> Competency Levels by Domain</div>
         <div class="mini-bars">
-          <div class="mb-col"><div class="mb-bar" style="height:65px;background:#60a5fa"></div><span class="mb-lbl">Statistical</span></div>
-          <div class="mb-col"><div class="mb-bar" style="height:45px;background:#a78bfa"></div><span class="mb-lbl">Technical</span></div>
-          <div class="mb-col"><div class="mb-bar" style="height:55px;background:#34d399"></div><span class="mb-lbl">Digital</span></div>
-          <div class="mb-col"><div class="mb-bar" style="height:50px;background:#fbbf24"></div><span class="mb-lbl">Behavioural</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:68px;background:#60a5fa"></div><span class="mb-lbl">Statistical</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:48px;background:#a78bfa"></div><span class="mb-lbl">Technical</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:58px;background:#34d399"></div><span class="mb-lbl">Digital</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:52px;background:#fbbf24"></div><span class="mb-lbl">Behavioural</span></div>
         </div>
       </div>
-      <div class="graph-card">
-        <div class="graph-title">🎯 Skill Gap Distribution</div>
+      <div class="graph-card reveal reveal-delay-1">
+        <div class="graph-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Skill Gap Distribution</div>
         <div class="donut-demo">
           <svg viewBox="0 0 100 100" width="80" height="80">
             <circle cx="50" cy="50" r="30" fill="none" stroke="#ef4444" stroke-width="14" stroke-dasharray="47 141" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
@@ -373,127 +930,203 @@ footer{background:#0f172a;color:rgba(255,255,255,.75);padding:3.5rem 2rem 2rem}
           </div>
         </div>
       </div>
-      <div class="graph-card">
-        <div class="graph-title">📈 Learning Progress Over Time</div>
+      <div class="graph-card reveal reveal-delay-2">
+        <div class="graph-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Learning Progress Over Time</div>
         <div class="mini-bars">
-          <div class="mb-col"><div class="mb-bar" style="height:20px;background:rgba(255,255,255,.3)"></div><span class="mb-lbl">Jan</span></div>
-          <div class="mb-col"><div class="mb-bar" style="height:30px;background:rgba(255,255,255,.4)"></div><span class="mb-lbl">Mar</span></div>
-          <div class="mb-col"><div class="mb-bar" style="height:45px;background:rgba(255,255,255,.5)"></div><span class="mb-lbl">May</span></div>
-          <div class="mb-col"><div class="mb-bar" style="height:55px;background:rgba(255,255,255,.6)"></div><span class="mb-lbl">Jul</span></div>
-          <div class="mb-col"><div class="mb-bar" style="height:70px;background:rgba(255,255,255,.8)"></div><span class="mb-lbl">Sep</span></div>
-          <div class="mb-col"><div class="mb-bar" style="height:78px;background:#fff"></div><span class="mb-lbl">Now</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:22px;background:rgba(255,255,255,.25)"></div><span class="mb-lbl">Jan</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:32px;background:rgba(255,255,255,.35)"></div><span class="mb-lbl">Mar</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:48px;background:rgba(255,255,255,.45)"></div><span class="mb-lbl">May</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:58px;background:rgba(255,255,255,.55)"></div><span class="mb-lbl">Jul</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:72px;background:rgba(255,255,255,.75)"></div><span class="mb-lbl">Sep</span></div>
+          <div class="mb-col"><div class="mb-bar" style="height:80px;background:#fff"></div><span class="mb-lbl">Now</span></div>
         </div>
       </div>
-      <div class="graph-card">
-        <div class="graph-title">🔮 Predicted Future Skills</div>
-        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.25rem">
-          <div><div style="display:flex;justify-content:space-between;font-size:.73rem;margin-bottom:.25rem"><span>AI &amp; ML</span><span>High demand</span></div><div style="background:rgba(255,255,255,.15);border-radius:99px;height:6px"><div style="width:85%;background:#fff;border-radius:99px;height:6px"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;font-size:.73rem;margin-bottom:.25rem"><span>Cloud Computing</span><span>Rising</span></div><div style="background:rgba(255,255,255,.15);border-radius:99px;height:6px"><div style="width:70%;background:#a78bfa;border-radius:99px;height:6px"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;font-size:.73rem;margin-bottom:.25rem"><span>Data Privacy</span><span>Critical</span></div><div style="background:rgba(255,255,255,.15);border-radius:99px;height:6px"><div style="width:75%;background:#f97316;border-radius:99px;height:6px"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;font-size:.73rem;margin-bottom:.25rem"><span>GIS &amp; Spatial</span><span>Emerging</span></div><div style="background:rgba(255,255,255,.15);border-radius:99px;height:6px"><div style="width:60%;background:#34d399;border-radius:99px;height:6px"></div></div></div>
+      <div class="graph-card reveal reveal-delay-3">
+        <div class="graph-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> Predicted Future Skills</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-item"><label><span>AI &amp; ML</span><span>High demand</span></label><div class="progress-track"><div class="progress-fill" style="width:85%;background:#fff"></div></div></div>
+          <div class="progress-item"><label><span>Cloud Computing</span><span>Rising</span></label><div class="progress-track"><div class="progress-fill" style="width:70%;background:#a78bfa"></div></div></div>
+          <div class="progress-item"><label><span>Data Privacy</span><span>Critical</span></label><div class="progress-track"><div class="progress-fill" style="width:75%;background:#f97316"></div></div></div>
+          <div class="progress-item"><label><span>GIS &amp; Spatial</span><span>Emerging</span></label><div class="progress-track"><div class="progress-fill" style="width:60%;background:#34d399"></div></div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TESTIMONIALS & METRICS -->
-<section style="background:var(--sur)">
+<!-- ═══════════════ TESTIMONIALS & METRICS ═══════════════ -->
+<section style="background:var(--surface)">
   <div class="container">
-    <div class="section-tag">⭐ Impact</div>
-    <h2 class="section-title">Proven Results</h2>
-    <div class="metrics">
-      <div class="metric-card"><div class="metric-val">94%</div><div class="metric-lbl">Training Completion Rate</div></div>
-      <div class="metric-card"><div class="metric-val">3.2×</div><div class="metric-lbl">Faster Skill Gap Closure</div></div>
-      <div class="metric-card"><div class="metric-val">87%</div><div class="metric-lbl">Learner Satisfaction</div></div>
-      <div class="metric-card"><div class="metric-val">10k+</div><div class="metric-lbl">iGOT Courses Available</div></div>
-      <div class="metric-card"><div class="metric-val">29+</div><div class="metric-lbl">Competency Indicators</div></div>
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Impact
+      </div>
+      <h2 class="section-title">Proven Results</h2>
     </div>
-    <div class="testi-grid" style="margin-top:2rem">
-      <div class="testi-card"><p class="testi-quote">"EduMantra identified gaps in my technical skills I wasn't even aware of. The AI-generated pathway was perfectly aligned to my job requirements as a Statistical Officer."</p><div class="testi-author"><div class="testi-avatar">RS</div><div><div class="testi-name">Rajesh Sharma</div><div class="testi-role">Statistical Officer, NSO</div></div></div></div>
-      <div class="testi-card"><p class="testi-quote">"The AI quiz generator saved me hours of assessment prep. I upload my lecture notes and get 20 quality MCQs in seconds — with explanations for each answer."</p><div class="testi-author"><div class="testi-avatar">PK</div><div><div class="testi-name">Priya Kumar</div><div class="testi-role">Faculty, NSSTA</div></div></div></div>
-      <div class="testi-card"><p class="testi-quote">"The organisation dashboard gives us a live view of competency distribution across 200+ officials. We can now plan capacity building programmes with real data."</p><div class="testi-author"><div class="testi-avatar">AM</div><div><div class="testi-name">Amit Mehta</div><div class="testi-role">Deputy Director, MOSPI</div></div></div></div>
+    <div class="metrics-grid reveal">
+      <div class="metric-card"><div class="metric-value" data-count="94" data-suffix="%">0%</div><div class="metric-label">Training Completion Rate</div></div>
+      <div class="metric-card"><div class="metric-value" data-count="3.2" data-suffix="×" data-decimal="true">0×</div><div class="metric-label">Faster Skill Gap Closure</div></div>
+      <div class="metric-card"><div class="metric-value" data-count="87" data-suffix="%">0%</div><div class="metric-label">Learner Satisfaction</div></div>
+      <div class="metric-card"><div class="metric-value" data-count="10" data-suffix="k+" data-prefix="">0</div><div class="metric-label">iGOT Courses Available</div></div>
+      <div class="metric-card"><div class="metric-value" data-count="29" data-suffix="+">0</div><div class="metric-label">Competency Indicators</div></div>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p class="testi-quote">"EduMantra identified gaps in my technical skills I wasn't even aware of. The AI-generated pathway was perfectly aligned to my job requirements as a Statistical Officer."</p>
+        <div class="testi-author"><div class="testi-avatar">RS</div><div><div class="testi-name">Rajesh Sharma</div><div class="testi-role">Statistical Officer, NSO</div></div></div>
+      </div>
+      <div class="testi-card reveal reveal-delay-1">
+        <div class="testi-stars">
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p class="testi-quote">"The AI quiz generator saved me hours of assessment prep. I upload my lecture notes and get 20 quality MCQs in seconds — with explanations for each answer."</p>
+        <div class="testi-author"><div class="testi-avatar">PK</div><div><div class="testi-name">Priya Kumar</div><div class="testi-role">Faculty, NSSTA</div></div></div>
+      </div>
+      <div class="testi-card reveal reveal-delay-2">
+        <div class="testi-stars">
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="testi-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p class="testi-quote">"The organisation dashboard gives us a live view of competency distribution across 200+ officials. We can now plan capacity building programmes with real data."</p>
+        <div class="testi-author"><div class="testi-avatar">AM</div><div><div class="testi-name">Amit Mehta</div><div class="testi-role">Deputy Director, MOSPI</div></div></div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- FAQ -->
+<!-- ═══════════════ FAQ ═══════════════ -->
 <section id="faq">
   <div class="container">
-    <div class="section-tag">❓ FAQ</div>
-    <h2 class="section-title">Frequently Asked Questions</h2>
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+        FAQ
+      </div>
+      <h2 class="section-title">Frequently Asked Questions</h2>
+    </div>
     <div class="faq-list" id="faqList">
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is EduMantra? <span>▾</span></div><div class="faq-a">EduMantra is an AI-enabled Skill Intelligence and Learning Platform designed for officials engaged in India's Official Statistical System. It assesses competencies, identifies skill gaps, and recommends personalized learning pathways from iGOT Karmayogi and NSSTA TPAC programmes.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does the skill gap analysis work? <span>▾</span></div><div class="faq-a">When you create your profile (designation, education, experience, job role), our AI engine maps your competencies against predefined frameworks for Official Statistics. It compares your current level to requirements and generates a detailed gap report with severity ratings and LLM-powered recommendations.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is EduMantra integrated with iGOT Karmayogi? <span>▾</span></div><div class="faq-a">Yes. EduMantra directly integrates with the iGOT Karmayogi platform. You can browse the course catalogue, enrol directly, track your progress and have completions reflected in your competency profile — all from within EduMantra.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What languages does the platform support? <span>▾</span></div><div class="faq-a">EduMantra supports English, Hindi, Tamil, Telugu, Bengali and Marathi. The AI assistant can respond in your preferred language, making the platform accessible to officials across all states.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does the AI MCQ generator work? <span>▾</span></div><div class="faq-a">Educators can upload documents, presentations, or paste text content. Our AI (powered by GPT-4o) analyses the content and generates multiple-choice questions with options, correct answers, difficulty levels and detailed explanations — ready to publish as an assessment in minutes.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is my data secure? <span>▾</span></div><div class="faq-a">Yes. EduMantra uses Supabase with Row Level Security (RLS) so each user can only access their own data. All data is encrypted in transit (TLS) and at rest. The platform supports role-based access control, SSO, and maintains full audit logs of all actions.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Who can use EduMantra? <span>▾</span></div><div class="faq-a">EduMantra is designed for five roles: Students/Officials (learners), Educators/Instructors (trainers), Supervisors (monitoring staff performance), Organisation Administrators (managing departments), and Developers (technical platform management).</div></div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">What is EduMantra? <svg class="faq-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div class="faq-a"><div class="faq-a-inner">EduMantra is an AI-enabled Skill Intelligence and Learning Platform designed for officials engaged in India's Official Statistical System. It assesses competencies, identifies skill gaps, and recommends personalized learning pathways from iGOT Karmayogi and NSSTA TPAC programmes.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-1">
+        <div class="faq-q" onclick="toggleFaq(this)">How does the skill gap analysis work? <svg class="faq-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div class="faq-a"><div class="faq-a-inner">When you create your profile (designation, education, experience, job role), our AI engine maps your competencies against predefined frameworks for Official Statistics. It compares your current level to requirements and generates a detailed gap report with severity ratings and LLM-powered recommendations.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-2">
+        <div class="faq-q" onclick="toggleFaq(this)">Is EduMantra integrated with iGOT Karmayogi? <svg class="faq-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div class="faq-a"><div class="faq-a-inner">Yes. EduMantra directly integrates with the iGOT Karmayogi platform. You can browse the course catalogue, enrol directly, track your progress and have completions reflected in your competency profile — all from within EduMantra.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-3">
+        <div class="faq-q" onclick="toggleFaq(this)">What languages does the platform support? <svg class="faq-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div class="faq-a"><div class="faq-a-inner">EduMantra supports English, Hindi, Tamil, Telugu, Bengali and Marathi. The AI assistant can respond in your preferred language, making the platform accessible to officials across all states.</div></div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="toggleFaq(this)">How does the AI MCQ generator work? <svg class="faq-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div class="faq-a"><div class="faq-a-inner">Educators can upload documents, presentations, or paste text content. Our AI (powered by GPT-4o) analyses the content and generates multiple-choice questions with options, correct answers, difficulty levels and detailed explanations — ready to publish as an assessment in minutes.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-1">
+        <div class="faq-q" onclick="toggleFaq(this)">Is my data secure? <svg class="faq-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div class="faq-a"><div class="faq-a-inner">Yes. EduMantra uses Supabase with Row Level Security (RLS) so each user can only access their own data. All data is encrypted in transit (TLS) and at rest. The platform supports role-based access control, SSO, and maintains full audit logs of all actions.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-2">
+        <div class="faq-q" onclick="toggleFaq(this)">Who can use EduMantra? <svg class="faq-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div class="faq-a"><div class="faq-a-inner">EduMantra is designed for five roles: Students/Officials (learners), Educators/Instructors (trainers), Supervisors (monitoring staff performance), Organisation Administrators (managing departments), and Developers (technical platform management).</div></div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- DEMO MODAL -->
-<div class="modal-ov" id="demoModal">
-  <div class="modal-box">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
-      <h3 style="font-size:1.05rem;font-weight:700">EduMantra Platform Demo</h3>
-      <button onclick="closeDemo()" style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:#64748b">✕</button>
+<!-- ═══════════════ CTA BANNER ═══════════════ -->
+<section class="cta-banner">
+  <div class="container">
+    <div class="cta-content reveal">
+      <h2>Ready to Bridge the Skill Gap?</h2>
+      <p>Join India's most intelligent learning platform for statistical workforce development.</p>
+      <a href="/login.html" class="btn btn-primary btn-xl">
+        Get Started Free
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
     </div>
-    <div style="background:#f1f5f9;border-radius:12px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.75rem">
-      <div style="font-size:3rem">▶️</div>
-      <p style="color:#64748b;font-size:.875rem">Demo video coming soon</p>
-      <p style="color:#94a3b8;font-size:.78rem">In the meantime, explore the platform directly →</p>
-      <a href="/login.html" class="btn btn-p" style="margin-top:.5rem">Try it Now</a>
+  </div>
+</section>
+
+<!-- ═══════════════ MODALS ═══════════════ -->
+<!-- Demo Modal -->
+<div class="modal-overlay" id="demoModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>EduMantra Platform Demo</h3>
+      <button class="modal-close" onclick="closeModal('demoModal')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+    </div>
+    <div style="background:linear-gradient(135deg,#f1f5f9,#e2e8f0);border-radius:14px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.85rem">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+      <p style="color:#64748b;font-size:.9rem;font-weight:500">Demo video coming soon</p>
+      <p style="color:#94a3b8;font-size:.8rem">In the meantime, explore the platform directly</p>
+      <a href="/login.html" class="btn btn-primary" style="margin-top:.35rem">Try it Now <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
     </div>
   </div>
 </div>
 
-<!-- T&C MODAL -->
-<div class="modal-ov" id="tcModal">
+<!-- T&C Modal -->
+<div class="modal-overlay" id="tcModal">
   <div class="modal-box">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-      <h3 style="font-weight:700">Terms &amp; Conditions</h3>
-      <button onclick="document.getElementById('tcModal').classList.remove('open')" style="background:none;border:none;cursor:pointer;font-size:1.2rem">✕</button>
+    <div class="modal-header">
+      <h3>Terms &amp; Conditions</h3>
+      <button class="modal-close" onclick="closeModal('tcModal')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
     </div>
-    <div style="font-size:.82rem;color:#64748b;line-height:1.8;max-height:400px;overflow-y:auto">
-      <p style="margin-bottom:.75rem"><strong>1. Acceptance of Terms</strong><br>By accessing EduMantra, you agree to these Terms and the Privacy Policy. These terms govern your use of the platform provided by the Ministry of Statistics &amp; Programme Implementation (MoSPI).</p>
-      <p style="margin-bottom:.75rem"><strong>2. User Accounts</strong><br>You are responsible for maintaining the confidentiality of your credentials. Account sharing is not permitted. Government-issued email addresses are preferred for registration.</p>
-      <p style="margin-bottom:.75rem"><strong>3. Data Use</strong><br>Your learning data is used exclusively to personalise your learning experience and generate skill gap reports. Data is not shared with third parties without explicit consent.</p>
-      <p style="margin-bottom:.75rem"><strong>4. Intellectual Property</strong><br>All platform content, AI models, and software are the property of MoSPI. Course content from iGOT Karmayogi is governed by their respective terms.</p>
-      <p style="margin-bottom:.75rem"><strong>5. AI-Generated Content</strong><br>AI-generated assessments and recommendations are provided for educational purposes only and should not replace professional judgement in official statistical work.</p>
+    <div class="modal-content">
+      <p><strong>1. Acceptance of Terms</strong><br>By accessing EduMantra, you agree to these Terms and the Privacy Policy. These terms govern your use of the platform provided by the Ministry of Statistics &amp; Programme Implementation (MoSPI).</p>
+      <p><strong>2. User Accounts</strong><br>You are responsible for maintaining the confidentiality of your credentials. Account sharing is not permitted. Government-issued email addresses are preferred for registration.</p>
+      <p><strong>3. Data Use</strong><br>Your learning data is used exclusively to personalise your learning experience and generate skill gap reports. Data is not shared with third parties without explicit consent.</p>
+      <p><strong>4. Intellectual Property</strong><br>All platform content, AI models, and software are the property of MoSPI. Course content from iGOT Karmayogi is governed by their respective terms.</p>
+      <p><strong>5. AI-Generated Content</strong><br>AI-generated assessments and recommendations are provided for educational purposes only and should not replace professional judgement in official statistical work.</p>
       <p><strong>6. Governing Law</strong><br>These terms are governed by the laws of India. Any disputes shall be subject to the jurisdiction of courts in New Delhi.</p>
     </div>
   </div>
 </div>
 
-<!-- PRIVACY MODAL -->
-<div class="modal-ov" id="ppModal">
+<!-- Privacy Modal -->
+<div class="modal-overlay" id="ppModal">
   <div class="modal-box">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-      <h3 style="font-weight:700">Privacy Policy</h3>
-      <button onclick="document.getElementById('ppModal').classList.remove('open')" style="background:none;border:none;cursor:pointer;font-size:1.2rem">✕</button>
+    <div class="modal-header">
+      <h3>Privacy Policy</h3>
+      <button class="modal-close" onclick="closeModal('ppModal')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
     </div>
-    <div style="font-size:.82rem;color:#64748b;line-height:1.8;max-height:400px;overflow-y:auto">
-      <p style="margin-bottom:.75rem"><strong>Data We Collect</strong><br>Profile information (name, designation, education), learning activity (course enrolments, assessment scores), competency assessments, and AI chat sessions.</p>
-      <p style="margin-bottom:.75rem"><strong>How We Use It</strong><br>To generate personalised competency profiles, identify skill gaps, recommend learning pathways, track progress and improve platform features.</p>
-      <p style="margin-bottom:.75rem"><strong>Data Storage</strong><br>All data is stored on Supabase-hosted PostgreSQL databases with row-level security encryption. Servers are hosted in compliance with Government of India data localisation requirements.</p>
-      <p style="margin-bottom:.75rem"><strong>Your Rights</strong><br>You may request access, correction or deletion of your personal data by contacting your organisation administrator or writing to the platform administrators.</p>
+    <div class="modal-content">
+      <p><strong>Data We Collect</strong><br>Profile information (name, designation, education), learning activity (course enrolments, assessment scores), competency assessments, and AI chat sessions.</p>
+      <p><strong>How We Use It</strong><br>To generate personalised competency profiles, identify skill gaps, recommend learning pathways, track progress and improve platform features.</p>
+      <p><strong>Data Storage</strong><br>All data is stored on Supabase-hosted PostgreSQL databases with row-level security encryption. Servers are hosted in compliance with Government of India data localisation requirements.</p>
+      <p><strong>Your Rights</strong><br>You may request access, correction or deletion of your personal data by contacting your organisation administrator or writing to the platform administrators.</p>
       <p><strong>Contact</strong><br>For privacy concerns, contact: edumantra@mospi.gov.in</p>
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
+<!-- ═══════════════ FOOTER ═══════════════ -->
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
-      <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.75rem">
-        <div style="width:34px;height:34px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.85rem">EM</div>
-        <span style="font-weight:700;color:#fff;font-size:1rem">EduMantra</span>
+      <div style="display:flex;align-items:center;gap:.65rem">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.85rem;font-family:'Plus Jakarta Sans',sans-serif">EM</div>
+        <span style="font-weight:800;color:#fff;font-size:1.05rem;font-family:'Plus Jakarta Sans',sans-serif">EduMantra</span>
       </div>
-      <p>AI-Enabled Skill Intelligence &amp; Learning Platform for India's Official Statistical System. Built under the Ministry of Statistics &amp; Programme Implementation.</p>
+      <p class="footer-brand-text">AI-Enabled Skill Intelligence &amp; Learning Platform for India's Official Statistical System. Built under the Ministry of Statistics &amp; Programme Implementation.</p>
     </div>
     <div class="footer-col">
       <h4>Platform</h4>
@@ -511,38 +1144,109 @@ footer{background:#0f172a;color:rgba(255,255,255,.75);padding:3.5rem 2rem 2rem}
     </div>
     <div class="footer-col">
       <h4>Legal</h4>
-      <a onclick="document.getElementById('tcModal').classList.add('open')">Terms &amp; Conditions</a>
-      <a onclick="document.getElementById('ppModal').classList.add('open')">Privacy Policy</a>
+      <a onclick="openModal('tcModal')">Terms &amp; Conditions</a>
+      <a onclick="openModal('ppModal')">Privacy Policy</a>
       <a href="#faq">FAQ</a>
       <a href="mailto:edumantra@mospi.gov.in">Contact Support</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 EduMantra — Ministry of Statistics &amp; Programme Implementation, Government of India</span>
-    <span>Built with 🇮🇳 for India's Statistical Workforce</span>
+    <span>&copy; 2026 EduMantra — Ministry of Statistics &amp; Programme Implementation, Government of India</span>
+    <span>Built with ❤️ for India's Statistical Workforce</span>
   </div>
 </footer>
 
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
 <script>
-function toggleFaq(el) {
-  const item = el.parentElement;
-  document.querySelectorAll('.faq-item.open').forEach(i=>{ if(i!==item) i.classList.remove('open'); });
-  item.classList.toggle('open');
-}
-function openDemo() { document.getElementById('demoModal').classList.add('open'); }
-function closeDemo() { document.getElementById('demoModal').classList.remove('open'); }
-document.querySelectorAll('.modal-ov').forEach(m=>{
-  m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); });
+/* ── Navbar scroll effect ─────────────────── */
+const navbar = document.getElementById('navbar');
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+/* ── Hamburger menu ───────────────────────── */
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  navLinks.classList.toggle('mobile-open');
+});
+// Close on link click
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    hamburger.classList.remove('open');
+    navLinks.classList.remove('mobile-open');
+  });
 });
 
-const i18n = {
-  en:{ roles_title:"Who Uses EduMantra?", roles_sub:"Five distinct dashboards tailored to every stakeholder in the capacity-building ecosystem." },
-  hi:{ roles_title:"EduMantra का उपयोग कौन करता है?", roles_sub:"क्षमता निर्माण पारिस्थितिकी तंत्र में प्रत्येक हितधारक के लिए पाँच अलग-अलग डैशबोर्ड।" },
-};
+/* ── Scroll reveal ────────────────────────── */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
+/* ── Counter animation ────────────────────── */
+function animateCounters() {
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const prefix = el.dataset.prefix || '';
+    const isDecimal = el.dataset.decimal === 'true';
+    const duration = 2000;
+    const start = performance.now();
+    
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = eased * target;
+      el.textContent = prefix + (isDecimal ? current.toFixed(1) : Math.round(current)) + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  });
+}
+
+// Trigger counters when hero stats come into view
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounters();
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.hero-stats, .metrics-grid').forEach(el => counterObserver.observe(el));
+
+/* ── FAQ accordion ────────────────────────── */
+function toggleFaq(el) {
+  const item = el.parentElement;
+  document.querySelectorAll('.faq-item.open').forEach(i => { if (i !== item) i.classList.remove('open'); });
+  item.classList.toggle('open');
+}
+
+/* ── Modal helpers ────────────────────────── */
+function openModal(id) { document.getElementById(id)?.classList.add('open'); }
+function closeModal(id) { document.getElementById(id)?.classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+/* ── i18n ─────────────────────────────────── */
+const i18n = {
+  en: { roles_title: "Who Uses EduMantra?", roles_sub: "Five distinct dashboards tailored to every stakeholder in the capacity-building ecosystem." },
+  hi: { roles_title: "EduMantra का उपयोग कौन करता है?", roles_sub: "क्षमता निर्माण पारिस्थितिकी तंत्र में प्रत्येक हितधारक के लिए पाँच अलग-अलग डैशबोर्ड।" },
+};
 function changeLang(lang) {
   const t = i18n[lang] || i18n.en;
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
+  document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
     if (t[key]) el.textContent = t[key];
   });
