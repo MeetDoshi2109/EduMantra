@@ -407,12 +407,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('si-obj-over').innerHTML    = L.trendingUp();
 
   // Shell (correct function name is initShell, not buildSidebar)
-  initShell({ name: user?.full_name, role: user?.role, avatarUrl: user?.avatar_url });
-  document.getElementById('sidebarName').textContent = user?.full_name || 'Student';
+  const displayName = user?.full_name || user?.email?.split('@')[0] || 'Student';
+  initShell({ name: displayName, role: user?.role, avatarUrl: user?.avatar_url });
+  document.getElementById('sidebarName').textContent = displayName;
 
   const hour = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('welcomeHeading').textContent = `${greet}, ${user?.full_name?.split(' ')[0] || 'there'}!`;
+  document.getElementById('welcomeHeading').textContent = `${greet}, ${displayName.split(' ')[0]}!`;
 
   // Modals — close button uses data-close (matching shell.js Modal.init)
   Modal.init('quizModal'); Modal.init('addNoteModal'); Modal.init('addObjModal');
@@ -420,7 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tabs
   initTabs(document.getElementById('page-assessments'));
 
-  // Navigation
+  // Navigation — pageHandlers must be defined before initNav is called
   initNav('home', pageHandlers);
 
   // Load initial data
@@ -430,15 +431,19 @@ document.addEventListener('DOMContentLoaded', () => {
   loadPublishedAssessments();
 });
 
+// ── Page handlers — defined at module scope so initNav can reference them ──
 const pageHandlers = {
-  courses:      loadMyEnrollments,
-  pathway:      loadPathway,
-  skillgap:     loadLastGapReport,
-  competency:   loadCompetencyProfile,
-  assessments:  loadPublishedAssessments,
-  certificates: loadCertificates,
-  notifications:loadNotifications,
-  profile:      loadProfile,
+  courses:      () => loadMyEnrollments(),
+  pathway:      () => loadPathway(),
+  skillgap:     () => loadLastGapReport(),
+  competency:   () => loadCompetencyProfile(),
+  assessments:  () => loadPublishedAssessments(),
+  certificates: () => loadCertificates(),
+  notifications:() => loadNotifications(),
+  profile:      () => loadProfile(),
+  objectives:   () => renderObjectives(),
+  notes:        () => renderNotes(),
+  assistant:    () => {},
 };
 
 // ── Dashboard ─────────────────────────────────────────────
