@@ -147,78 +147,192 @@ h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
 /* ── HERO ──────────────────────────────────────────────── */
 .hero {
   position: relative; min-height: 100vh; display: flex; align-items: center;
-  justify-content: center; padding: 7rem 2rem 5rem; text-align: center;
+  justify-content: center; padding: 7.5rem clamp(1rem, 4vw, 3rem) 4.5rem;
   background: var(--hero-bg); color: #fff; overflow: hidden;
 }
 .hero-bg-effects {
   position: absolute; inset: 0; pointer-events: none; overflow: hidden;
 }
 .hero-orb {
-  position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4;
-  animation: orbFloat 12s ease-in-out infinite;
+  position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.45;
+  animation: orbFloat 14s ease-in-out infinite;
 }
-.hero-orb-1 { width: 600px; height: 600px; background: rgba(37,99,235,0.35); top: -10%; right: -10%; animation-delay: 0s; }
-.hero-orb-2 { width: 400px; height: 400px; background: rgba(124,58,237,0.3); bottom: -5%; left: -5%; animation-delay: -4s; }
-.hero-orb-3 { width: 300px; height: 300px; background: rgba(8,145,178,0.25); top: 40%; left: 50%; animation-delay: -8s; }
-@keyframes orbFloat {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -30px) scale(1.05); }
-  66% { transform: translate(-20px, 20px) scale(0.95); }
-}
+.hero-orb-1 { width: 650px; height: 650px; background: rgba(37,99,235,0.4); top: -15%; right: -10%; animation-delay: 0s; }
+.hero-orb-2 { width: 450px; height: 450px; background: rgba(124,58,237,0.35); bottom: -10%; left: -5%; animation-delay: -4s; }
+.hero-orb-3 { width: 350px; height: 350px; background: rgba(8,145,178,0.3); top: 35%; left: 45%; animation-delay: -8s; }
 
-/* Grid pattern overlay */
 .hero::before {
   content: ''; position: absolute; inset: 0;
-  background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
-  background-size: 32px 32px; opacity: 0.5;
+  background-image: radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 32px 32px; opacity: 0.6;
 }
 
-.hero-content { position: relative; z-index: 2; max-width: 860px; margin: 0 auto; }
+.hero-container {
+  position: relative; z-index: 2; max-width: 1240px; margin: 0 auto; width: 100%;
+  display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 3.5rem; align-items: center;
+}
+
+.hero-text-col { text-align: left; }
 .hero-badge {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 99px; padding: 0.4rem 1.1rem 0.4rem 0.7rem;
-  font-size: 0.82rem; font-weight: 500; margin-bottom: 1.75rem;
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 99px; padding: 0.45rem 1.2rem 0.45rem 0.75rem;
+  font-size: 0.82rem; font-weight: 500; margin-bottom: 1.5rem;
   backdrop-filter: blur(12px); animation: fadeInDown 0.8s ease-out;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 .hero-badge-dot {
   width: 8px; height: 8px; border-radius: 50%; background: var(--emerald);
-  box-shadow: 0 0 8px rgba(16,185,129,0.6); animation: pulse 2s infinite;
+  box-shadow: 0 0 10px rgba(16,185,129,0.8); animation: pulse 2s infinite;
 }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-@keyframes fadeInDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
 
 .hero h1 {
-  font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1;
-  margin-bottom: 1.35rem; animation: fadeInUp 0.8s ease-out 0.15s backwards;
+  font-size: clamp(2.3rem, 4.2vw, 3.6rem); font-weight: 800; line-height: 1.12;
+  margin-bottom: 1.25rem; animation: fadeInUp 0.8s ease-out 0.15s backwards;
+  letter-spacing: -0.02em;
 }
 .hero h1 .gradient-text {
-  background: linear-gradient(135deg, #60a5fa, #a78bfa, #c084fc);
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #c084fc 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .hero-subtitle {
-  font-size: clamp(1rem, 1.5vw, 1.15rem); opacity: 0.82; max-width: 600px;
-  margin: 0 auto 2.5rem; line-height: 1.75;
+  font-size: clamp(1rem, 1.3vw, 1.125rem); opacity: 0.85; max-width: 580px;
+  margin-bottom: 2.25rem; line-height: 1.75;
   animation: fadeInUp 0.8s ease-out 0.3s backwards;
 }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
 .hero-cta {
-  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
   animation: fadeInUp 0.8s ease-out 0.45s backwards;
 }
+
+.hero-trust-pills {
+  display: flex; align-items: center; gap: 1.25rem; margin-top: 2rem;
+  padding-top: 1.75rem; border-top: 1px solid rgba(255,255,255,0.12);
+  flex-wrap: wrap; animation: fadeInUp 0.8s ease-out 0.55s backwards;
+}
+.trust-pill {
+  display: flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; opacity: 0.8;
+}
+.trust-pill svg { width: 15px; height: 15px; color: var(--primary-light); }
+
 .hero-stats {
-  display: flex; justify-content: center; gap: clamp(1.5rem, 4vw, 3.5rem);
-  margin-top: 4rem; flex-wrap: wrap;
-  animation: fadeInUp 0.8s ease-out 0.6s backwards;
+  display: flex; gap: clamp(1.2rem, 3vw, 2.5rem); margin-top: 2.5rem;
+  animation: fadeInUp 0.8s ease-out 0.65s backwards;
 }
-.hero-stat { text-align: center; }
+.hero-stat { text-align: left; }
 .hero-stat-value {
-  font-size: 2rem; font-weight: 800; font-family: 'Plus Jakarta Sans', sans-serif;
-  line-height: 1.2;
+  font-size: 1.85rem; font-weight: 800; font-family: 'Plus Jakarta Sans', sans-serif;
+  line-height: 1.1; color: #fff;
 }
-.hero-stat-label { font-size: 0.78rem; opacity: 0.6; margin-top: 0.25rem; }
+.hero-stat-label { font-size: 0.75rem; opacity: 0.65; margin-top: 0.2rem; }
+
+/* ── HERO WIDGET (RIGHT COLUMN) ────────────────────────── */
+.hero-widget-col {
+  position: relative; animation: fadeInUp 0.9s ease-out 0.4s backwards;
+}
+.hero-widget-card {
+  background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 24px; padding: 1.6rem; backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.2);
+  transform: perspective(1000px) rotateY(-4deg) rotateX(2deg);
+  transition: transform 0.5s ease;
+  animation: floatWidget 8s ease-in-out infinite;
+}
+.hero-widget-card:hover {
+  transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02);
+}
+@keyframes floatWidget {
+  0%, 100% { transform: perspective(1000px) rotateY(-4deg) rotateX(2deg) translateY(0); }
+  50% { transform: perspective(1000px) rotateY(-4deg) rotateX(2deg) translateY(-10px); }
+}
+
+.widget-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 1rem; margin-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.widget-dots { display: flex; gap: 6px; }
+.widget-dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+
+.widget-badge-live {
+  display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem;
+  background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3);
+  padding: 0.2rem 0.65rem; border-radius: 99px; font-weight: 600;
+}
+
+.widget-user-profile {
+  display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.25rem;
+  background: rgba(255, 255, 255, 0.05); padding: 0.85rem 1rem; border-radius: 14px;
+}
+.widget-avatar {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.95rem; color: #fff;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.4);
+}
+.widget-user-info h4 { font-size: 0.92rem; font-weight: 700; color: #fff; }
+.widget-user-info p { font-size: 0.75rem; opacity: 0.7; margin-top: 0.1rem; }
+
+.widget-skill-meters { display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.25rem; }
+.widget-meter-item { text-align: left; }
+.widget-meter-header {
+  display: flex; justify-content: space-between; font-size: 0.78rem;
+  margin-bottom: 0.35rem; font-weight: 500;
+}
+.widget-meter-bg {
+  background: rgba(255,255,255,0.1); height: 8px; border-radius: 99px; overflow: hidden;
+}
+.widget-meter-fill { height: 100%; border-radius: 99px; }
+
+.widget-recommendation {
+  background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(124,58,237,0.2));
+  border: 1px solid rgba(96,165,250,0.3); border-radius: 14px; padding: 0.95rem;
+  text-align: left;
+}
+.widget-rec-title {
+  font-size: 0.74rem; font-weight: 700; color: #60a5fa; text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.35rem;
+}
+.widget-rec-course { font-size: 0.84rem; font-weight: 700; color: #fff; margin-bottom: 0.65rem; }
+.widget-rec-btn {
+  width: 100%; padding: 0.45rem; font-size: 0.78rem; font-weight: 600;
+  background: #2563eb; color: #fff; border: none; border-radius: 8px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.35rem;
+  transition: background 0.2s;
+}
+.widget-rec-btn:hover { background: #1d4ed8; }
+
+/* Floating Orbit Badges */
+.floating-orbit-badge {
+  position: absolute; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px; padding: 0.6rem 0.9rem; backdrop-filter: blur(12px);
+  display: flex; align-items: center; gap: 0.55rem; font-size: 0.75rem; font-weight: 600;
+  color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  animation: floatOrbit 6s ease-in-out infinite alternate;
+}
+.orbit-badge-top { top: -20px; right: -15px; animation-delay: 0s; }
+.orbit-badge-bottom { bottom: -20px; left: -15px; animation-delay: -3s; }
+@keyframes floatOrbit {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+@media (max-width: 992px) {
+  .hero-container { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
+  .hero-text-col { text-align: center; }
+  .hero-subtitle { margin-left: auto; margin-right: auto; }
+  .hero-cta { justify-content: center; }
+  .hero-trust-pills { justify-content: center; }
+  .hero-stats { justify-content: center; }
+  .hero-widget-card { transform: none; }
+  .hero-widget-card:hover { transform: none; }
+}
 
 /* ── SECTIONS ──────────────────────────────────────────── */
 section { padding: clamp(4rem, 8vw, 6rem) clamp(1rem, 4vw, 2rem); }
@@ -657,29 +771,119 @@ footer {
     <div class="hero-orb hero-orb-2"></div>
     <div class="hero-orb hero-orb-3"></div>
   </div>
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span class="hero-badge-dot"></span>
-      Ministry of Statistics &amp; Programme Implementation
+  
+  <div class="hero-container">
+    <!-- Left Column: Content & Actions -->
+    <div class="hero-text-col">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Ministry of Statistics &amp; Programme Implementation
+      </div>
+      <h1>Next-Gen <span class="gradient-text">AI Skill Intelligence</span> for Official Statistics</h1>
+      <p class="hero-subtitle">Automated competency mapping, real-time skill-gap diagnosis, and personalized iGOT Karmayogi learning pathways designed for India's statistical workforce.</p>
+      
+      <div class="hero-cta">
+        <a href="/login.html" class="btn btn-primary btn-xl">
+          Launch Platform
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <button class="btn btn-ghost btn-xl" onclick="openModal('demoModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          Watch 2-Min Overview
+        </button>
+      </div>
+
+      <div class="hero-trust-pills">
+        <div class="trust-pill">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          3.2x Accelerated Upskilling
+        </div>
+        <div class="trust-pill">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Enterprise RLS &amp; Security
+        </div>
+        <div class="trust-pill">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          6 Indian Languages
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-value" data-count="29">0</div><div class="hero-stat-label">Competency Domains</div></div>
+        <div class="hero-stat"><div class="hero-stat-value" data-count="5">0</div><div class="hero-stat-label">User Dashboards</div></div>
+        <div class="hero-stat"><div class="hero-stat-value" data-count="10" data-suffix="k+">0</div><div class="hero-stat-label">iGOT Courses</div></div>
+      </div>
     </div>
-    <h1>Bridging the <span class="gradient-text">Skill Gap</span> in India's Statistical System</h1>
-    <p class="hero-subtitle">AI-powered competency assessment, personalized learning pathways, and seamless iGOT Karmayogi integration — built for government officials in the Official Statistical System.</p>
-    <div class="hero-cta">
-      <a href="/login.html" class="btn btn-primary btn-xl">
-        Start Learning Now
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      </a>
-      <button class="btn btn-ghost btn-xl" onclick="openModal('demoModal')">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-        Watch Demo
-      </button>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat"><div class="hero-stat-value" data-count="29">0</div><div class="hero-stat-label">Competency Domains</div></div>
-      <div class="hero-stat"><div class="hero-stat-value" data-count="5">0</div><div class="hero-stat-label">User Roles</div></div>
-      <div class="hero-stat"><div class="hero-stat-value">AI-Powered</div><div class="hero-stat-label">Skill Gap Analysis</div></div>
-      <div class="hero-stat"><div class="hero-stat-value">iGOT</div><div class="hero-stat-label">Karmayogi Integrated</div></div>
-      <div class="hero-stat"><div class="hero-stat-value">TPAC</div><div class="hero-stat-label">NSSTA Programs</div></div>
+
+    <!-- Right Column: Interactive Glassmorphism AI Widget -->
+    <div class="hero-widget-col">
+      <!-- Floating Badge Top -->
+      <div class="floating-orbit-badge orbit-badge-top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/></svg>
+        AI Skill Diagnosis Active
+      </div>
+
+      <!-- Main Widget Glass Card -->
+      <div class="hero-widget-card">
+        <div class="widget-topbar">
+          <div class="widget-dots">
+            <span class="widget-dot dot-red"></span>
+            <span class="widget-dot dot-yellow"></span>
+            <span class="widget-dot dot-green"></span>
+          </div>
+          <div class="widget-badge-live">
+            <span class="hero-badge-dot"></span> Live Engine
+          </div>
+        </div>
+
+        <div class="widget-user-profile">
+          <div class="widget-avatar">RS</div>
+          <div class="widget-user-info">
+            <h4>Rajesh Sharma</h4>
+            <p>Statistical Officer • National Statistical Office</p>
+          </div>
+        </div>
+
+        <div class="widget-skill-meters">
+          <div class="widget-meter-item">
+            <div class="widget-meter-header">
+              <span style="color:#e2e8f0">Statistical Analysis &amp; Modeling</span>
+              <span style="color:#34d399">88% (Level 4)</span>
+            </div>
+            <div class="widget-meter-bg">
+              <div class="widget-meter-fill" style="width: 88%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
+            </div>
+          </div>
+
+          <div class="widget-meter-item">
+            <div class="widget-meter-header">
+              <span style="color:#e2e8f0">Data Privacy &amp; Governance</span>
+              <span style="color:#f87171">42% (Gap Identified)</span>
+            </div>
+            <div class="widget-meter-bg">
+              <div class="widget-meter-fill" style="width: 42%; background: linear-gradient(90deg, #ef4444, #f97316);"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="widget-recommendation">
+          <div class="widget-rec-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            AI Curated iGOT Pathway
+          </div>
+          <div class="widget-rec-course">National Accounts &amp; Data Ethics 2026</div>
+          <a href="/login.html" class="widget-rec-btn">
+            Enrol via iGOT Karmayogi
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Floating Badge Bottom -->
+      <div class="floating-orbit-badge orbit-badge-bottom">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        iGOT Karmayogi Synced
+      </div>
     </div>
   </div>
 </section>
