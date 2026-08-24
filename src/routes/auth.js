@@ -118,7 +118,13 @@ router.post('/refresh', [body('refresh_token').notEmpty()], validate, async (req
 // ── POST /api/v1/auth/logout ───────────────────────────────
 router.post('/logout', authenticate, auditLog('USER_LOGOUT'), async (req, res) => {
   try {
-    await supabase.auth.signOut();
+    // Use admin client to properly invalidate refresh tokens server-side
+    // (supabase.auth.signOut() is meaningless on a stateless server)
+    const { error } = await supabaseAdmin.auth.admin.signOut(req.token, 'global');
+    if (error) {
+      // Fallback: even if admin sign-out fails, the client should clear its tokens
+      logger.warn('Admin signOut failed, client tokens still cleared', { error: error.message });
+    }
     res.json({ message: 'Logged out successfully' });
   } catch (err) {
     res.status(500).json({ error: 'Logout failed' });

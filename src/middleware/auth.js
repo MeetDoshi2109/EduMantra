@@ -14,7 +14,7 @@ async function authenticate(req, res, next) {
   const token = authHeader.split(' ')[1];
 
   try {
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
     if (error || !user) {
       return res.status(401).json({ error: 'Invalid or expired token' });
     }
@@ -88,7 +88,7 @@ async function optionalAuth(req, res, next) {
   if (!authHeader || !authHeader.startsWith('Bearer ')) return next();
   try {
     const token = authHeader.split(' ')[1];
-    const { data: { user } } = await supabase.auth.getUser(token);
+    const { data: { user } } = await supabaseAdmin.auth.getUser(token);
     if (user) {
       const { data: profile } = await supabaseAdmin
         .from('users').select('*').eq('id', user.id).single();
