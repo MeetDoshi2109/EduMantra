@@ -41,8 +41,8 @@ body { font-family: var(--font-b); background: var(--canvas); color: var(--ink);
 .auth-left {
   background: var(--s1);
   border-right: 1px solid var(--hr);
-  padding: 3rem 3rem 2rem;
-  display: flex; flex-direction: column; justify-content: center;
+  padding: 3rem clamp(2rem, 4vw, 4rem);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
   position: relative; overflow: hidden;
 }
 
@@ -62,7 +62,10 @@ body { font-family: var(--font-b); background: var(--canvas); color: var(--ink);
   pointer-events: none;
 }
 
-.auth-left-inner { position: relative; z-index: 1; }
+.auth-left-inner {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 480px;
+}
 
 .auth-brand {
   display: flex; align-items: center; gap: 0.75rem; margin-bottom: 3rem;
