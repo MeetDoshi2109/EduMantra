@@ -160,9 +160,13 @@ function initShell({ name, role, avatarUrl }) {
   const roleEl = document.querySelector('#sidebarRole');
   const avEl   = document.querySelector('#sidebarAvatar');
   const bRole  = document.querySelector('.brand-role');
+  const bmEl   = document.querySelector('.brand-mark');
   if (nameEl) nameEl.textContent = name || 'User';
   if (roleEl) roleEl.textContent = (role||'').replace(/_/g,' ');
   if (bRole)  bRole.textContent  = (role||'').replace(/_/g,' ');
+  if (bmEl && !bmEl.querySelector('img')) {
+    bmEl.innerHTML = '<img src="/images/logo.png" alt="EduMantra">';
+  }
   if (avEl) {
     if (avatarUrl) avEl.innerHTML = `<img src="${avatarUrl}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
     else avEl.textContent = (name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '??';
