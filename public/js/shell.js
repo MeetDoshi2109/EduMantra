@@ -191,6 +191,24 @@ function initShell({ name, role, avatarUrl }) {
     btn.classList.add('topbar-btn');
   });
 
+  // Inject theme toggle button into topbar
+  const topbarActions = document.querySelector('.topbar-actions');
+  if (topbarActions && !topbarActions.querySelector('#themeToggleBtn')) {
+    const themeBtn = document.createElement('button');
+    themeBtn.id = 'themeToggleBtn';
+    themeBtn.className = 'topbar-btn theme-toggle-btn';
+    themeBtn.setAttribute('data-action', 'toggle-theme');
+    themeBtn.setAttribute('aria-label', 'Toggle theme');
+    themeBtn.addEventListener('click', () => {
+      if (window.Theme && window.Theme.toggle) window.Theme.toggle();
+      else if (window.toggleTheme) window.toggleTheme();
+    });
+    topbarActions.insertBefore(themeBtn, topbarActions.firstChild);
+    if (window.Theme && window.Theme.get) {
+      window.Theme.set(window.Theme.get());
+    }
+  }
+
   // Bell notification indicator — adds topbar-notif-dot if there's a badge
   const bellBtn = document.getElementById('bellIcon')?.closest('button');
   if (bellBtn) {

@@ -7,6 +7,7 @@
 <link rel="icon" type="image/png" href="/images/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="/js/theme.js"></script>
 <style>
 /* ══════════════════════════════════════════════════════════════════
    EduMantra Landing Page — Dark Edition
@@ -39,6 +40,34 @@
   --font-d:       'Outfit', system-ui, sans-serif;
   --font-b:       'Inter', system-ui, sans-serif;
   --font-m:       'JetBrains Mono', monospace;
+}
+
+/* ── LIGHT THEME (White / Light Mode) ──────────────────────────── */
+[data-theme="light"] {
+  --canvas:       #f8fafc;
+  --s1:           #ffffff;
+  --s2:           #f1f5f9;
+  --s3:           #e2e8f0;
+  --accent:       #009663;
+  --accent-dim:   #007a50;
+  --accent-glow:  rgba(0,150,99,0.12);
+  --accent-bdr:   rgba(0,150,99,0.25);
+  --on-accent:    #ffffff;
+  --ink:          #0f172a;
+  --ink-2:        #334155;
+  --ink-3:        #64748b;
+  --ink-4:        #94a3b8;
+  --hr:           rgba(0,0,0,0.08);
+  --hr2:          rgba(0,0,0,0.13);
+}
+
+[data-theme="light"] .navbar.scrolled {
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 1px 20px rgba(0,0,0,0.08);
+}
+
+[data-theme="light"] .hero-grid {
+  background-image: radial-gradient(rgba(0,0,0,0.06) 1px, transparent 1px);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1245,6 +1274,7 @@ footer {
       <option value="bn">বাংলা</option>
       <option value="mr">मराठी</option>
     </select>
+    <button class="btn btn-ghost theme-toggle-btn" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme" style="padding:6px 8px;display:inline-flex;align-items:center;justify-content:center"></button>
     <a href="/login.html" class="btn btn-ghost" style="font-size:.82rem">Sign In</a>
     <a href="/login.html" class="btn btn-primary" style="font-size:.82rem">
       Get Started

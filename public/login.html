@@ -6,6 +6,7 @@
 <link rel="icon" type="image/png" href="/images/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="/js/theme.js"></script>
 <style>
 :root {
   --canvas:     #0c0e12;
@@ -25,6 +26,47 @@
   --font-d:     'Outfit', system-ui, sans-serif;
   --font-b:     'Inter', system-ui, sans-serif;
   --font-m:     'JetBrains Mono', monospace;
+}
+
+/* ── LIGHT THEME (White / Light Mode) ──────────────────────────── */
+[data-theme="light"] {
+  --canvas:     #f8fafc;
+  --s1:         #ffffff;
+  --s2:         #f1f5f9;
+  --s3:         #e2e8f0;
+  --accent:     #009663;
+  --accent-dim: #007a50;
+  --accent-glow:rgba(0,150,99,0.12);
+  --on-accent:  #ffffff;
+  --ink:        #0f172a;
+  --ink-2:      #334155;
+  --ink-3:      #64748b;
+  --hr:         rgba(0,0,0,0.08);
+  --hr2:        rgba(0,0,0,0.13);
+  --danger:     #e11d48;
+}
+
+[data-theme="light"] .auth-card {
+  box-shadow: 0 20px 50px rgba(0,0,0,0.08), 0 1px 0 rgba(0,0,0,0.05) inset;
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  background: var(--s2);
+  border: 1px solid var(--hr2);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.theme-toggle-btn:hover {
+  background: var(--s3);
+  color: var(--ink);
+  border-color: var(--accent);
+  transform: translateY(-1px);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -322,7 +364,8 @@ input:focus {
   </div>
 
   <!-- Right panel — auth card -->
-  <div class="auth-right">
+  <div class="auth-right" style="position:relative">
+    <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme" style="position:absolute;top:1.25rem;right:1.25rem;z-index:10"></button>
     <div class="auth-card">
       <div class="card-brand">
         <div class="card-logo"><img src="/images/logo.png" alt="EduMantra Logo"></div>
