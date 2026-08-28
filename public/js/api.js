@@ -60,7 +60,7 @@ const Auth = {
 };
 
 /* ── Toast ───────────────────────────────────────────────── */
-const Toast = {
+window.Toast = window.Toast || {
   _el: null,
   _init() {
     if (!this._el) {
@@ -78,10 +78,10 @@ const Toast = {
     this._el.appendChild(t);
     setTimeout(() => t.remove(), ms);
   },
-  success: m => Toast.show(m,'success'),
-  error:   m => Toast.show(m,'error'),
-  info:    m => Toast.show(m,'info'),
-  warn:    m => Toast.show(m,'warning'),
+  success: m => window.Toast.show(m,'success'),
+  error:   m => window.Toast.show(m,'error'),
+  info:    m => window.Toast.show(m,'info'),
+  warn:    m => window.Toast.show(m,'warning'),
 };
 
 /* ── UI helpers ──────────────────────────────────────────── */

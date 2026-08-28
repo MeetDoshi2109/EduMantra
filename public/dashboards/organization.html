@@ -289,29 +289,6 @@
 const user = Auth.guard();
 if (user && user.role !== 'organization_admin') Auth.redirect(user);
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const iconMap = { home:'chart', members:'users', paths:'path', competency:'brain', skillgaps:'lightning', emerging:'sparkle', curriculum:'book', instructors:'shield', igot:'globe', broadcast:'bell', export:'download', settings:'gear' };
-  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
-    const iconEl = item.querySelector('.nav-icon');
-    if (iconEl && iconMap[item.dataset.page]) iconEl.innerHTML = Icon[iconMap[item.dataset.page]]?.() || '';
-  });
-  document.getElementById('broadcastIcon').innerHTML = Icon.bell();
-  document.getElementById('exportIcon').innerHTML = Icon.download();
-  document.getElementById('memberSearchIcon').innerHTML = Icon.search();
-  document.getElementById('igotSearchIcon').innerHTML = Icon.search();
-  document.getElementById('pathsEmptyIcon').innerHTML = Icon.path(32);
-  ['users','brain','chart','book','clipboard','trend'].forEach(name => {
-    const el = document.getElementById(`exp-icon-${name}`);
-    if (el && Icon[name]) el.innerHTML = Icon[name]();
-  });
-
-  buildSidebar({ role: user?.role, name: user?.full_name, avatarUrl: user?.avatar_url });
-  document.getElementById('sidebarName').textContent = user?.full_name || 'Admin';
-  initNav('home', pageHandlers);
-  await loadDashboard();
-  loadSettings();
-});
-
 const pageHandlers = {
   members:     () => loadMembers(),
   competency:  loadCompetencyMap,
@@ -322,22 +299,57 @@ const pageHandlers = {
   settings:    loadSettings,
 };
 
+safeBoot(async () => {
+  const iconMap = { home:'barChart', members:'users', paths:'map', competency:'brain', skillgaps:'zap', emerging:'sparkles', curriculum:'book', instructors:'shield', igot:'globe', broadcast:'bell', export:'download', settings:'settings' };
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    const iconEl = item.querySelector('.nav-icon') || item;
+    const iconName = iconMap[item.dataset.page];
+    if (iconEl && iconName && L[iconName]) {
+      const target = item.querySelector('.nav-icon') || item.querySelector('span');
+      if (target) target.innerHTML = L[iconName]();
+    }
+  });
+
+  setHtml('broadcastIcon', L.bell());
+  setHtml('exportIcon', L.download());
+  setHtml('memberSearchIcon', L.search());
+  setHtml('igotSearchIcon', L.search());
+  setHtml('pathsEmptyIcon', L.map(32));
+  ['users','brain','barChart','book','clipboard','trendingUp'].forEach(name => {
+    if (L[name]) setHtml(`exp-icon-${name}`, L[name]());
+  });
+
+  initShell({ role: user?.role, name: user?.full_name, avatarUrl: user?.avatar_url });
+  const sbName = document.getElementById('sidebarName');
+  if (sbName) sbName.textContent = user?.full_name || 'Admin';
+  initNav('home', pageHandlers);
+  await loadDashboard();
+  loadSettings();
+});
+
 async function loadDashboard() {
   try {
     const d = await Api.get('/analytics/organization');
     const s = d.stats || {};
-    document.getElementById('st-members').textContent    = s.total_members ?? '—';
-    document.getElementById('st-active').textContent     = s.active_members ?? '—';
-    document.getElementById('st-enrollments').textContent = s.total_enrollments ?? '—';
-    document.getElementById('st-completion').textContent  = s.completion_rate != null ? `${s.completion_rate}%` : '—';
-    document.getElementById('st-gap').textContent         = s.avg_gap_score != null ? `${Math.round(s.avg_gap_score)}%` : '—';
-    document.getElementById('st-assessments').textContent = s.total_assessments_taken ?? '—';
-    document.getElementById('ic-members').innerHTML  = Icon.users();
-    document.getElementById('ic-active').innerHTML   = Icon.check();
-    document.getElementById('ic-enroll').innerHTML   = Icon.book();
-    document.getElementById('ic-complete').innerHTML = Icon.trend();
-    document.getElementById('ic-gap').innerHTML      = Icon.lightning();
-    document.getElementById('ic-assess').innerHTML   = Icon.clipboard();
+    const stMem = document.getElementById('st-members');
+    if (stMem) stMem.textContent = s.total_members ?? '—';
+    const stAct = document.getElementById('st-active');
+    if (stAct) stAct.textContent = s.active_members ?? '—';
+    const stEnr = document.getElementById('st-enrollments');
+    if (stEnr) stEnr.textContent = s.total_enrollments ?? '—';
+    const stCmp = document.getElementById('st-completion');
+    if (stCmp) stCmp.textContent = s.completion_rate != null ? `${s.completion_rate}%` : '—';
+    const stGap = document.getElementById('st-gap');
+    if (stGap) stGap.textContent = s.avg_gap_score != null ? `${Math.round(s.avg_gap_score)}%` : '—';
+    const stAss = document.getElementById('st-assessments');
+    if (stAss) stAss.textContent = s.total_assessments_taken ?? '—';
+
+    setHtml('ic-members',  L.users());
+    setHtml('ic-active',   L.checkCircle());
+    setHtml('ic-enroll',   L.book());
+    setHtml('ic-complete', L.trendingUp());
+    setHtml('ic-gap',      L.zap());
+    setHtml('ic-assess',   L.clipboard());
 
     // Role distribution
     const roles = d.role_breakdown || {};

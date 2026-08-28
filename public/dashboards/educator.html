@@ -2,19 +2,67 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduMantra – Educator</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+<title>EduMantra – Educator Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/design-system.css">
 <style>
-.doc-card{background:var(--surface-card);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:.85rem;display:flex;align-items:flex-start;gap:.65rem;transition:box-shadow var(--dur-base)}
-.doc-card:hover{box-shadow:var(--shadow-md)}
-.doc-icon{width:36px;height:36px;border-radius:var(--radius-sm);background:var(--c-primary-50);color:var(--c-primary-600);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-.cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.75rem;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s}
-.cal-cell:hover{background:var(--c-primary-100)}
-.cal-cell.today{background:var(--c-primary-600);color:#fff;font-weight:700}
-.cal-cell.has-event{background:var(--c-primary-100);color:var(--c-primary-700);font-weight:600}
-.cal-cell.other-month{color:var(--text-muted)}
+/* Dark token bridge */
+:root {
+  --n-0:   var(--surface-1); --n-100: var(--surface-2); --n-200: var(--hairline);
+  --n-300: var(--ink-4); --n-400: var(--ink-3); --n-500: var(--ink-3);
+  --n-600: var(--ink-2); --n-700: var(--ink); --n-800: var(--ink);
+  --color-primary:    var(--accent); --color-primary-xl: var(--accent-glow);
+  --color-secondary:  #4da6ff; --color-success: var(--accent);
+  --color-warning:    var(--warning); --color-danger: var(--danger);
+  --color-text:       var(--ink);
+  --surface-card:     var(--surface-1); --border-default: var(--hairline-2);
+  --text-muted:       var(--ink-3); --text-secondary: var(--ink-2);
+  --radius-md:        var(--r-md); --radius-sm: var(--r-sm); --radius-lg: var(--r-lg);
+  --dur-base:         var(--t-fast); --t-base: var(--t-fast);
+  --c-primary-50:     rgba(0,229,160,0.08); --c-primary-100: rgba(0,229,160,0.12);
+  --c-primary-600:    var(--accent); --c-primary-700: var(--accent-dim);
+  --shadow-md:        var(--shadow-md);
+}
+/* Component classes reused by JS */
+.badge { display:inline-flex;align-items:center;gap:.2rem;padding:.18rem .6rem;border-radius:9999px;font-size:.68rem;font-weight:600; }
+.badge-active { background:rgba(0,229,160,0.1);color:var(--accent); }
+.badge-blue   { background:rgba(77,166,255,0.1);color:#4da6ff; }
+.badge-slate  { background:var(--hairline);color:var(--ink-2); }
+.badge-red    { background:rgba(255,71,87,0.1);color:var(--danger); }
+.badge-amber  { background:rgba(245,166,35,0.1);color:var(--warning); }
+.badge-progress { background:rgba(0,229,160,0.1);color:var(--accent); }
+.card-hover:hover { border-color:var(--hairline-2);transform:translateY(-2px);box-shadow:var(--shadow-md);cursor:pointer; }
+.card-subtitle { font-size:.75rem;color:var(--ink-3);margin-top:2px; }
+.g-auto { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.input { width:100%;padding:.5rem .75rem;background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:var(--r-sm);color:var(--ink);font-size:.875rem;font-family:var(--font-body);outline:none;transition:border-color var(--t-fast); }
+.input:focus { border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,229,160,.12); }
+.input-wrap { position:relative; } .input-icon-l { position:absolute;left:.6rem;top:50%;transform:translateY(-50%);color:var(--ink-3);pointer-events:none; } .input-wrap .input { padding-left:2rem; }
+.tab-bar { display:flex;border-bottom:1px solid var(--hairline);margin-bottom:1.25rem; }
+.tab { padding:.5rem 1rem;background:none;border:none;font-size:.84rem;font-weight:500;color:var(--ink-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color var(--t-fast),border-color var(--t-fast);font-family:var(--font-body); }
+.tab:hover { color:var(--ink); } .tab.active { color:var(--accent);border-color:var(--accent); }
+.tab-panel { display:none; } .tab-panel.active { display:block; }
+.form-label { font-size:.75rem;font-weight:600;color:var(--ink-2);display:block;margin-bottom:.3rem; }
+.modal-ov { position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s; }
+.modal-ov.open { opacity:1;pointer-events:auto; }
+.modal { background:var(--surface-1);border:1px solid var(--hairline-2);border-radius:var(--r-xl);padding:1.5rem;width:100%;max-width:560px;max-height:90dvh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.5);transform:translateY(14px) scale(.97);transition:transform .4s cubic-bezier(.16,1,.3,1); }
+.modal-ov.open .modal { transform:translateY(0) scale(1); }
+.modal-hd { display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem; }
+.modal-title { font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--ink); }
+.modal-close { background:none;border:none;cursor:pointer;color:var(--ink-3);border-radius:var(--r-xs);padding:4px;transition:color var(--t-fast),background var(--t-fast); }
+.modal-close:hover { color:var(--ink);background:rgba(255,255,255,.06); }
+.modal-body { color:var(--ink-2);font-size:.875rem; }
+.modal-footer { display:flex;justify-content:flex-end;gap:.5rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--hairline); }
+/* Educator-specific */
+.doc-card { background:var(--surface-1);border:1px solid var(--hairline-2);border-radius:var(--r-md);padding:.85rem;display:flex;align-items:flex-start;gap:.65rem;transition:box-shadow var(--t-fast); }
+.doc-card:hover { box-shadow:var(--shadow-md); }
+.doc-icon { width:36px;height:36px;border-radius:var(--r-sm);background:rgba(0,229,160,0.08);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:2px; }
+.cal-cell { aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.75rem;border-radius:var(--r-sm);cursor:pointer;transition:background .15s;color:var(--ink-2); }
+.cal-cell:hover { background:rgba(0,229,160,0.08); }
+.cal-cell.today { background:var(--accent);color:var(--on-accent);font-weight:700; }
+.cal-cell.has-event { background:rgba(0,229,160,0.1);color:var(--accent);font-weight:600; }
+.cal-cell.other-month { color:var(--ink-4); }
 </style>
 </head>
 <body>
@@ -353,27 +401,42 @@ let calYear, calMonth;
 const calEvents = JSON.parse(localStorage.getItem('em_cal_events') || '[]');
 const resources = JSON.parse(localStorage.getItem('em_resources') || '[]');
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const iconMap = { home:'house', calendar:'calendar', students:'users', resources:'book', documents:'file', 'virtual-lab':'flask', assessments:'clipboard', 'create-quiz':'sparkle', grading:'chart', 'ai-content':'robot', feedback:'star' };
-  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
-    const iconEl = item.querySelector('.nav-icon');
-    if (iconEl && iconMap[item.dataset.page]) iconEl.innerHTML = Icon[iconMap[item.dataset.page]]?.() || '';
-  });
-  document.getElementById('newQuizIcon').innerHTML = Icon.plus();
-  document.getElementById('addEventIcon').innerHTML = Icon.plus();
-  document.getElementById('uploadResIcon').innerHTML = Icon.upload();
-  document.getElementById('uploadDocIcon').innerHTML = Icon.upload();
-  document.getElementById('uploadIcon').innerHTML = Icon.upload(28);
-  document.getElementById('genEmptyIcon').innerHTML = Icon.sparkle(32);
-  document.getElementById('fbEmptyIcon').innerHTML = Icon.star(32);
-  document.getElementById('stuSearchIcon').innerHTML = Icon.search();
+const pageHandlers = {
+  assessments:  loadAssessmentsTable,
+  students:     loadStudentResults,
+  grading:      loadGrading,
+  calendar:     () => renderCalendar(),
+};
 
-  buildSidebar({ role: user?.role, name: user?.full_name, avatarUrl: user?.avatar_url });
-  document.getElementById('sidebarName').textContent = user?.full_name || 'Educator';
-  document.getElementById('welcomeMsg').textContent = `Welcome, ${user?.full_name?.split(' ')[0] || 'Educator'}!`;
+safeBoot(async () => {
+  const iconMap = { home:'home', calendar:'calendar', students:'users', resources:'book', documents:'file', 'virtual-lab':'flask', assessments:'clipboard', 'create-quiz':'sparkles', grading:'barChart', 'ai-content':'cpu', feedback:'star' };
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    const iconEl = item.querySelector('.nav-icon') || item;
+    const iconName = iconMap[item.dataset.page];
+    if (iconEl && iconName && L[iconName]) {
+      const target = item.querySelector('.nav-icon') || item.querySelector('span');
+      if (target) target.innerHTML = L[iconName]();
+    }
+  });
+
+  setHtml('newQuizIcon', L.plus());
+  setHtml('addEventIcon', L.plus());
+  setHtml('uploadResIcon', L.upload());
+  setHtml('uploadDocIcon', L.upload());
+  setHtml('uploadIcon', L.upload(28));
+  setHtml('genEmptyIcon', L.sparkles(32));
+  setHtml('fbEmptyIcon', L.star(32));
+  setHtml('stuSearchIcon', L.search());
+
+  initShell({ role: user?.role, name: user?.full_name, avatarUrl: user?.avatar_url });
+  const sbName = document.getElementById('sidebarName');
+  if (sbName) sbName.textContent = user?.full_name || 'Educator';
+  const wMsg = document.getElementById('welcomeMsg');
+  if (wMsg) wMsg.textContent = `Welcome, ${user?.full_name?.split(' ')[0] || 'Educator'}!`;
 
   Modal.init('addEventModal'); Modal.init('uploadResourceModal'); Modal.init('uploadDocModal');
-  initTabs(document.getElementById('page-resources'));
+  const resPage = document.getElementById('page-resources');
+  if (resPage) initTabs(resPage);
   initNav('home', pageHandlers);
 
   const now = new Date();
@@ -384,24 +447,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderDocuments();
 });
 
-const pageHandlers = {
-  assessments:  loadAssessmentsTable,
-  students:     loadStudentResults,
-  grading:      loadGrading,
-  calendar:     () => renderCalendar(),
-};
-
 async function loadDashboard() {
   try {
     const d = await Api.get('/analytics/instructor');
-    document.getElementById('st-total').textContent    = d.stats?.total_assessments ?? '—';
-    document.getElementById('st-published').textContent = d.stats?.published_assessments ?? '—';
-    document.getElementById('st-attempts').textContent  = d.stats?.total_attempts ?? '—';
-    document.getElementById('st-avg').textContent       = d.stats?.avg_score != null ? `${d.stats.avg_score}%` : '—';
-    document.getElementById('ic-total').innerHTML  = Icon.clipboard();
-    document.getElementById('ic-pub').innerHTML    = Icon.check();
-    document.getElementById('ic-att').innerHTML    = Icon.users();
-    document.getElementById('ic-score').innerHTML  = Icon.trend();
+    const stTot = document.getElementById('st-total');
+    if (stTot) stTot.textContent = d.stats?.total_assessments ?? '—';
+    const stPub = document.getElementById('st-published');
+    if (stPub) stPub.textContent = d.stats?.published_assessments ?? '—';
+    const stAtt = document.getElementById('st-attempts');
+    if (stAtt) stAtt.textContent = d.stats?.total_attempts ?? '—';
+    const stAvg = document.getElementById('st-avg');
+    if (stAvg) stAvg.textContent = d.stats?.avg_score != null ? `${d.stats.avg_score}%` : '—';
+    setHtml('ic-total', L.clipboard());
+    setHtml('ic-att', L.users());
+    setHtml('ic-score', L.trendingUp());
 
     // Recent assessments
     const list = document.getElementById('recentAssessmentsList');

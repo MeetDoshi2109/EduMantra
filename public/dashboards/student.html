@@ -2,22 +2,102 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduMantra – Student</title>
+<title>EduMantra – Student Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/design-system.css">
 <style>
-  /* Bento grid variants — design-system.css uses .bento + .g* */
-  .chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 120px);background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r-lg);overflow:hidden}
-  .chat-msgs{flex:1;overflow-y:auto;padding:var(--space-lg);display:flex;flex-direction:column;gap:.75rem}
-  .chat-msg{display:flex;gap:.625rem;max-width:82%}
-  .chat-msg.user{align-self:flex-end;flex-direction:row-reverse}
-  .chat-bubble{background:var(--n-100);border:1px solid var(--n-200);border-radius:12px;padding:.625rem 1rem;font-size:.875rem;line-height:1.6}
-  .chat-msg.user .chat-bubble{background:var(--color-primary);color:#fff;border-color:var(--color-primary)}
-  .chat-avatar{width:28px;height:28px;border-radius:50%;background:var(--color-primary-xl);color:var(--color-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px}
-  .chat-input-row{border-top:1px solid var(--n-200);padding:.75rem var(--space-lg);display:flex;gap:.625rem;align-items:flex-end}
-  .chat-input-row textarea{flex:1;border:1.5px solid var(--n-200);border-radius:var(--r-md);padding:.5rem .75rem;resize:none;max-height:120px;font-family:inherit;font-size:.875rem;line-height:1.5;outline:none;transition:border-color var(--t-base)}
-  .chat-input-row textarea:focus{border-color:var(--color-primary)}
+  /* Legacy variable bridge for JS-generated HTML that uses old tokens */
+  :root {
+    --n-0:   var(--surface-1);
+    --n-100: var(--surface-2);
+    --n-200: var(--hairline);
+    --n-300: var(--ink-4);
+    --n-400: var(--ink-3);
+    --n-500: var(--ink-3);
+    --n-600: var(--ink-2);
+    --n-700: var(--ink);
+    --n-800: var(--ink);
+    --color-primary:    var(--accent);
+    --color-primary-xl: var(--accent-glow);
+    --color-primary-l:  rgba(0,229,160,0.12);
+    --color-secondary:  #4da6ff;
+    --color-success:    var(--accent);
+    --color-success-l:  rgba(0,229,160,0.1);
+    --color-warning:    var(--warning);
+    --color-danger:     var(--danger);
+    --color-cta:        var(--accent);
+    --color-text:       var(--ink);
+    --r-md:             var(--r-md);
+    --r-lg:             var(--r-lg);
+    --t-base:           var(--t-base);
+    --t-fast:           var(--t-fast);
+    --space-lg:         var(--space-lg);
+    --space-md:         var(--space-md);
+  }
+  /* Auto-grid for course cards */
+  .g-auto { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+  /* Badges used by JS-generated HTML */
+  .badge { display:inline-flex;align-items:center;gap:.2rem;padding:.18rem .6rem;border-radius:9999px;font-size:.68rem;font-weight:600; }
+  .badge-active { background:rgba(0,229,160,0.1);color:var(--accent); }
+  .badge-blue   { background:rgba(77,166,255,0.1);color:#4da6ff; }
+  .badge-slate  { background:var(--hairline);color:var(--ink-2); }
+  .badge-red    { background:rgba(255,71,87,0.1);color:var(--danger); }
+  .badge-amber  { background:rgba(245,166,35,0.1);color:var(--warning); }
+  .badge-progress { background:rgba(0,229,160,0.1);color:var(--accent); }
+  /* Card hover */
+  .card-hover:hover { border-color:var(--hairline-2);transform:translateY(-2px);box-shadow:var(--shadow-md);cursor:pointer; }
+  /* Card subtitle */
+  .card-subtitle { font-size:.75rem;color:var(--ink-3);margin-top:2px; }
+  /* Timeline for pathway */
+  .timeline { display:flex;flex-direction:column;gap:0;position:relative; }
+  .timeline::before { content:'';position:absolute;left:1.4rem;top:0;bottom:0;width:1px;background:var(--hairline); }
+  .tl-item { display:grid;grid-template-columns:2.8rem 1fr;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--hairline); }
+  .tl-dot { width:2.8rem;height:2.8rem;border-radius:50%;background:var(--surface-2);border:1px solid var(--hairline-2);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:var(--ink-3);position:relative;z-index:1; }
+  .tl-dot.act { background:rgba(0,229,160,0.1);border-color:rgba(0,229,160,0.3);color:var(--accent); }
+  .tl-title { font-weight:600;font-size:.875rem;color:var(--ink);margin-bottom:.2rem; }
+  .tl-sub { font-size:.78rem;color:var(--ink-3);line-height:1.6; }
+  /* Progress bar */
+  .pb-wrap { background:var(--hairline);border-radius:99px;height:5px;overflow:hidden; }
+  .pb-fill  { height:100%;border-radius:99px;background:var(--accent); }
+  /* Label cap */
+  .label-cap { font-family:var(--font-mono);font-size:.63rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3); }
+  /* Switch toggle */
+  .switch { position:relative;display:inline-flex;align-items:center;cursor:pointer; }
+  .switch input { opacity:0;width:0;height:0;position:absolute; }
+  .switch-track { width:32px;height:18px;background:var(--hairline-2);border-radius:99px;position:relative;transition:.2s;flex-shrink:0; }
+  .switch-track::after { content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:.2s; }
+  .switch input:checked + .switch-track { background:var(--accent); }
+  .switch input:checked + .switch-track::after { transform:translateX(14px); }
+  /* Input wrapper */
+  .input { width:100%;padding:.5rem .75rem;background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:var(--r-sm);color:var(--ink);font-size:.875rem;font-family:var(--font-body);outline:none;transition:border-color var(--t-fast); }
+  .input:focus { border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,229,160,.12); }
+  .input-wrap { position:relative; }
+  .input-icon-l { position:absolute;left:.6rem;top:50%;transform:translateY(-50%);color:var(--ink-3);pointer-events:none; }
+  .input-wrap .input { padding-left:2rem; }
+  /* Modal variants for shell.js */
+  .modal-ov { position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s; }
+  .modal-ov.open { opacity:1;pointer-events:auto; }
+  .modal { background:var(--surface-1);border:1px solid var(--hairline-2);border-radius:var(--r-xl);padding:1.5rem;width:100%;max-width:520px;max-height:90dvh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.5);transform:translateY(14px) scale(.97);transition:transform .4s cubic-bezier(.16,1,.3,1); }
+  .modal-ov.open .modal { transform:translateY(0) scale(1); }
+  .modal-hd { display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem; }
+  .modal-title { font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--ink); }
+  .modal-close { background:none;border:none;cursor:pointer;color:var(--ink-3);border-radius:var(--r-xs);padding:4px;transition:color var(--t-fast),background var(--t-fast); }
+  .modal-close:hover { color:var(--ink);background:rgba(255,255,255,.06); }
+  .modal-body { color:var(--ink-2);font-size:.875rem; }
+  .modal-footer { display:flex;justify-content:flex-end;gap:.5rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--hairline); }
+  /* Tab bar */
+  .tab-bar { display:flex;border-bottom:1px solid var(--hairline);margin-bottom:1.25rem; }
+  .tab { padding:.5rem 1rem;background:none;border:none;font-size:.84rem;font-weight:500;color:var(--ink-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color var(--t-fast),border-color var(--t-fast);font-family:var(--font-body); }
+  .tab:hover { color:var(--ink); }
+  .tab.active { color:var(--accent);border-color:var(--accent); }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+  /* Form group label override */
+  .form-label { font-size:.75rem;font-weight:600;color:var(--ink-2);display:block;margin-bottom:.3rem; }
+  /* Competency pips */
+  .comp-pips { display:flex;gap:3px; }
+  .comp-pip { width:10px;height:10px;border-radius:2px; }
 </style>
 </head>
 <body>
@@ -69,12 +149,14 @@
 
 <!-- MAIN -->
 <div class="main-area">
-  <header class="topbar">
+  <header class="topbar" style="position:relative">
     <button class="menu-toggle" aria-label="Toggle navigation"></button>
     <span class="topbar-title" aria-live="polite">Dashboard</span>
     <div class="topbar-actions">
-      <button class="btn btn-secondary btn-sm" onclick="goPage('skillgap',pageHandlers)">Run Skill Gap</button>
-      <button class="btn btn-ghost btn-icon" aria-label="Notifications" onclick="goPage('notifications',pageHandlers)">
+      <button class="btn btn-secondary btn-sm" onclick="goPage('skillgap',pageHandlers)" style="font-size:.78rem">
+        ⚡ Skill Gap
+      </button>
+      <button class="topbar-btn" id="notifBtn" aria-label="Notifications" onclick="goPage('notifications',pageHandlers)" style="position:relative">
         <span id="bellIcon"></span>
       </button>
     </div>
@@ -373,64 +455,6 @@ let chatSessionId = null;
 const notes      = JSON.parse(localStorage.getItem('em_notes')      || '[]');
 const objectives = JSON.parse(localStorage.getItem('em_objectives') || '[]');
 
-// ── Init ──────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  // Inject Lucide icons — using L.* (shell.js v2 exports icon set as L)
-  const navIcons = {
-    home:'home', objectives:'checkSquare', pathway:'map', courses:'book',
-    assessments:'clipboard', skillgap:'brain', competency:'sparkles',
-    assistant:'messageSquare', notes:'file', certificates:'award',
-    notifications:'bell', profile:'user'
-  };
-  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
-    const id = `ni-${item.dataset.page.replace('-','').replace('skillgap','gap').replace('competency','comp').replace('objectives','obj').replace('assessments','assess').replace('pathway','path').replace('certificates','certs').replace('notifications','notif').replace('assistant','ai').replace('courses','courses').replace('profile','profile')}`;
-    const el = document.getElementById(id);
-    const iconName = navIcons[item.dataset.page];
-    if (el && iconName && L[iconName]) el.innerHTML = L[iconName]();
-  });
-
-  // Topbar / action icons
-  document.getElementById('bellIcon').innerHTML       = L.bell();
-  document.getElementById('continueIcon').innerHTML   = L.arrowRight();
-  document.getElementById('genPathIcon').innerHTML    = L.sparkles();
-  document.getElementById('objPlusIcon').innerHTML    = L.plus();
-  document.getElementById('notePlusIcon').innerHTML   = L.plus();
-  document.getElementById('courseSearchIcon').innerHTML = L.search();
-  document.getElementById('chatSendBtn').innerHTML    = L.send();
-  document.getElementById('botAvatarIcon').innerHTML  = L.cpu(14);
-  document.getElementById('si-enrolled').innerHTML    = L.book();
-  document.getElementById('si-done').innerHTML        = L.checkCircle();
-  document.getElementById('si-hours').innerHTML       = L.activity();
-  document.getElementById('si-score').innerHTML       = L.star();
-  document.getElementById('si-obj-done').innerHTML    = L.checkCircle();
-  document.getElementById('si-obj-pend').innerHTML    = L.alertTriangle();
-  document.getElementById('si-obj-over').innerHTML    = L.trendingUp();
-
-  // Shell (correct function name is initShell, not buildSidebar)
-  const displayName = user?.full_name || user?.email?.split('@')[0] || 'Student';
-  initShell({ name: displayName, role: user?.role, avatarUrl: user?.avatar_url });
-  document.getElementById('sidebarName').textContent = displayName;
-
-  const hour = new Date().getHours();
-  const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('welcomeHeading').textContent = `${greet}, ${displayName.split(' ')[0]}!`;
-
-  // Modals — close button uses data-close (matching shell.js Modal.init)
-  Modal.init('quizModal'); Modal.init('addNoteModal'); Modal.init('addObjModal');
-
-  // Tabs
-  initTabs(document.getElementById('page-assessments'));
-
-  // Navigation — pageHandlers must be defined before initNav is called
-  initNav('home', pageHandlers);
-
-  // Load initial data
-  loadDashboard();
-  renderObjectives();
-  renderNotes();
-  loadPublishedAssessments();
-});
-
 // ── Page handlers — defined at module scope so initNav can reference them ──
 const pageHandlers = {
   courses:      () => loadMyEnrollments(),
@@ -445,6 +469,66 @@ const pageHandlers = {
   notes:        () => renderNotes(),
   assistant:    () => {},
 };
+
+// ── Init ──────────────────────────────────────────────────
+safeBoot(async () => {
+  // Inject Lucide icons safely
+  const navIcons = {
+    home:'home', objectives:'checkSquare', pathway:'map', courses:'book',
+    assessments:'clipboard', skillgap:'brain', competency:'sparkles',
+    assistant:'messageSquare', notes:'file', certificates:'award',
+    notifications:'bell', profile:'user'
+  };
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    const id = `ni-${item.dataset.page.replace('-','').replace('skillgap','gap').replace('competency','comp').replace('objectives','obj').replace('assessments','assess').replace('pathway','path').replace('certificates','certs').replace('notifications','notif').replace('assistant','ai').replace('courses','courses').replace('profile','profile')}`;
+    const iconName = navIcons[item.dataset.page];
+    if (iconName && L[iconName]) setHtml(id, L[iconName]());
+  });
+
+  // Topbar / action icons safely injected
+  setHtml('bellIcon', L.bell());
+  setHtml('continueIcon', L.arrowRight());
+  setHtml('genPathIcon', L.sparkles());
+  setHtml('objPlusIcon', L.plus());
+  setHtml('notePlusIcon', L.plus());
+  setHtml('courseSearchIcon', L.search());
+  setHtml('chatSendBtn', L.send());
+  setHtml('botAvatarIcon', L.cpu(14));
+  setHtml('si-enrolled', L.book());
+  setHtml('si-done', L.checkCircle());
+  setHtml('si-hours', L.activity());
+  setHtml('si-score', L.star());
+  setHtml('si-obj-done', L.checkCircle());
+  setHtml('si-obj-pend', L.alertTriangle());
+  setHtml('si-obj-over', L.trendingUp());
+
+  // Shell init
+  const displayName = user?.full_name || user?.email?.split('@')[0] || 'Student';
+  initShell({ name: displayName, role: user?.role, avatarUrl: user?.avatar_url });
+  const sbName = document.getElementById('sidebarName');
+  if (sbName) sbName.textContent = displayName;
+
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const wHead = document.getElementById('welcomeHeading');
+  if (wHead) wHead.textContent = `${greet}, ${displayName.split(' ')[0]}!`;
+
+  // Modals
+  Modal.init('quizModal'); Modal.init('addNoteModal'); Modal.init('addObjModal');
+
+  // Tabs
+  const assessPage = document.getElementById('page-assessments');
+  if (assessPage) initTabs(assessPage);
+
+  // Navigation
+  initNav('home', pageHandlers);
+
+  // Load initial data
+  await loadDashboard();
+  renderObjectives();
+  renderNotes();
+  loadPublishedAssessments();
+});
 
 // ── Dashboard ─────────────────────────────────────────────
 async function loadDashboard() {

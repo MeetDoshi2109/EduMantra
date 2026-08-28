@@ -446,30 +446,6 @@
 const user = Auth.guard();
 if (user && user.role !== 'developer') Auth.redirect(user);
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // Inject icons
-  document.getElementById('refreshIcon').innerHTML = Icon.trend();
-  document.getElementById('apiLogRefreshIcon').innerHTML = Icon.trend();
-  document.getElementById('addOrgPlusIcon').innerHTML = Icon.plus();
-  document.getElementById('copyIcon').innerHTML = Icon.eye();
-  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
-    const iconMap = { home:'chart', health:'lightning', 'api-logs':'terminal', deploy:'upload', users:'users', roles:'shield', orgs:'globe', audit:'eye', 'api-int':'globe', security:'lock', data:'database', backup:'download', 'assistant-mgmt':'robot', subfeatures:'gear' };
-    const iconEl = item.querySelector('.nav-icon');
-    if (iconEl && iconMap[item.dataset.page]) iconEl.innerHTML = Icon[iconMap[item.dataset.page]]?.() || '';
-  });
-  // Timeline check icons
-  ['tl-check-1','tl-check-2','tl-check-3','tl-check-4'].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = Icon.check(14); });
-
-  buildSidebar({ role: user?.role, name: user?.full_name, avatarUrl: user?.avatar_url });
-  document.getElementById('sidebarName').textContent = user?.full_name || 'Developer';
-  Modal.init('addOrgModal');
-
-  initNav('home', pageHandlers);
-  await checkHealth();
-  await loadSystemStats();
-  loadApiRef();
-});
-
 const pageHandlers = {
   'api-logs':    loadApiLogs,
   users:         loadUsers,
@@ -480,16 +456,51 @@ const pageHandlers = {
   'assistant-mgmt': loadAiStats,
 };
 
+safeBoot(async () => {
+  // Inject icons
+  setHtml('refreshIcon', L.trendingUp());
+  setHtml('apiLogRefreshIcon', L.trendingUp());
+  setHtml('addOrgPlusIcon', L.plus());
+  setHtml('copyIcon', L.eye());
+
+  const iconMap = { home:'barChart', health:'zap', 'api-logs':'terminal', deploy:'upload', users:'users', roles:'shield', orgs:'globe', audit:'eye', 'api-int':'globe', security:'lock', data:'database', backup:'download', 'assistant-mgmt':'cpu', subfeatures:'settings' };
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    const iconName = iconMap[item.dataset.page];
+    if (iconName && L[iconName]) {
+      const target = item.querySelector('.nav-icon') || item.querySelector('span');
+      if (target) target.innerHTML = L[iconName]();
+    }
+  });
+
+  ['tl-check-1','tl-check-2','tl-check-3','tl-check-4'].forEach(id => {
+    setHtml(id, L.checkCircle(14));
+  });
+
+  initShell({ role: user?.role, name: user?.full_name, avatarUrl: user?.avatar_url });
+  const sbName = document.getElementById('sidebarName');
+  if (sbName) sbName.textContent = user?.full_name || 'Developer';
+  Modal.init('addOrgModal');
+
+  initNav('home', pageHandlers);
+  await checkHealth();
+  await loadSystemStats();
+  loadApiRef();
+});
+
 async function checkHealth() {
   try {
     const r = await fetch('/api/health');
     if (r.ok) {
-      document.getElementById('healthDot').className = 'health-dot green';
-      document.getElementById('healthText').textContent = 'All systems operational';
+      const hDot = document.getElementById('healthDot');
+      if (hDot) hDot.className = 'health-dot green';
+      const hTxt = document.getElementById('healthText');
+      if (hTxt) hTxt.textContent = 'All systems operational';
     } else throw new Error();
   } catch {
-    document.getElementById('healthDot').className = 'health-dot red';
-    document.getElementById('healthText').textContent = 'Service degraded';
+    const hDot = document.getElementById('healthDot');
+    if (hDot) hDot.className = 'health-dot red';
+    const hTxt = document.getElementById('healthText');
+    if (hTxt) hTxt.textContent = 'Service degraded';
   }
 }
 
@@ -498,14 +509,19 @@ async function refreshAll() { await checkHealth(); await loadSystemStats(); Toas
 async function loadSystemStats() {
   try {
     const [sys, dev] = await Promise.all([Api.get('/developer/system-stats'), Api.get('/analytics/developer')]);
-    document.getElementById('sys-users').textContent       = sys.total_users ?? '—';
-    document.getElementById('sys-orgs').textContent        = sys.total_organizations ?? '—';
-    document.getElementById('sys-courses').textContent     = sys.total_courses ?? '—';
-    document.getElementById('sys-assessments').textContent = sys.total_assessments ?? '—';
-    document.getElementById('ic-users').innerHTML  = Icon.users();
-    document.getElementById('ic-orgs').innerHTML   = Icon.globe();
-    document.getElementById('ic-courses').innerHTML= Icon.book();
-    document.getElementById('ic-assess').innerHTML = Icon.clipboard();
+    const sysUsers = document.getElementById('sys-users');
+    if (sysUsers) sysUsers.textContent = sys.total_users ?? '—';
+    const sysOrgs = document.getElementById('sys-orgs');
+    if (sysOrgs) sysOrgs.textContent = sys.total_organizations ?? '—';
+    const sysCourses = document.getElementById('sys-courses');
+    if (sysCourses) sysCourses.textContent = sys.total_courses ?? '—';
+    const sysAssess = document.getElementById('sys-assessments');
+    if (sysAssess) sysAssess.textContent = sys.total_assessments ?? '—';
+
+    setHtml('ic-users',   L.users());
+    setHtml('ic-orgs',    L.globe());
+    setHtml('ic-courses', L.book());
+    setHtml('ic-assess',  L.clipboard());
 
     // Role chart
     const roles = dev.users_by_role || {};

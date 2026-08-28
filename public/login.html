@@ -3,81 +3,356 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>EduMantra – Sign In</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/main.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-.auth-page{background:linear-gradient(135deg,#1e3a8a 0%,#4c1d95 60%,#0e7490 100%)}
-.auth-split{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
-.auth-left{display:flex;flex-direction:column;justify-content:center;padding:3rem;color:#fff}
-.auth-left h1{font-size:2.4rem;font-weight:800;line-height:1.15;margin-bottom:1rem}
-.auth-left p{font-size:1rem;opacity:.85;line-height:1.7;max-width:440px}
-.auth-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem}
-.auth-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:.35rem .9rem;font-size:.78rem;color:#fff}
-.auth-right{display:flex;align-items:center;justify-content:center;padding:2rem;background:rgba(0,0,0,.15)}
-.auth-card{background:#fff;border-radius:20px;padding:2.25rem;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-.auth-logo{text-align:center;margin-bottom:1.5rem}
-.auth-logo .logo-mark{width:52px;height:52px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.2rem;margin:0 auto .6rem}
-.auth-logo h2{font-size:1.35rem;font-weight:700;color:#0f172a}
-.auth-logo p{font-size:.78rem;color:#64748b}
-.auth-tabs{display:flex;border-bottom:2px solid #e2e8f0;margin-bottom:1.4rem}
-.at-btn{flex:1;padding:.5rem;border:none;background:none;font-weight:500;font-size:.875rem;color:#64748b;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .18s,border-color .18s}
-.at-btn.active{color:#2563eb;border-color:#2563eb}
-.ap{display:none}.ap.active{display:block}
-.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem;margin-bottom:1rem}
-.role-opt{border:1.5px solid #e2e8f0;border-radius:8px;padding:.5rem .35rem;text-align:center;cursor:pointer;font-size:.73rem;transition:border-color .18s,background .18s}
-.role-opt:hover{border-color:#2563eb;background:#eff6ff}
-.role-opt.sel{border-color:#2563eb;background:#eff6ff;color:#2563eb;font-weight:600}
-.role-opt .ri{font-size:1.25rem;display:block;margin-bottom:.2rem}
-@media(max-width:768px){.auth-split{grid-template-columns:1fr}.auth-left{display:none}.auth-right{min-height:100vh}}
+:root {
+  --canvas:     #0c0e12;
+  --s1:         #111318;
+  --s2:         #161a22;
+  --s3:         #1c2130;
+  --accent:     #00e5a0;
+  --accent-dim: #00b87a;
+  --accent-glow:rgba(0,229,160,0.15);
+  --on-accent:  #0c0e12;
+  --ink:        #eef2f7;
+  --ink-2:      #b0bec5;
+  --ink-3:      #6b7c93;
+  --hr:         rgba(255,255,255,0.07);
+  --hr2:        rgba(255,255,255,0.12);
+  --danger:     #ff4757;
+  --font-d:     'Outfit', system-ui, sans-serif;
+  --font-b:     'Inter', system-ui, sans-serif;
+  --font-m:     'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-b); background: var(--canvas); color: var(--ink); min-height: 100dvh; }
+
+/* ── SPLIT LAYOUT ───────────────────────────────────────────────── */
+.auth-split {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  min-height: 100dvh;
+}
+
+/* ── LEFT PANEL ─────────────────────────────────────────────────── */
+.auth-left {
+  background: var(--s1);
+  border-right: 1px solid var(--hr);
+  padding: 3rem 3rem 2rem;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+
+/* Dot grid */
+.auth-left::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+/* Emerald glow */
+.auth-left::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 40% 60%, rgba(0,229,160,0.08), transparent 70%);
+  pointer-events: none;
+}
+
+.auth-left-inner { position: relative; z-index: 1; }
+
+.auth-brand {
+  display: flex; align-items: center; gap: 0.75rem; margin-bottom: 3rem;
+}
+.auth-logo-mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-d); font-weight: 800; font-size: 0.88rem;
+  color: var(--on-accent);
+  box-shadow: 0 4px 14px rgba(0,229,160,0.35);
+}
+.auth-wordmark { font-family: var(--font-d); font-weight: 700; font-size: 1.05rem; color: var(--ink); }
+
+.auth-headline {
+  font-family: var(--font-d);
+  font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+  font-weight: 800; line-height: 1.1;
+  letter-spacing: -0.03em; color: var(--ink);
+  margin-bottom: 1rem;
+}
+.auth-headline .em { color: var(--accent); }
+
+.auth-desc {
+  font-size: 0.9rem; color: var(--ink-2);
+  line-height: 1.75; margin-bottom: 2rem; max-width: 400px;
+}
+
+/* Animated progress widget */
+.auth-widget {
+  background: var(--s2); border: 1px solid var(--hr2);
+  border-radius: 16px; padding: 1.25rem;
+  max-width: 380px;
+  margin-bottom: 2rem;
+}
+.auth-widget-title {
+  font-family: var(--font-m); font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  animation: livePulse 2s infinite;
+}
+@keyframes livePulse {
+  0%  { box-shadow: 0 0 0 0 rgba(0,229,160,0.5); }
+  70% { box-shadow: 0 0 0 7px rgba(0,229,160,0); }
+  100%{ box-shadow: 0 0 0 0 rgba(0,229,160,0); }
+}
+
+.auth-meter { margin-bottom: 0.8rem; }
+.auth-meter-hdr { display: flex; justify-content: space-between; font-size: 0.74rem; color: var(--ink-2); margin-bottom: 0.28rem; }
+.auth-track { background: var(--hr); height: 6px; border-radius: 99px; overflow: hidden; }
+.auth-fill { height: 100%; border-radius: 99px; }
+
+/* Role pills */
+.auth-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.auth-pill {
+  background: var(--s3); border: 1px solid var(--hr2);
+  border-radius: 99px; padding: 0.3rem 0.85rem;
+  font-size: 0.72rem; color: var(--ink-2); font-family: var(--font-b);
+  transition: border-color 0.2s, color 0.2s;
+}
+.auth-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── RIGHT PANEL ─────────────────────────────────────────────────── */
+.auth-right {
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem;
+  background: var(--canvas);
+}
+
+.auth-card {
+  background: var(--s1);
+  border: 1px solid var(--hr2);
+  border-radius: 22px;
+  padding: 2.25rem;
+  width: 100%; max-width: 400px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.06) inset;
+}
+
+.card-brand {
+  text-align: center; margin-bottom: 1.75rem;
+}
+.card-logo {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-d); font-weight: 800; font-size: 1.05rem;
+  color: var(--on-accent); margin: 0 auto 0.65rem;
+  box-shadow: 0 4px 16px rgba(0,229,160,0.3);
+}
+.card-title { font-family: var(--font-d); font-size: 1.25rem; font-weight: 700; color: var(--ink); }
+.card-sub   { font-size: 0.75rem; color: var(--ink-3); margin-top: 3px; }
+
+/* Tabs */
+.auth-tabs {
+  display: flex;
+  background: var(--s2); border: 1px solid var(--hr);
+  border-radius: 10px; padding: 3px;
+  margin-bottom: 1.5rem; gap: 3px;
+}
+.at-btn {
+  flex: 1; padding: 0.45rem; border: none;
+  background: transparent; border-radius: 7px;
+  font-size: 0.82rem; font-weight: 600; color: var(--ink-3);
+  cursor: pointer; font-family: var(--font-b);
+  transition: all 0.2s;
+}
+.at-btn.active { background: var(--s3); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+/* Panes */
+.ap { display: none; }
+.ap.active { display: block; }
+
+/* Form elements */
+.form-group { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.9rem; }
+.form-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+label { font-size: 0.75rem; font-weight: 600; color: var(--ink-2); }
+
+input[type=text], input[type=email], input[type=password] {
+  width: 100%; padding: 0.55rem 0.8rem;
+  background: var(--s2); border: 1px solid var(--hr2);
+  border-radius: 8px; color: var(--ink);
+  font-size: 0.875rem; font-family: var(--font-b);
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+input::placeholder { color: rgba(107,124,147,0.6); }
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,229,160,0.12);
+}
+
+/* Role grid */
+.role-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 0.5rem; margin-bottom: 0.9rem;
+}
+.role-opt {
+  border: 1px solid var(--hr2); border-radius: 9px;
+  padding: 0.6rem 0.4rem; text-align: center;
+  cursor: pointer; font-size: 0.71rem;
+  color: var(--ink-3); background: var(--s2);
+  transition: all 0.2s; font-family: var(--font-b);
+}
+.role-opt:hover { border-color: var(--hr2); background: var(--s3); color: var(--ink-2); }
+.role-opt.sel   { border-color: var(--accent); background: rgba(0,229,160,0.08); color: var(--accent); font-weight: 600; }
+.role-opt .ri   { font-size: 1.3rem; display: block; margin-bottom: 0.3rem; }
+
+/* Buttons */
+.btn-primary {
+  display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  width: 100%; padding: 0.6rem 1rem;
+  background: var(--accent); color: var(--on-accent);
+  border: none; border-radius: 8px;
+  font-family: var(--font-b); font-size: 0.88rem; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0,229,160,0.3);
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: #00f5ad; box-shadow: 0 5px 18px rgba(0,229,160,0.4); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+.text-xs { font-size: 0.72rem; color: var(--ink-3); }
+.text-center { text-align: center; }
+.mt-1 { margin-top: 0.4rem; }
+.link { color: var(--accent); cursor: pointer; text-decoration: none; }
+.link:hover { text-decoration: underline; }
+
+/* Toast */
+#toast-container { position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; }
+.toast { padding: 0.75rem 1.1rem; border-radius: 10px; font-size: 0.84rem; font-weight: 500; min-width: 240px; max-width: 340px; background: var(--s3); border: 1px solid var(--hr2); box-shadow: 0 8px 24px rgba(0,0,0,0.5); animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1); }
+.toast.success { border-color: rgba(0,229,160,0.3); color: var(--accent); }
+.toast.error   { border-color: rgba(255,71,87,0.3); color: var(--danger); }
+@keyframes toastIn { from { opacity:0;transform:translateY(8px) scale(0.96); } to { opacity:1;transform:translateY(0) scale(1); } }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .auth-split { grid-template-columns: 1fr; }
+  .auth-left  { display: none; }
+  .auth-right { min-height: 100dvh; }
+}
+@media (max-width: 400px) {
+  .auth-card { padding: 1.5rem; }
+  .role-grid { grid-template-columns: repeat(2,1fr); }
+}
 </style>
 </head>
 <body>
+
+<div id="toast-container"></div>
+
 <div class="auth-split">
+  <!-- Left panel -->
   <div class="auth-left">
-    <div style="font-size:2rem;margin-bottom:1rem">🎓</div>
-    <h1>AI-Enabled Skill Intelligence &amp; Learning Platform</h1>
-    <p>Bridging skill gaps for India's Official Statistical System through personalized learning pathways, AI-powered assessments, and seamless iGOT Karmayogi integration.</p>
-    <div class="auth-pills">
-      <span class="auth-pill">📊 Skill Gap Analysis</span>
-      <span class="auth-pill">🗺️ Learning Pathways</span>
-      <span class="auth-pill">🤖 AI Assessments</span>
-      <span class="auth-pill">🔗 iGOT Integration</span>
-      <span class="auth-pill">📈 Competency Mapping</span>
-      <span class="auth-pill">🏛️ NSSTA TPAC</span>
+    <div class="auth-left-inner">
+      <div class="auth-brand">
+        <div class="auth-logo-mark">EM</div>
+        <span class="auth-wordmark">EduMantra</span>
+      </div>
+
+      <h1 class="auth-headline">AI-Enabled<br><span class="em">Skill Intelligence</span><br>for India</h1>
+      <p class="auth-desc">Bridging skill gaps for India's Official Statistical System through personalised learning pathways, AI-powered assessments, and seamless iGOT Karmayogi integration.</p>
+
+      <div class="auth-widget">
+        <div class="auth-widget-title">
+          <span class="live-dot"></span>
+          Live Skill Assessment
+        </div>
+        <div class="auth-meter">
+          <div class="auth-meter-hdr"><span>Statistical Analysis</span><span style="color:var(--accent)">88%</span></div>
+          <div class="auth-track"><div class="auth-fill" style="width:88%;background:linear-gradient(90deg,var(--accent),#00f5ad)"></div></div>
+        </div>
+        <div class="auth-meter">
+          <div class="auth-meter-hdr"><span>Data Privacy &amp; Governance</span><span style="color:#ff4757">42%</span></div>
+          <div class="auth-track"><div class="auth-fill" style="width:42%;background:linear-gradient(90deg,#ff4757,#ff6b35)"></div></div>
+        </div>
+        <div class="auth-meter" style="margin-bottom:0">
+          <div class="auth-meter-hdr"><span>Digital Literacy</span><span style="color:#f5a623">64%</span></div>
+          <div class="auth-track"><div class="auth-fill" style="width:64%;background:linear-gradient(90deg,#f5a623,#fbbf24)"></div></div>
+        </div>
+      </div>
+
+      <div class="auth-pills">
+        <span class="auth-pill">📊 Skill Gap Analysis</span>
+        <span class="auth-pill">🗺️ Learning Pathways</span>
+        <span class="auth-pill">🤖 AI Assessments</span>
+        <span class="auth-pill">🔗 iGOT Integration</span>
+        <span class="auth-pill">📈 Competency Mapping</span>
+        <span class="auth-pill">🏛️ NSSTA TPAC</span>
+      </div>
     </div>
   </div>
 
+  <!-- Right panel — auth card -->
   <div class="auth-right">
     <div class="auth-card">
-      <div class="auth-logo">
-        <div class="logo-mark">EM</div>
-        <h2>EduMantra</h2>
-        <p>Ministry of Statistics &amp; Programme Implementation</p>
+      <div class="card-brand">
+        <div class="card-logo">EM</div>
+        <div class="card-title">EduMantra</div>
+        <div class="card-sub">Ministry of Statistics &amp; Programme Implementation</div>
       </div>
 
       <div class="auth-tabs">
-        <button class="at-btn active" onclick="switchTab('login')">Sign In</button>
-        <button class="at-btn" onclick="switchTab('register')">Register</button>
+        <button class="at-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+        <button class="at-btn" id="tab-register" onclick="switchTab('register')">Register</button>
       </div>
 
-      <!-- Login -->
+      <!-- Login pane -->
       <div class="ap active" id="ap-login">
         <form id="loginForm">
-          <div class="form-group"><label>Email</label><input type="email" id="l-email" placeholder="you@gov.in" required></div>
-          <div class="form-group"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" required></div>
-          <button class="btn btn-primary btn-full" id="loginBtn" style="margin-bottom:.75rem">Sign In →</button>
-          <p class="text-xs text-center text-muted">Forgot password? <a href="#" onclick="switchTab('forgot')" style="color:var(--primary)">Reset here</a></p>
+          <div class="form-group">
+            <label for="l-email">Email</label>
+            <input type="email" id="l-email" placeholder="you@gov.in" required>
+          </div>
+          <div class="form-group">
+            <label for="l-pass">Password</label>
+            <input type="password" id="l-pass" placeholder="••••••••" required>
+          </div>
+          <button class="btn-primary" id="loginBtn" type="submit" style="margin-bottom:.75rem">
+            Sign In
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+          <p class="text-xs text-center">Forgot password? <a class="link" onclick="switchTab('forgot')">Reset here</a></p>
         </form>
       </div>
 
-      <!-- Register -->
+      <!-- Register pane -->
       <div class="ap" id="ap-register">
         <form id="regForm">
           <div class="form-row">
-            <div class="form-group"><label>Full Name</label><input type="text" id="r-name" required placeholder="Your full name"></div>
-            <div class="form-group"><label>Email</label><input type="email" id="r-email" required placeholder="you@gov.in"></div>
+            <div class="form-group">
+              <label for="r-name">Full Name</label>
+              <input type="text" id="r-name" required placeholder="Your full name">
+            </div>
+            <div class="form-group">
+              <label for="r-email">Email</label>
+              <input type="email" id="r-email" required placeholder="you@gov.in">
+            </div>
           </div>
-          <div class="form-group"><label>Password (min 8 chars)</label><input type="password" id="r-pass" required minlength="8" placeholder="••••••••"></div>
+          <div class="form-group">
+            <label for="r-pass">Password (min 8 chars)</label>
+            <input type="password" id="r-pass" required minlength="8" placeholder="••••••••">
+          </div>
           <div class="form-group">
             <label>Select Your Role</label>
             <div class="role-grid" id="roleGrid">
@@ -89,18 +364,24 @@
             </div>
             <input type="hidden" id="r-role">
           </div>
-          <div class="form-group"><label>Designation (optional)</label><input type="text" id="r-desig" placeholder="e.g. Statistical Officer"></div>
-          <button class="btn btn-primary btn-full" id="regBtn">Create Account</button>
+          <div class="form-group">
+            <label for="r-desig">Designation (optional)</label>
+            <input type="text" id="r-desig" placeholder="e.g. Statistical Officer">
+          </div>
+          <button class="btn-primary" id="regBtn" type="submit">Create Account</button>
         </form>
       </div>
 
-      <!-- Forgot -->
+      <!-- Forgot pane -->
       <div class="ap" id="ap-forgot">
         <form id="forgotForm">
-          <p class="text-sm text-muted mb-2">Enter your email to receive a reset link.</p>
-          <div class="form-group"><label>Email</label><input type="email" id="f-email" placeholder="you@gov.in" required></div>
-          <button class="btn btn-primary btn-full">Send Reset Link</button>
-          <p class="text-xs text-center mt-1"><a href="#" onclick="switchTab('login')" style="color:var(--primary)">← Back to login</a></p>
+          <p class="text-xs" style="color:var(--ink-2);margin-bottom:.85rem">Enter your email to receive a reset link.</p>
+          <div class="form-group">
+            <label for="f-email">Email</label>
+            <input type="email" id="f-email" placeholder="you@gov.in" required>
+          </div>
+          <button class="btn-primary" type="submit">Send Reset Link</button>
+          <p class="text-xs text-center mt-1"><a class="link" onclick="switchTab('login')">← Back to login</a></p>
         </form>
       </div>
     </div>
@@ -114,13 +395,19 @@ if (Auth.loggedIn()) { const u = Auth.user(); if (u) Auth.redirect(u); }
 let selectedRole = '';
 
 function switchTab(t) {
-  document.querySelectorAll('.at-btn').forEach((b,i)=>b.classList.toggle('active',['login','register','forgot'][i]===t));
-  document.querySelectorAll('.ap').forEach(p=>p.classList.remove('active'));
-  document.getElementById(`ap-${t}`)?.classList.add('active');
+  ['login','register','forgot'].forEach((name, i) => {
+    const btn = document.getElementById('tab-' + name);
+    if (btn) btn.classList.toggle('active', name === t);
+    const pane = document.getElementById('ap-' + name);
+    if (pane) pane.classList.toggle('active', name === t);
+  });
+  // forgot tab has no button so just toggle panes
+  const forgot = document.getElementById('ap-forgot');
+  if (t === 'forgot' && forgot) { forgot.classList.add('active'); }
 }
 
 function pickRole(el) {
-  document.querySelectorAll('.role-opt').forEach(r=>r.classList.remove('sel'));
+  document.querySelectorAll('.role-opt').forEach(r => r.classList.remove('sel'));
   el.classList.add('sel');
   selectedRole = el.dataset.role;
   document.getElementById('r-role').value = selectedRole;
@@ -131,36 +418,38 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
   const btn = document.getElementById('loginBtn');
   btn.textContent = 'Signing in…'; btn.disabled = true;
   try {
-    const d = await Api.post('/auth/login',{ email: document.getElementById('l-email').value, password: document.getElementById('l-pass').value });
-    if (!d || !d.access_token) {
-      throw new Error(d?.error || 'Login response missing access token.');
-    }
+    const d = await Api.post('/auth/login', { email: document.getElementById('l-email').value, password: document.getElementById('l-pass').value });
+    if (!d || !d.access_token) throw new Error(d?.error || 'Login response missing access token.');
     Auth.save(d);
     const name = d.user?.full_name || d.user?.email || 'User';
-    Toast.success('Welcome back, '+name+'!');
-    setTimeout(()=>Auth.redirect(d.user), 600);
-  } catch(err){ Toast.error(err.message); btn.textContent='Sign In →'; btn.disabled=false; }
+    Toast.success('Welcome back, ' + name + '!');
+    setTimeout(() => Auth.redirect(d.user), 600);
+  } catch(err) {
+    Toast.error(err.message);
+    btn.innerHTML = 'Sign In <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+    btn.disabled = false;
+  }
 });
 
 document.getElementById('regForm').addEventListener('submit', async e => {
   e.preventDefault();
   if (!selectedRole) { Toast.error('Please select a role'); return; }
   const btn = document.getElementById('regBtn');
-  btn.textContent='Creating…'; btn.disabled=true;
+  btn.textContent = 'Creating…'; btn.disabled = true;
   try {
-    await Api.post('/auth/register',{ full_name:document.getElementById('r-name').value, email:document.getElementById('r-email').value, password:document.getElementById('r-pass').value, role:selectedRole, designation:document.getElementById('r-desig').value });
+    await Api.post('/auth/register', { full_name: document.getElementById('r-name').value, email: document.getElementById('r-email').value, password: document.getElementById('r-pass').value, role: selectedRole, designation: document.getElementById('r-desig').value });
     Toast.success('Account created! Please sign in.');
     switchTab('login');
-  } catch(err){ Toast.error(err.message); }
-  finally{ btn.textContent='Create Account'; btn.disabled=false; }
+  } catch(err) { Toast.error(err.message); }
+  finally { btn.textContent = 'Create Account'; btn.disabled = false; }
 });
 
 document.getElementById('forgotForm').addEventListener('submit', async e => {
   e.preventDefault();
   try {
-    await Api.post('/auth/forgot-password',{ email:document.getElementById('f-email').value });
+    await Api.post('/auth/forgot-password', { email: document.getElementById('f-email').value });
     Toast.success('Reset link sent — check your email.');
-  } catch(err){ Toast.error(err.message); }
+  } catch(err) { Toast.error(err.message); }
 });
 </script>
 </body>

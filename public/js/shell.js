@@ -71,10 +71,39 @@ const L = {
   chevronsRight:(s) => L._i('<polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/>',s),
   minus:        (s) => L._i('<line x1="5" y1="12" x2="19" y2="12"/>',s),
   externalLink: (s) => L._i('<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>',s),
+  
+  /* Legacy alias mappings */
+  house:        (s) => L.home(s),
+  chart:        (s) => L.barChart(s),
+  trend:        (s) => L.trendingUp(s),
+  sparkle:      (s) => L.sparkles(s),
+  lightning:    (s) => L.zap(s),
+  robot:        (s) => L.cpu(s),
+  gear:         (s) => L.settings(s),
+  check:        (s) => L.checkCircle(s),
+  path:         (s) => L.map(s),
+};
+
+/* ─── Global helpers & Compatibility bridges ──────── */
+window.Icon = L;
+window.inlineBarChart = (items, max) => barChart(items, max);
+window.buildSidebar = function(opts) {
+  if (typeof initShell === 'function') initShell(opts || {});
+};
+window.setHtml = function(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+};
+window.safeBoot = function(fn) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fn);
+  } else {
+    fn();
+  }
 };
 
 /* ─── Toast ──────────────────────────────────────────── */
-const Toast = {
+window.Toast = {
   _el: null,
   _init() {
     if (!this._el) {
@@ -102,14 +131,14 @@ const Toast = {
       setTimeout(() => t.remove(), 200);
     }, ms);
   },
-  success: m => Toast.show(m, 'success'),
-  error:   m => Toast.show(m, 'error'),
-  info:    m => Toast.show(m, 'info'),
-  warn:    m => Toast.show(m, 'warning'),
+  success: m => window.Toast.show(m, 'success'),
+  error:   m => window.Toast.show(m, 'error'),
+  info:    m => window.Toast.show(m, 'info'),
+  warn:    m => window.Toast.show(m, 'warning'),
 };
 
 /* ─── Modal ──────────────────────────────────────────── */
-const Modal = {
+window.Modal = {
   open(id)  { document.getElementById(id)?.classList.add('open'); },
   close(id) { document.getElementById(id)?.classList.remove('open'); },
   init(id)  {
@@ -135,7 +164,7 @@ function initShell({ name, role, avatarUrl }) {
   if (roleEl) roleEl.textContent = (role||'').replace(/_/g,' ');
   if (bRole)  bRole.textContent  = (role||'').replace(/_/g,' ');
   if (avEl) {
-    if (avatarUrl) avEl.innerHTML = `<img src="${avatarUrl}" alt="${name}">`;
+    if (avatarUrl) avEl.innerHTML = `<img src="${avatarUrl}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
     else avEl.textContent = (name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '??';
   }
 
@@ -153,10 +182,36 @@ function initShell({ name, role, avatarUrl }) {
     });
   }
 
+  // Apply topbar-btn class to all icon-style buttons in topbar-actions
+  document.querySelectorAll('.topbar-actions button, .topbar-actions [role="button"]').forEach(btn => {
+    btn.classList.add('topbar-btn');
+  });
+
+  // Bell notification indicator — adds topbar-notif-dot if there's a badge
+  const bellBtn = document.getElementById('bellIcon')?.closest('button');
+  if (bellBtn) {
+    bellBtn.classList.add('topbar-btn');
+    const badge = document.getElementById('notifBadge');
+    if (badge && badge.style.display !== 'none' && parseInt(badge.textContent) > 0) {
+      bellBtn.classList.add('has-notif');
+      // Insert glowing dot if not already present
+      if (!bellBtn.querySelector('.topbar-notif-dot')) {
+        const dot = document.createElement('span');
+        dot.className = 'topbar-notif-dot';
+        bellBtn.appendChild(dot);
+      }
+    }
+  }
+
+  // Nav group labels — add mono class for consistency
+  document.querySelectorAll('.nav-group-label').forEach(el => {
+    el.style.fontFamily = 'var(--font-mono)';
+  });
+
   // Logout
   const logoutBtn = document.querySelector('.logout-btn');
   if (logoutBtn) {
-    logoutBtn.innerHTML = L.logOut();
+    logoutBtn.innerHTML = L.logOut(16);
     logoutBtn.title = 'Sign out';
     logoutBtn.addEventListener('click', () => {
       Api.post('/auth/logout', {}).catch(() => {});
@@ -174,12 +229,26 @@ function initNav(defaultPage, handlers = {}) {
 }
 
 function goPage(pageId, handlers = {}, silent = false) {
-  document.querySelectorAll('.dash-page').forEach(p => p.classList.remove('active'));
-  document.getElementById(`page-${pageId}`)?.classList.add('active');
+  // Page swap with micro fade
+  document.querySelectorAll('.dash-page').forEach(p => {
+    p.classList.remove('active');
+    p.style.opacity = '';
+  });
+  const target = document.getElementById(`page-${pageId}`);
+  if (target) {
+    target.classList.add('active');
+    // Subtle entrance
+    target.animate(
+      [{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }],
+      { duration: 220, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' }
+    );
+  }
 
+  // Update active nav item
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active');
 
+  // Update topbar title
   const lbl = document.querySelector(`.nav-item[data-page="${pageId}"] .nav-label`)?.textContent;
   const tt  = document.querySelector('.topbar-title');
   if (tt && lbl) tt.textContent = lbl;

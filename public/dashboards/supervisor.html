@@ -267,30 +267,6 @@ if (user && user.role !== 'parent') Auth.redirect(user);
 let childrenData = [];
 let selectedIdx  = 0;
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // Inject Lucide icons into nav
-  document.getElementById('ni-home').innerHTML      = L.home();
-  document.getElementById('ni-learners').innerHTML  = L.users();
-  document.getElementById('ni-perf').innerHTML      = L.barChart();
-  document.getElementById('ni-path').innerHTML      = L.map();
-  document.getElementById('ni-insights').innerHTML  = L.activity();
-  document.getElementById('ni-proj').innerHTML      = L.trendingUp();
-  document.getElementById('ni-inst').innerHTML      = L.userCheck();
-  document.getElementById('ni-notif').innerHTML     = L.bell();
-  document.getElementById('ni-profile').innerHTML   = L.user();
-  document.getElementById('bellIcon').innerHTML     = L.bell();
-  document.getElementById('viewLearnersIcon').innerHTML = L.arrowRight();
-  document.getElementById('noLearnersIcon').innerHTML   = L.users(40);
-  document.getElementById('si-courses').innerHTML   = L.book();
-  document.getElementById('si-done').innerHTML      = L.checkCircle();
-  document.getElementById('si-score').innerHTML     = L.star();
-  document.getElementById('si-gap').innerHTML       = L.zap();
-
-  initShell({ name: user?.full_name, role: user?.role, avatarUrl: user?.avatar_url });
-  initNav('home', pageHandlers);
-  await loadData();
-});
-
 const pageHandlers = {
   learners:     renderLearnerCards,
   performance:  renderPerformance,
@@ -301,6 +277,30 @@ const pageHandlers = {
   notifications:loadNotifications,
   profile:      loadProfile,
 };
+
+safeBoot(async () => {
+  // Inject Lucide icons into nav safely
+  setHtml('ni-home',      L.home());
+  setHtml('ni-learners',  L.users());
+  setHtml('ni-perf',      L.barChart());
+  setHtml('ni-path',      L.map());
+  setHtml('ni-insights',  L.activity());
+  setHtml('ni-proj',      L.trendingUp());
+  setHtml('ni-inst',      L.userCheck());
+  setHtml('ni-notif',     L.bell());
+  setHtml('ni-profile',   L.user());
+  setHtml('bellIcon',     L.bell());
+  setHtml('viewLearnersIcon', L.arrowRight());
+  setHtml('noLearnersIcon',   L.users(40));
+  setHtml('si-courses',   L.book());
+  setHtml('si-done',      L.checkCircle());
+  setHtml('si-score',     L.star());
+  setHtml('si-gap',       L.zap());
+
+  initShell({ name: user?.full_name, role: user?.role, avatarUrl: user?.avatar_url });
+  initNav('home', pageHandlers);
+  await loadData();
+});
 
 async function loadData() {
   try {
