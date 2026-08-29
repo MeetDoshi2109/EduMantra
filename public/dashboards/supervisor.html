@@ -499,7 +499,7 @@ function renderProjected() {
     {label:'M+5',  value:78, color:'var(--color-success)'},
     {label:'M+6',  value:85, color:'var(--color-success)'},
   ]);
-  document.getElementById('projTargetVsCurrent').innerHTML = ['Statistical','Technical','Digital Gov','Behavioural'].map(dom => `
+  document.getElementById('projTargetVsCurrent').innerHTML = ['Science','Technology','Engineering','Mathematics'].map(dom => `
     <div style="margin-bottom:.85rem">
       <div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.3rem">
         <span style="font-weight:500">${dom}</span>
@@ -512,11 +512,11 @@ function renderProjected() {
       </div>
     </div>`).join('');
   document.getElementById('projMilestones').innerHTML = [
-    ['Beginner in Python', 'done',  'Completed • Aug 2026'],
-    ['Complete Survey Design course', 'act', 'In progress • due Sep 2026'],
-    ['Intermediate in Statistical Methods', '', 'Target: Oct 2026'],
-    ['Complete AI/ML module', '', 'Target: Nov 2026'],
-    ['Advanced competency in Technical domain', '', 'Target: Jan 2027'],
+    ['Beginner in Programming',               'done',  'Completed • Aug 2026'],
+    ['Complete Scientific Inquiry module',     'act',   'In progress • due Sep 2026'],
+    ['Intermediate in Mathematics',            '',      'Target: Oct 2026'],
+    ['Complete AI & Machine Learning module',  '',      'Target: Nov 2026'],
+    ['Advanced competency in Technology',      '',      'Target: Jan 2027'],
   ].map(([title,cls,sub])=>`
     <div class="tl-item">
       <div class="tl-dot ${cls}">${L[cls==='done'?'checkCircle':cls==='act'?'activity':'minus'](14)}</div>
