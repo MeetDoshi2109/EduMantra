@@ -18,7 +18,7 @@
 
 ## Features
 
-- **AI Competency Assessment** — maps user profiles to 4 competency domains (Statistical, Technical, Digital Governance, Behavioural)
+- **AI Competency Assessment** — maps user profiles to 4 competency domains (Science, Technology, Engineering, Mathematics)
 - **Skill Gap Analysis** — AI-generated narrative reports with severity ratings
 - **Personalized Learning Pathways** — LLM-curated course sequences from iGOT + TPAC
 - **iGOT Karmayogi Integration** — course sync, enrolment, progress tracking
