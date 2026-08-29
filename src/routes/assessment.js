@@ -56,7 +56,7 @@ router.post('/generate', authenticate,
         });
       }
 
-      const prompt = `You are an expert assessment designer for government officials in India's Statistical System.
+      const prompt = `You are an expert assessment designer for STEM education.
 
 Based on the following learning content, generate exactly ${num_questions} multiple-choice questions at ${difficulty} difficulty level.
 

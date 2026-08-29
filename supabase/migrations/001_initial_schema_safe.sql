@@ -19,7 +19,7 @@ EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
   CREATE TYPE competency_domain AS ENUM (
-    'statistical','technical','digital_governance','behavioural_managerial'
+    'science','technology','engineering','mathematics'
   );
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
@@ -558,45 +558,43 @@ CREATE POLICY notifications_own ON notifications      FOR ALL USING (auth.uid() 
 CREATE POLICY hours_own         ON learning_hours_log FOR ALL USING (auth.uid() = user_id);
 
 -- ============================================================
--- SEED: Competency Framework (Official Statistics domains)
+-- SEED: Competency Framework (STEM domains)
 -- ============================================================
 INSERT INTO competency_framework (name, code, domain, description, required_level, keywords)
 VALUES
-  -- Statistical
-  ('Survey Design',           'STAT-001', 'statistical',          'Design and execution of statistical surveys and censuses',                 'intermediate', ARRAY['survey','sampling','questionnaire','census']),
-  ('Sampling Methodology',    'STAT-002', 'statistical',          'Probability and non-probability sampling techniques',                      'intermediate', ARRAY['sampling','random','stratified','cluster']),
-  ('National Accounts',       'STAT-003', 'statistical',          'System of National Accounts (SNA), GDP estimation',                       'intermediate', ARRAY['national accounts','GDP','SNA','economic statistics']),
-  ('Price Statistics',        'STAT-004', 'statistical',          'Consumer Price Index, Wholesale Price Index compilation',                  'intermediate', ARRAY['CPI','WPI','inflation','price index']),
-  ('Labour Statistics',       'STAT-005', 'statistical',          'Employment, unemployment, workforce measurement methodologies',            'beginner',     ARRAY['labour','employment','unemployment','workforce']),
-  ('Agricultural Statistics', 'STAT-006', 'statistical',          'Crop estimation, land use, agricultural surveys',                         'beginner',     ARRAY['agriculture','crop','land use','farm survey']),
-  ('SDG Indicators',          'STAT-007', 'statistical',          'Monitoring and reporting Sustainable Development Goal indicators',         'intermediate', ARRAY['SDG','sustainable development','indicators','UN']),
-  ('Data Quality Frameworks', 'STAT-008', 'statistical',          'DQAF, quality dimensions, metadata standards',                           'intermediate', ARRAY['data quality','DQAF','metadata','standards']),
+  -- Science
+  ('Scientific Inquiry',           'SCI-001', 'science',     'Principles of scientific method, hypothesis testing and evidence-based research',     'intermediate', ARRAY['science','research','experiment','hypothesis','inquiry']),
+  ('Biology & Life Sciences',      'SCI-002', 'science',     'Foundations of biology, ecology, life systems and living organisms',                   'beginner',     ARRAY['biology','life science','ecology','organisms','cells']),
+  ('Chemistry Fundamentals',       'SCI-003', 'science',     'Atomic structure, chemical reactions, periodic table and laboratory skills',           'beginner',     ARRAY['chemistry','atoms','reactions','elements','lab']),
+  ('Physics Principles',           'SCI-004', 'science',     'Mechanics, thermodynamics, electromagnetism and modern physics',                       'intermediate', ARRAY['physics','mechanics','energy','forces','motion']),
+  ('Earth & Environmental Science','SCI-005', 'science',     'Earth systems, climate, geology, ecology and environmental sustainability',             'beginner',     ARRAY['earth science','climate','geology','environment','sustainability']),
+  ('Data-Driven Science',          'SCI-006', 'science',     'Applying quantitative methods and data analysis in scientific research',               'intermediate', ARRAY['data science','quantitative','analysis','research methods','measurement']),
 
-  -- Technical
-  ('Python Programming',      'TECH-001', 'technical',            'Data analysis using Python, pandas, numpy, matplotlib',                    'intermediate', ARRAY['python','pandas','numpy','matplotlib','scripting']),
-  ('R Programming',           'TECH-002', 'technical',            'Statistical computing using R and tidyverse',                             'intermediate', ARRAY['R','ggplot','tidyverse','statistical computing']),
-  ('SQL & Databases',         'TECH-003', 'technical',            'Querying and managing relational databases using SQL',                     'intermediate', ARRAY['SQL','database','PostgreSQL','MySQL','query']),
-  ('SPSS / Stata',            'TECH-004', 'technical',            'Statistical analysis using SPSS or Stata software',                       'beginner',     ARRAY['SPSS','Stata','statistical software','SAS']),
-  ('GIS & Spatial Analysis',  'TECH-005', 'technical',            'Geographic Information Systems for spatial data analysis',                'beginner',     ARRAY['GIS','spatial','mapping','QGIS','ArcGIS']),
-  ('Data Visualization',      'TECH-006', 'technical',            'Creating dashboards and charts using Power BI, Tableau',                  'intermediate', ARRAY['visualization','dashboard','Power BI','Tableau','charts']),
-  ('AI & Machine Learning',   'TECH-007', 'technical',            'Applied ML concepts, model building, AI tools for statistics',            'beginner',     ARRAY['AI','ML','machine learning','model','prediction']),
-  ('Cloud Computing',         'TECH-008', 'technical',            'Cloud platforms (AWS/Azure/GCP) for data storage and processing',         'beginner',     ARRAY['cloud','AWS','Azure','GCP','serverless']),
-  ('APIs & Open Data',        'TECH-009', 'technical',            'Working with REST APIs, open data portals, data exchange formats',         'beginner',     ARRAY['API','REST','JSON','open data','integration']),
+  -- Technology
+  ('Programming Fundamentals',     'TECH-001', 'technology',  'Core programming concepts using Python, logic, and problem-solving',                  'intermediate', ARRAY['python','programming','algorithms','coding','logic']),
+  ('Web Development',              'TECH-002', 'technology',  'Building web applications with HTML, CSS, JavaScript and frameworks',                  'intermediate', ARRAY['web','html','css','javascript','frontend']),
+  ('Databases & SQL',              'TECH-003', 'technology',  'Designing and querying relational databases using SQL',                                'intermediate', ARRAY['SQL','database','PostgreSQL','MySQL','query']),
+  ('Cybersecurity Basics',         'TECH-004', 'technology',  'Information security principles, threat awareness and safe digital practices',        'beginner',     ARRAY['cybersecurity','security','password','threats','data breach']),
+  ('Cloud Computing',              'TECH-005', 'technology',  'Cloud platforms (AWS/Azure/GCP) for storage, compute and deployment',                 'beginner',     ARRAY['cloud','AWS','Azure','GCP','serverless']),
+  ('AI & Machine Learning',        'TECH-006', 'technology',  'Applied ML concepts, model building and AI tools for problem solving',                'beginner',     ARRAY['AI','ML','machine learning','neural networks','prediction']),
+  ('Data Visualization',           'TECH-007', 'technology',  'Creating dashboards and charts using modern BI and visualisation tools',               'intermediate', ARRAY['visualization','dashboard','Power BI','Tableau','charts']),
+  ('APIs & Digital Integration',   'TECH-008', 'technology',  'Working with REST APIs, open data portals and digital data exchange',                 'beginner',     ARRAY['API','REST','JSON','integration','open data']),
 
-  -- Digital Governance
-  ('Cybersecurity Basics',    'DIGI-001', 'digital_governance',   'Information security principles, threat awareness, safe practices',       'beginner',     ARRAY['cybersecurity','security','password','phishing','data breach']),
-  ('Data Privacy',            'DIGI-002', 'digital_governance',   'Data protection laws, PDPB, privacy-by-design principles',               'intermediate', ARRAY['privacy','PDPB','data protection','GDPR','confidentiality']),
-  ('Digital Signatures',      'DIGI-003', 'digital_governance',   'e-signatures, PKI, digital document authentication',                     'beginner',     ARRAY['digital signature','PKI','e-sign','authentication']),
-  ('Government Cloud',        'DIGI-004', 'digital_governance',   'MeghRaj, NIC cloud, government IT infrastructure',                       'beginner',     ARRAY['MeghRaj','NIC','government cloud','eGov infrastructure']),
-  ('Digital Public Infra',    'DIGI-005', 'digital_governance',   'Aadhaar, UPI, DigiLocker, UMANG and DPI ecosystem',                     'intermediate', ARRAY['Aadhaar','UPI','DigiLocker','DPI','India Stack']),
+  -- Engineering
+  ('Systems Thinking',             'ENG-001', 'engineering',  'Understanding complex systems, feedback loops and emergent behaviour',                 'intermediate', ARRAY['systems','design','architecture','feedback','complexity']),
+  ('Engineering Design Process',   'ENG-002', 'engineering',  'Structured approach to problem identification, prototyping and iterative design',      'intermediate', ARRAY['design thinking','prototype','iteration','problem solving','engineering']),
+  ('Electrical Engineering Basics','ENG-003', 'engineering',  'Circuits, electronics, sensors and basic electrical principles',                       'beginner',     ARRAY['circuits','electronics','sensors','voltage','current']),
+  ('Mechanical Engineering Basics','ENG-004', 'engineering',  'Mechanics of materials, forces, machines and structural concepts',                     'beginner',     ARRAY['mechanics','materials','structures','machines','forces']),
+  ('Software Engineering',         'ENG-005', 'engineering',  'Software development lifecycle, testing, version control and deployment',              'intermediate', ARRAY['software','SDLC','git','testing','deployment']),
+  ('Infrastructure & Networks',    'ENG-006', 'engineering',  'Computer networks, protocols, routing and IT infrastructure management',               'beginner',     ARRAY['networking','TCP/IP','routing','infrastructure','protocols']),
 
-  -- Behavioural & Managerial
-  ('Leadership',              'BEHA-001', 'behavioural_managerial','Team leadership, motivation, performance management',                    'intermediate', ARRAY['leadership','team management','motivation','performance']),
-  ('Communication Skills',    'BEHA-002', 'behavioural_managerial','Written, verbal, and presentation communication',                       'intermediate', ARRAY['communication','presentation','writing','public speaking']),
-  ('Project Management',      'BEHA-003', 'behavioural_managerial','Planning, execution, monitoring of statistical projects',               'intermediate', ARRAY['project management','planning','execution','PMO']),
-  ('Ethics & Integrity',      'BEHA-004', 'behavioural_managerial','Professional ethics, statistical confidentiality, integrity',           'intermediate', ARRAY['ethics','integrity','confidentiality','professional conduct']),
-  ('Decision Making',         'BEHA-005', 'behavioural_managerial','Analytical and evidence-based decision making',                         'intermediate', ARRAY['decision making','analysis','evidence','problem solving']),
-  ('Change Management',       'BEHA-006', 'behavioural_managerial','Managing organisational change, transformation, adoption',              'beginner',     ARRAY['change management','transformation','adoption','agility'])
+  -- Mathematics
+  ('Algebra & Functions',          'MATH-001', 'mathematics', 'Variables, equations, functions and algebraic reasoning',                              'intermediate', ARRAY['algebra','equations','functions','variables','expressions']),
+  ('Statistics & Probability',     'MATH-002', 'mathematics', 'Descriptive stats, probability theory, distributions and inference',                   'intermediate', ARRAY['statistics','probability','distributions','inference','data']),
+  ('Calculus',                     'MATH-003', 'mathematics', 'Differential and integral calculus with real-world applications',                      'intermediate', ARRAY['calculus','derivatives','integrals','limits','differentiation']),
+  ('Discrete Mathematics',         'MATH-004', 'mathematics', 'Logic, sets, combinatorics, graph theory and number theory',                           'intermediate', ARRAY['discrete math','logic','sets','graphs','combinatorics']),
+  ('Linear Algebra',               'MATH-005', 'mathematics', 'Vectors, matrices, transformations and their applications in computing',               'intermediate', ARRAY['linear algebra','matrices','vectors','transformations','eigenvalues']),
+  ('Mathematical Modelling',       'MATH-006', 'mathematics', 'Building and analysing mathematical models to solve real-world problems',              'intermediate', ARRAY['modelling','simulation','optimization','analysis','problem solving'])
 ON CONFLICT (code) DO NOTHING;
 
 -- ============================================================

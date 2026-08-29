@@ -14,7 +14,7 @@ CREATE TYPE user_role AS ENUM (
   'student', 'instructor', 'parent', 'organization_admin', 'developer'
 );
 CREATE TYPE competency_domain AS ENUM (
-  'statistical', 'technical', 'digital_governance', 'behavioural_managerial'
+  'science', 'technology', 'engineering', 'mathematics'
 );
 CREATE TYPE competency_level AS ENUM ('none','beginner','intermediate','advanced','expert');
 CREATE TYPE gap_severity     AS ENUM ('critical','high','medium','low');
