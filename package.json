@@ -1,7 +1,7 @@
 {
   "name": "edumantra",
   "version": "1.0.0",
-  "description": "AI-enabled Skill Intelligence and Learning Platform for India's Official Statistical System",
+  "description": "AI-enabled Skill Intelligence and Learning Platform for STEM education",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
@@ -35,12 +35,16 @@
   "engines": {
     "node": ">=18.x"
   },
-  "keywords": [
+    "keywords": [
     "LMS",
     "AI",
     "skill-gap",
+    "STEM",
+    "science",
+    "technology",
+    "engineering",
+    "mathematics",
     "iGOT",
-    "statistics",
     "karmayogi",
     "competency"
   ],

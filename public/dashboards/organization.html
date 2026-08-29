@@ -148,14 +148,14 @@
       <div class="page-header"><h1 class="page-title">Emerging Skills</h1><p class="page-subtitle">Skills gaining traction based on learning activity and iGOT trends.</p></div>
       <div class="bento bento-auto" id="emergingGrid">
         ${[
-          {name:'Generative AI & LLMs',     domain:'technical',            trend:'+85%', urgency:'high'},
-          {name:'Cloud Data Platforms',     domain:'technical',            trend:'+62%', urgency:'high'},
-          {name:'Data Governance',          domain:'digital_governance',   trend:'+48%', urgency:'medium'},
-          {name:'Geospatial Analytics',     domain:'technical',            trend:'+41%', urgency:'medium'},
-          {name:'SDG Monitoring',           domain:'statistical',          trend:'+37%', urgency:'medium'},
-          {name:'Cybersecurity Basics',     domain:'digital_governance',   trend:'+33%', urgency:'medium'},
-          {name:'Change Management',        domain:'behavioural_managerial',trend:'+28%', urgency:'low'},
-          {name:'Digital Public Infrastructure',domain:'digital_governance',trend:'+25%',urgency:'low'},
+          {name:'Generative AI & LLMs',       domain:'technology',   trend:'+85%', urgency:'high'},
+          {name:'Cloud Data Platforms',        domain:'technology',   trend:'+62%', urgency:'high'},
+          {name:'Robotics & Automation',       domain:'engineering',  trend:'+54%', urgency:'high'},
+          {name:'Geospatial Analytics',        domain:'technology',   trend:'+41%', urgency:'medium'},
+          {name:'Quantum Computing Basics',    domain:'science',      trend:'+37%', urgency:'medium'},
+          {name:'Cybersecurity Engineering',   domain:'engineering',  trend:'+33%', urgency:'medium'},
+          {name:'Mathematical Modelling',      domain:'mathematics',  trend:'+28%', urgency:'low'},
+          {name:'Bioinformatics',              domain:'science',      trend:'+25%', urgency:'low'},
         ].map(s=>`
           <div class="card card-hover">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.65rem">
@@ -207,7 +207,7 @@
       <div class="card" style="margin-bottom:1rem">
         <div style="display:flex;gap:.65rem;flex-wrap:wrap">
           <div class="input-group" style="flex:1;min-width:200px"><span class="input-icon" id="igotSearchIcon"></span><input class="input" id="igotSearch" placeholder="Search courses…" style="padding-left:2.25rem"></div>
-          <select class="input" id="igotDomain" style="width:180px"><option value="">All Domains</option><option value="statistical">Statistical</option><option value="technical">Technical</option><option value="digital_governance">Digital Governance</option><option value="behavioural_managerial">Behavioural</option></select>
+          <select class="input" id="igotDomain" style="width:180px"><option value="">All Domains</option><option value="science">Science</option><option value="technology">Technology</option><option value="engineering">Engineering</option><option value="mathematics">Mathematics</option></select>
           <button class="btn btn-primary" onclick="searchIgot()">Search</button>
         </div>
       </div>

@@ -49,9 +49,9 @@ router.post('/generate', authenticate, async (req, res) => {
     let aiPlan = { title: 'Personalized Learning Pathway', rationale: '', items: [] };
     if (OPENAI_API_KEY) {
       try {
-        const prompt = `You are a learning pathway designer for India's Official Statistical System.
+        const prompt = `You are a learning pathway designer for STEM education.
 
-Official profile: ${req.profile.designation || 'Government Official'}, ${req.profile.years_of_experience || 0} years experience.
+Official profile: ${req.profile.designation || 'Learner'}, ${req.profile.years_of_experience || 0} years experience.
 
 Skill gaps to address (sorted by severity):
 ${gaps.map(g => `- ${g.competency_framework.name} (${g.competency_framework.domain}): needs "${g.required_level}", currently "${g.current_level}", severity: ${g.severity}`).join('\n')}

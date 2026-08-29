@@ -1,6 +1,6 @@
 # EduMantra — AI-Enabled Skill Intelligence & Learning Platform
 
-> Personalized competency assessment, skill-gap analysis, iGOT Karmayogi integration, AI-powered MCQ generation, and 5-role dashboards for India's Official Statistical System.
+> Personalized competency assessment, skill-gap analysis, iGOT Karmayogi integration, AI-powered MCQ generation, and 5-role dashboards across STEM domains.
 
 ---
 
@@ -220,11 +220,10 @@ To get started quickly, insert sample competency framework data via Supabase SQL
 ```sql
 -- Sample competencies
 INSERT INTO competency_framework (name, code, domain, description, required_level, keywords) VALUES
-('Survey Design',        'SURV-001', 'statistical',          'Design and execution of statistical surveys',    'intermediate', ARRAY['survey','sampling','questionnaire']),
-('Python Programming',   'TECH-001', 'technical',            'Data analysis using Python and pandas/numpy',     'intermediate', ARRAY['python','pandas','numpy','scripting']),
-('Data Visualization',   'TECH-002', 'technical',            'Charts, dashboards using Power BI / Tableau',    'beginner',      ARRAY['visualization','charts','powerbi','tableau']),
-('Cybersecurity Basics', 'DIGI-001', 'digital_governance',   'Data protection and government IT security',     'beginner',      ARRAY['cybersecurity','data privacy','security']),
-('Leadership',           'BEHA-001', 'behavioural_managerial','Team leadership and people management',           'intermediate', ARRAY['leadership','management','team']);
+('Scientific Inquiry',       'SCI-001', 'science',      'Principles of scientific method and data-driven research',  'intermediate', ARRAY['science','research','experiment','hypothesis']),
+('Programming Fundamentals', 'TECH-001', 'technology',  'Core programming concepts using Python and modern tools',    'intermediate', ARRAY['python','programming','algorithms','scripting']),
+('Systems Design',           'ENG-001',  'engineering',  'Designing robust, scalable educational systems',            'intermediate', ARRAY['systems','design','architecture','engineering']),
+('Data Analysis',            'MATH-001', 'mathematics',  'Statistical analysis and mathematical problem solving',     'beginner',     ARRAY['statistics','mathematics','data','analysis']);
 ```
 
 ---
