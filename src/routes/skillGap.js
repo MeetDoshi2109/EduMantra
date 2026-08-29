@@ -76,8 +76,8 @@ router.post('/analyze', authenticate, async (req, res) => {
     let aiInsights = {};
     if (OPENAI_API_KEY && gaps.length > 0) {
       try {
-        const prompt = `You are an expert learning advisor for India's Official Statistical System.
-A government official has the following skill gaps:
+        const prompt = `You are an expert learning advisor for students and educators in STEM education.
+A learner has the following skill gaps across STEM domains:
 ${gaps.map(g => `- ${g.name} (${g.domain}): currently "${g.current_level}", needs "${g.required_level}", severity: ${g.severity}`).join('\n')}
 
 Provide:
