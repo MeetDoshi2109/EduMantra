@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduMantra – Practice Session</title>
+<meta name="description" content="EduMantra adaptive practice session — curriculum-aligned AI assessment with instant feedback">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/design-system.css">
+<script src="/js/theme.js"></script>
+<style>
+:root {
+  --indigo: #6366F1;
+  --purple: #8B5CF6;
+  --emerald: #10B981;
+  --amber:  #F59E0B;
+  --rose:   #F43F5E;
+  --cyan:   #06B6D4;
+}
+
+body { min-height:100vh;background:var(--surface-1);display:flex;flex-direction:column; }
+
+/* ── Assessment shell ─────────────────────────────────────── */
+.assessment-wrap { max-width:760px;margin:0 auto;padding:1.5rem 1rem;width:100%;flex:1; }
+
+/* ── Top bar ─────────────────────────────────────────────── */
+.abar {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.5rem;background:var(--surface-2);
+  border-bottom:1px solid var(--hairline);position:sticky;top:0;z-index:50;
+}
+.abar-brand { display:flex;align-items:center;gap:.5rem;font-weight:700;font-size:.95rem;color:var(--ink); }
+.abar-logo  { width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--indigo),var(--purple));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.85rem; }
+.abar-progress { display:flex;align-items:center;gap:.75rem; }
+.progress-track { width:160px;height:6px;background:var(--hairline);border-radius:999px;overflow:hidden; }
+.progress-fill  { height:100%;background:linear-gradient(90deg,var(--indigo),var(--purple));border-radius:999px;transition:width .4s ease; }
+.progress-text  { font-size:.8rem;color:var(--ink-3);font-weight:500;white-space:nowrap; }
+.diff-badge { padding:.2rem .6rem;border-radius:6px;font-size:.72rem;font-weight:700;letter-spacing:.04em; }
+.diff-easy   { background:rgba(16,185,129,.1);color:var(--emerald); }
+.diff-medium { background:rgba(99,102,241,.1);color:var(--indigo); }
+.diff-hard   { background:rgba(244,63,94,.1);color:var(--rose); }
+
+/* ── States ─────────────────────────────────────────────── */
+.screen { display:none; }
+.screen.active { display:block; }
+
+/* ── Loading screen ──────────────────────────────────────── */
+.loading-screen { text-align:center;padding:4rem 1rem; }
+.spinner { width:48px;height:48px;border:4px solid var(--hairline);border-top-color:var(--indigo);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1.5rem; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── Start screen ────────────────────────────────────────── */
+.start-card {
+  background:var(--surface-2);border:1px solid var(--hairline);border-radius:20px;
+  padding:2.5rem;text-align:center;margin-top:2rem;
+}
+.start-emoji { font-size:3.5rem;margin-bottom:1rem; }
+.start-title { font-size:1.4rem;font-weight:800;color:var(--ink);margin-bottom:.5rem; }
+.start-sub   { font-size:.875rem;color:var(--ink-3);margin-bottom:2rem;max-width:400px;margin-left:auto;margin-right:auto; }
+.start-meta  { display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem; }
+.meta-chip { display:flex;align-items:center;gap:.4rem;padding:.375rem .875rem;background:var(--hairline);border-radius:8px;font-size:.8rem;font-weight:600;color:var(--ink-2); }
+.btn-big { display:inline-flex;align-items:center;gap:.5rem;padding:.875rem 2.5rem;background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s; }
+.btn-big:hover { transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,.35); }
+
+/* ── Question card ───────────────────────────────────────── */
+.question-card {
+  background:var(--surface-2);border:1px solid var(--hairline);border-radius:20px;
+  padding:2rem;margin-bottom:1.25rem;
+  animation:fadeUp .3s ease;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.q-sequence { font-size:.75rem;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem; }
+.q-text { font-size:1.1rem;font-weight:600;color:var(--ink);line-height:1.55;margin-bottom:1.5rem; }
+.q-text code { background:var(--surface-1);border:1px solid var(--hairline);border-radius:4px;padding:.1em .3em;font-family:'JetBrains Mono',monospace;font-size:.9em; }
+
+/* Options ──────────────────────────────────────────────── */
+.options-grid { display:flex;flex-direction:column;gap:.625rem; }
+.option-btn {
+  display:flex;align-items:center;gap:.875rem;
+  padding:.875rem 1rem;border-radius:12px;
+  background:var(--surface-1);border:2px solid var(--hairline);
+  cursor:pointer;transition:all .15s;text-align:left;width:100%;
+}
+.option-btn:not([disabled]):hover { border-color:var(--indigo);background:rgba(99,102,241,.04); }
+.option-btn.selected { border-color:var(--indigo);background:rgba(99,102,241,.08); }
+.option-btn.correct  { border-color:var(--emerald)!important;background:rgba(16,185,129,.08)!important; }
+.option-btn.wrong    { border-color:var(--rose)!important;background:rgba(244,63,94,.06)!important; }
+.opt-key {
+  width:32px;height:32px;border-radius:8px;background:var(--hairline);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;font-weight:800;color:var(--ink-3);flex-shrink:0;transition:all .15s;
+}
+.option-btn.selected .opt-key { background:var(--indigo);color:#fff; }
+.option-btn.correct .opt-key  { background:var(--emerald);color:#fff; }
+.option-btn.wrong .opt-key    { background:var(--rose);color:#fff; }
+.opt-text { font-size:.9rem;font-weight:500;color:var(--ink);line-height:1.4; }
+
+/* Fill blank input ─────────────────────────────────────── */
+.fill-input { width:100%;padding:.75rem 1rem;background:var(--surface-1);border:2px solid var(--hairline);border-radius:10px;font-size:.95rem;color:var(--ink);outline:none;transition:border .15s; }
+.fill-input:focus { border-color:var(--indigo); }
+
+/* Feedback panel ───────────────────────────────────────── */
+.feedback-panel {
+  border-radius:16px;padding:1.25rem;margin-top:1rem;
+  animation:fadeUp .25s ease;
+}
+.feedback-panel.correct { background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.25); }
+.feedback-panel.wrong   { background:rgba(244,63,94,.04);border:1px solid rgba(244,63,94,.2); }
+.feedback-result { font-size:1rem;font-weight:700;margin-bottom:.5rem; }
+.feedback-result.correct { color:var(--emerald); }
+.feedback-result.wrong   { color:var(--rose); }
+.feedback-explain { font-size:.875rem;color:var(--ink-2);line-height:1.55; }
+.feedback-gap { margin-top:.75rem;padding:.625rem .875rem;background:rgba(245,158,11,.08);border-radius:8px;font-size:.82rem;color:var(--amber);font-weight:600; }
+
+/* Action bar ───────────────────────────────────────────── */
+.action-bar {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 0;gap:1rem;
+}
+.btn { display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.4rem;border-radius:10px;font-size:.875rem;font-weight:600;cursor:pointer;border:none;transition:all .15s; }
+.btn-indigo { background:var(--indigo);color:#fff; }
+.btn-indigo:hover { background:#4F46E5; }
+.btn-ghost { background:transparent;border:1px solid var(--hairline-2);color:var(--ink-2); }
+.btn-ghost:hover { background:var(--hairline);color:var(--ink); }
+.btn-submit { background:linear-gradient(135deg,var(--indigo),var(--purple));color:#fff;padding:.75rem 2rem; }
+.btn:disabled { opacity:.5;cursor:not-allowed;pointer-events:none; }
+
+/* Hint button ──────────────────────────────────────────── */
+.hint-row { display:flex;gap:.5rem;margin-bottom:1rem; }
+.btn-hint { padding:.4rem .875rem;border-radius:8px;background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.25);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s; }
+.btn-hint:hover { background:rgba(245,158,11,.2); }
+.hint-box { background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:.75rem 1rem;font-size:.85rem;color:var(--ink-2);margin-bottom:.75rem;animation:fadeUp .2s ease; }
+
+/* Timer ────────────────────────────────────────────────── */
+.timer { display:flex;align-items:center;gap:.3rem;font-size:.85rem;font-weight:600;color:var(--ink-3); }
+.timer.warning { color:var(--amber); }
+.timer.urgent  { color:var(--rose);animation:pulse 1s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.5} }
+
+/* ── Results screen ──────────────────────────────────────── */
+.results-card { background:var(--surface-2);border:1px solid var(--hairline);border-radius:20px;padding:2rem;margin-bottom:1.25rem; }
+.score-ring-wrap { text-align:center;margin-bottom:2rem; }
+.score-ring { position:relative;width:130px;height:130px;margin:0 auto; }
+.score-ring svg { transform:rotate(-90deg); }
+.ring-bg { fill:none;stroke:var(--hairline);stroke-width:10; }
+.ring-fg { fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.5s ease; }
+.ring-val { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center; }
+.ring-score { font-size:2rem;font-weight:800;color:var(--ink); }
+.ring-label { font-size:.75rem;color:var(--ink-3);font-weight:600; }
+
+.results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem; }
+.res-stat { text-align:center;padding:.875rem;background:var(--surface-1);border-radius:12px;border:1px solid var(--hairline); }
+.res-stat-val { font-size:1.5rem;font-weight:800;margin-bottom:.25rem; }
+.res-stat-lbl { font-size:.72rem;color:var(--ink-3);font-weight:600; }
+
+.question-review { border-radius:12px;padding:1rem;margin-bottom:.5rem;border:1px solid var(--hairline); }
+.question-review.correct-q { background:rgba(16,185,129,.04);border-color:rgba(16,185,129,.2); }
+.question-review.wrong-q   { background:rgba(244,63,94,.04);border-color:rgba(244,63,94,.2); }
+.q-review-text { font-size:.875rem;font-weight:600;color:var(--ink);margin-bottom:.4rem; }
+.q-review-answer { font-size:.8rem;color:var(--ink-3); }
+
+.ai-feedback-box { background:rgba(99,102,241,.05);border:1px solid rgba(99,102,241,.2);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem; }
+.ai-fb-title { font-size:.78rem;font-weight:700;color:var(--indigo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem; }
+.ai-fb-text  { font-size:.9rem;color:var(--ink-2);line-height:1.6; }
+
+/* ── Animations ─────────────────────────────────────────── */
+.confetti-wrap { position:fixed;inset:0;pointer-events:none;z-index:9999; }
+.confetti-piece { position:absolute;top:-10px;animation:confettiFall linear forwards; }
+@keyframes confettiFall { to { transform:translateY(105vh) rotate(720deg);opacity:0; } }
+
+/* ── Mobile ─────────────────────────────────────────────── */
+@media(max-width:600px) {
+  .abar-progress .progress-track { width:100px; }
+  .q-text { font-size:1rem; }
+  .results-grid { grid-template-columns:repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+<!-- Top bar -->
+<header class="abar">
+  <div class="abar-brand">
+    <div class="abar-logo">E</div>
+    EduMantra Practice
+  </div>
+  <div class="abar-progress">
+    <span class="timer" id="timer">0:00</span>
+    <div id="diff-badge" class="diff-badge diff-medium" style="display:none;">medium</div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%;"></div></div>
+    <span class="progress-text" id="progress-text">0 / 0</span>
+    <button class="btn btn-ghost" id="btn-exit" onclick="confirmExit()" style="padding:.4rem .8rem;font-size:.8rem;">✕ Exit</button>
+  </div>
+</header>
+
+<!-- Content -->
+<div class="assessment-wrap">
+  <!-- Loading -->
+  <div class="screen active" id="screen-loading">
+    <div class="loading-screen">
+      <div class="spinner"></div>
+      <div style="font-size:1rem;font-weight:700;color:var(--ink);" id="loading-msg">Setting up your practice session…</div>
+      <div style="font-size:.875rem;color:var(--ink-3);margin-top:.4rem;">Preparing curriculum-aligned questions</div>
+    </div>
+  </div>
+
+  <!-- Start -->
+  <div class="screen" id="screen-start">
+    <div class="start-card">
+      <div class="start-emoji" id="start-emoji">⚡</div>
+      <h1 class="start-title" id="start-title">Practice Session</h1>
+      <p class="start-sub" id="start-sub">Adaptive questions that adjust to your level</p>
+      <div class="start-meta" id="start-meta">
+        <div class="meta-chip">🎯 Adaptive</div>
+        <div class="meta-chip" id="meta-questions">10 questions</div>
+      </div>
+      <button class="btn-big" id="btn-begin" onclick="beginSession()">
+        Begin <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px;"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div style="margin-top:1.25rem;">
+        <a href="/dashboards/student.html" style="font-size:.8rem;color:var(--ink-3);">← Back to dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Questions -->
+  <div class="screen" id="screen-no-questions">
+    <div class="start-card" style="margin-top:3rem;">
+      <div class="start-emoji">🏗️</div>
+      <h2 class="start-title">Questions coming soon!</h2>
+      <p class="start-sub">This topic doesn't have approved questions yet. Teachers are working on adding them. Try another topic or ask your teacher to generate questions.</p>
+      <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;">
+        <a href="/dashboards/student.html" class="btn btn-indigo">← Back to Dashboard</a>
+        <button class="btn btn-ghost" onclick="openTutor()">💬 Ask AI Tutor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Question -->
+  <div class="screen" id="screen-question">
+    <div id="hint-area" style="display:none;">
+      <div class="hint-box" id="hint-text"></div>
+    </div>
+
+    <div class="question-card" id="question-card">
+      <div class="q-sequence" id="q-sequence">Question 1</div>
+      <div class="q-text" id="q-text"></div>
+      <div id="options-area" class="options-grid"></div>
+      <div id="fill-area" style="display:none;margin-top:.5rem;">
+        <input type="text" class="fill-input" id="fill-input" placeholder="Type your answer…" onkeydown="if(event.key==='Enter')submitAnswer()">
+      </div>
+    </div>
+
+    <div id="feedback-area" style="display:none;"></div>
+
+    <div class="action-bar">
+      <div class="hint-row">
+        <button class="btn-hint" id="btn-hint" onclick="requestHint()">💡 Hint</button>
+      </div>
+      <div style="display:flex;gap:.75rem;">
+        <button class="btn btn-ghost" id="btn-skip" onclick="skipQuestion()">Skip</button>
+        <button class="btn btn-indigo" id="btn-submit" onclick="submitAnswer()" disabled>Submit Answer</button>
+        <button class="btn btn-indigo" id="btn-next" onclick="loadNextQuestion()" style="display:none;">Next →</button>
+        <button class="btn btn-submit" id="btn-finish" onclick="finishSession()" style="display:none;">Finish & See Results 🎉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submitting -->
+  <div class="screen" id="screen-submitting">
+    <div class="loading-screen">
+      <div class="spinner"></div>
+      <div style="font-size:1rem;font-weight:700;color:var(--ink);">Analysing your performance…</div>
+      <div style="font-size:.875rem;color:var(--ink-3);margin-top:.4rem;">Getting AI feedback and updating your mastery</div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="screen" id="screen-results">
+    <div class="results-card">
+      <div class="score-ring-wrap">
+        <div class="score-ring">
+          <svg width="130" height="130" viewBox="0 0 130 130">
+            <circle class="ring-bg" cx="65" cy="65" r="55"/>
+            <circle class="ring-fg" id="score-ring-fg" cx="65" cy="65" r="55" stroke-dasharray="345" stroke-dashoffset="345"/>
+          </svg>
+          <div class="ring-val">
+            <div class="ring-score" id="result-score">0%</div>
+            <div class="ring-label" id="result-label">Score</div>
+          </div>
+        </div>
+        <div style="margin-top:.75rem;font-size:1rem;font-weight:700;color:var(--ink);" id="result-title">Session Complete!</div>
+      </div>
+
+      <div class="results-grid">
+        <div class="res-stat">
+          <div class="res-stat-val" id="res-correct" style="color:var(--emerald);">0</div>
+          <div class="res-stat-lbl">Correct</div>
+        </div>
+        <div class="res-stat">
+          <div class="res-stat-val" id="res-wrong" style="color:var(--rose);">0</div>
+          <div class="res-stat-lbl">Wrong</div>
+        </div>
+        <div class="res-stat">
+          <div class="res-stat-val" id="res-time" style="color:var(--indigo);">0m</div>
+          <div class="res-stat-lbl">Time</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Feedback -->
+    <div class="ai-feedback-box" id="ai-feedback-box" style="display:none;">
+      <div class="ai-fb-title">🤖 AI Feedback</div>
+      <div class="ai-fb-text" id="ai-feedback-text"></div>
+    </div>
+
+    <!-- Question Review -->
+    <div class="results-card" id="question-review-card">
+      <h3 style="font-size:1rem;font-weight:700;color:var(--ink);margin:0 0 1rem;">📋 Question Review</h3>
+      <div id="questions-review"></div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.25rem;">
+      <button class="btn btn-indigo" onclick="retrySession()">🔄 Try Again</button>
+      <a href="/dashboards/student.html" class="btn btn-ghost">← Back to Dashboard</a>
+      <button class="btn btn-ghost" onclick="openTutor()">💬 Discuss with AI Tutor</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════════
+const params   = new URLSearchParams(window.location.search);
+const token    = localStorage.getItem('em_token');
+if (!token) window.location.href = '/';
+
+const state = {
+  sessionId:      params.get('session_id') || null,
+  topicId:        params.get('topic_id')   || null,
+  chapterId:      params.get('chapter_id') || null,
+  conceptId:      params.get('concept_id') || null,
+  boardId:        params.get('board_id')   || null,
+  classId:        params.get('class_id')   || null,
+  mode:           params.get('mode')       || 'adaptive',  // 'adaptive' | 'gaps' | 'random'
+  topicTitle:     params.get('topic_title') || params.get('chapter_title') || 'Practice Session',
+
+  currentQuestion: null,
+  currentSequence: 0,
+  totalMax:        20,
+  sessionComplete: false,
+  sessionData:     null,    // submitted result
+  deliveries:      [],      // local record of answered questions
+  timerStart:      null,
+  questionStart:   null,
+  timerInterval:   null,
+  hintShown:       false,
+  selectedAnswer:  null,
+  feedbackShown:   false,
+};
+
+// ══════════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', async () => {
+  setScreen('loading');
+
+  // If resuming an active session
+  if (state.sessionId) {
+    try {
+      const { session } = await apiFetch(`/api/v1/adaptive/sessions/${state.sessionId}/result`).catch(() => ({}));
+      if (session?.status === 'completed') {
+        showResults(session);
+        return;
+      }
+    } catch {}
+  }
+
+  setupStartScreen();
+  setScreen('start');
+});
+
+function setupStartScreen() {
+  const EMOJIS = { math:'🔢', science:'🔬', english:'📖', default:'⚡' };
+  document.getElementById('start-title').textContent = state.topicTitle;
+  document.getElementById('start-sub').textContent   = state.mode === 'gaps' ? 'Focus on your knowledge gaps — adaptive difficulty' : 'Adaptive questions that calibrate to your level';
+  document.getElementById('meta-questions').textContent = `Up to ${state.totalMax} questions`;
+}
+
+async function beginSession() {
+  setScreen('loading');
+  document.getElementById('loading-msg').textContent = 'Starting adaptive session…';
+
+  try {
+    const payload = {};
+    if (state.topicId)   payload.topic_id   = state.topicId;
+    if (state.chapterId) payload.chapter_id = state.chapterId;
+    if (state.conceptId) { /* concept not directly supported as session start — use chapter */ }
+    if (state.boardId)   payload.board_id   = state.boardId;
+    if (state.classId)   payload.class_id   = state.classId;
+    if (!payload.topic_id && !payload.chapter_id) {
+      // No topic/chapter — we need profile board/class at minimum
+      const profile = await apiFetch('/api/v1/profile').catch(() => null);
+      if (profile?.board_id) payload.board_id = profile.board_id;
+      if (profile?.class_id) payload.class_id = profile.class_id;
+    }
+
+    const result = await apiFetch('/api/v1/adaptive/sessions/start', {
+      method: 'POST', body: JSON.stringify(payload),
+    });
+
+    if (!result.next_question) {
+      setScreen('no-questions');
+      return;
+    }
+
+    state.sessionId   = result.session_id;
+    state.totalMax    = result.session?.max_questions || 20;
+    state.timerStart  = Date.now();
+    startTimer();
+
+    loadQuestion(result.next_question);
+    setScreen('question');
+  } catch (err) {
+    document.getElementById('loading-msg').textContent = 'Failed to start session. Please try again.';
+    setTimeout(() => setScreen('start'), 2500);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════════════════════════════════════
+function startTimer() {
+  state.questionStart = Date.now();
+  state.timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - state.timerStart) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    const timerEl = document.getElementById('timer');
+    timerEl.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    // Warn if > 25 minutes
+    timerEl.className = `timer${elapsed > 1500 ? ' urgent' : elapsed > 900 ? ' warning' : ''}`;
+  }, 1000);
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// QUESTION RENDERING
+// ══════════════════════════════════════════════════════════════════════
+function loadQuestion(q) {
+  state.currentQuestion = q;
+  state.currentSequence = q.sequence || state.currentSequence + 1;
+  state.selectedAnswer  = null;
+  state.feedbackShown   = false;
+  state.hintShown       = false;
+  state.questionStart   = Date.now();
+
+  // Update progress
+  const progress = Math.min((state.currentSequence / state.totalMax) * 100, 100);
+  document.getElementById('progress-fill').style.width = progress + '%';
+  document.getElementById('progress-text').textContent = `${state.currentSequence} / ${state.totalMax}`;
+
+  // Difficulty badge
+  const diffBadge = document.getElementById('diff-badge');
+  diffBadge.style.display = 'block';
+  diffBadge.textContent = q.difficulty || 'medium';
+  diffBadge.className = `diff-badge diff-${q.difficulty || 'medium'}`;
+
+  // Question content
+  document.getElementById('q-sequence').textContent = `Question ${state.currentSequence}`;
+  document.getElementById('q-text').innerHTML = q.question_text;
+
+  // Reset UI
+  document.getElementById('feedback-area').style.display = 'none';
+  document.getElementById('feedback-area').innerHTML = '';
+  document.getElementById('hint-area').style.display = 'none';
+  document.getElementById('btn-hint').style.display  = 'block';
+  document.getElementById('btn-submit').disabled = true;
+  document.getElementById('btn-submit').style.display = 'inline-flex';
+  document.getElementById('btn-next').style.display   = 'none';
+  document.getElementById('btn-finish').style.display = 'none';
+  document.getElementById('btn-skip').style.display   = 'inline-flex';
+
+  // Render options or input
+  if (q.question_type === 'mcq' || q.question_type === 'true_false') {
+    renderOptions(q.options || []);
+    document.getElementById('fill-area').style.display = 'none';
+  } else {
+    document.getElementById('options-area').innerHTML = '';
+    document.getElementById('fill-area').style.display = 'block';
+    document.getElementById('fill-input').value = '';
+    document.getElementById('fill-input').oninput = () => {
+      state.selectedAnswer = document.getElementById('fill-input').value.trim();
+      document.getElementById('btn-submit').disabled = !state.selectedAnswer;
+    };
+  }
+}
+
+function renderOptions(options) {
+  const area = document.getElementById('options-area');
+  area.innerHTML = options.map(opt => `
+    <button class="option-btn" id="opt-${opt.key}" onclick="selectOption('${opt.key}', this)">
+      <div class="opt-key">${opt.key}</div>
+      <div class="opt-text">${opt.text}</div>
+    </button>`).join('');
+}
+
+function selectOption(key, el) {
+  if (state.feedbackShown) return;
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  state.selectedAnswer = key;
+  document.getElementById('btn-submit').disabled = false;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ANSWER SUBMISSION
+// ══════════════════════════════════════════════════════════════════════
+async function submitAnswer() {
+  if (!state.selectedAnswer || state.feedbackShown) return;
+  state.feedbackShown = true;
+
+  const timeTaken = Math.round((Date.now() - state.questionStart) / 1000);
+
+  // Disable all controls
+  document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+  document.getElementById('fill-input').disabled = true;
+  document.getElementById('btn-submit').style.display = 'none';
+  document.getElementById('btn-skip').style.display   = 'none';
+  document.getElementById('btn-hint').style.display   = 'none';
+
+  try {
+    const result = await apiFetch(`/api/v1/adaptive/sessions/${state.sessionId}/answer`, {
+      method: 'POST',
+      body: JSON.stringify({
+        question_id: state.currentQuestion.id,
+        answer:      state.selectedAnswer,
+        time_taken_secs: timeTaken,
+        hint_used: state.hintShown,
+      }),
+    });
+
+    // Visual feedback on options
+    const type = state.currentQuestion.question_type;
+    if (type === 'mcq' || type === 'true_false') {
+      document.querySelectorAll('.option-btn').forEach(btn => {
+        const key = btn.querySelector('.opt-key').textContent;
+        if (key === result.correct_answer) btn.classList.add('correct');
+        else if (key === state.selectedAnswer && !result.is_correct) btn.classList.add('wrong');
+      });
+    }
+
+    // Feedback panel
+    showFeedback(result);
+
+    // Record locally
+    state.deliveries.push({
+      questionId:    state.currentQuestion.id,
+      questionText:  state.currentQuestion.question_text,
+      answer:        state.selectedAnswer,
+      correctAnswer: result.correct_answer,
+      isCorrect:     result.is_correct,
+      explanation:   result.explanation,
+    });
+
+    // Update progress UI
+    const total  = state.deliveries.length;
+    const correct = state.deliveries.filter(d => d.isCorrect).length;
+    document.getElementById('progress-text').textContent = `${total} / ${state.totalMax}`;
+    document.getElementById('progress-fill').style.width = Math.min((total / state.totalMax) * 100, 100) + '%';
+
+    // Show next / finish buttons
+    if (result.session_complete || !result.next_question) {
+      document.getElementById('btn-finish').style.display = 'inline-flex';
+      state.sessionComplete = true;
+    } else {
+      state.currentQuestion = result.next_question;
+      document.getElementById('btn-next').style.display = 'inline-flex';
+    }
+  } catch (err) {
+    showFeedback({ is_correct: null, explanation: 'Network error. Tap Next to continue.', correct_answer: '' });
+    document.getElementById('btn-next').style.display = 'inline-flex';
+  }
+}
+
+function showFeedback(result) {
+  const area = document.getElementById('feedback-area');
+  area.style.display = 'block';
+
+  const cls = result.is_correct ? 'correct' : 'wrong';
+  const icon = result.is_correct ? '✅' : '❌';
+  const title = result.is_correct ? 'Correct! Well done!' : `Not quite — the answer is ${result.correct_answer}`;
+
+  area.innerHTML = `
+    <div class="feedback-panel ${cls}">
+      <div class="feedback-result ${cls}">${icon} ${title}</div>
+      ${result.explanation ? `<div class="feedback-explain">${result.explanation}</div>` : ''}
+      ${result.gap_detected ? `<div class="feedback-gap">⚠️ Knowledge gap detected — switching to simpler questions</div>` : ''}
+    </div>`;
+}
+
+async function skipQuestion() {
+  if (state.feedbackShown) return;
+  state.feedbackShown = true;
+  state.deliveries.push({
+    questionId: state.currentQuestion.id,
+    questionText: state.currentQuestion.question_text,
+    answer: null, correctAnswer: null, isCorrect: false, explanation: '', skipped: true,
+  });
+
+  try {
+    // Submit "skipped" — empty string answer
+    await apiFetch(`/api/v1/adaptive/sessions/${state.sessionId}/answer`, {
+      method: 'POST',
+      body: JSON.stringify({ question_id: state.currentQuestion.id, answer: '__SKIP__', time_taken_secs: 0 }),
+    });
+  } catch {}
+
+  document.getElementById('btn-skip').style.display = 'none';
+  document.getElementById('btn-submit').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'inline-flex';
+  document.getElementById('feedback-area').style.display = 'block';
+  document.getElementById('feedback-area').innerHTML = `<div class="feedback-panel wrong"><div class="feedback-result wrong">⏭ Skipped</div></div>`;
+}
+
+function loadNextQuestion() {
+  if (!state.currentQuestion) return;
+  loadQuestion(state.currentQuestion);
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// HINT
+// ══════════════════════════════════════════════════════════════════════
+async function requestHint() {
+  state.hintShown = true;
+  document.getElementById('btn-hint').style.display = 'none';
+  document.getElementById('hint-area').style.display = 'block';
+  document.getElementById('hint-text').textContent = '💡 Think about the key concepts in this question…';
+
+  // Ask AI Tutor for a hint
+  try {
+    const { reply } = await apiFetch('/api/v1/tutor/chat', {
+      method: 'POST',
+      body: JSON.stringify({
+        message: `Give me a brief hint (1-2 sentences, no direct answer) for: "${state.currentQuestion?.question_text}"`,
+        question_id: state.currentQuestion?.id,
+      }),
+    });
+    document.getElementById('hint-text').textContent = '💡 ' + reply;
+  } catch {
+    document.getElementById('hint-text').textContent = '💡 Re-read the question carefully. Focus on key terms.';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// FINISH / RESULTS
+// ══════════════════════════════════════════════════════════════════════
+async function finishSession() {
+  setScreen('submitting');
+  clearInterval(state.timerInterval);
+
+  try {
+    const result = await apiFetch(`/api/v1/adaptive/sessions/${state.sessionId}/submit`, { method: 'POST' });
+    state.sessionData = result;
+    showResults(result);
+  } catch {
+    // Fallback: show local results
+    const correct = state.deliveries.filter(d => d.isCorrect).length;
+    const total   = state.deliveries.length;
+    showResults({ score: total ? Math.round(correct/total*100) : 0, correct, total, deliveries: state.deliveries });
+  }
+}
+
+function showResults(data) {
+  setScreen('results');
+  const score  = Math.round(data.score || 0);
+  const correct = data.correct || 0;
+  const total   = data.total  || state.deliveries.length;
+  const elapsed = state.timerStart ? Math.floor((Date.now() - state.timerStart) / 1000) : 0;
+  const minutes = Math.round(elapsed / 60);
+
+  // Score ring
+  const circumference = 2 * Math.PI * 55;
+  const offset = circumference - (score / 100) * circumference;
+  const ringColor = score >= 80 ? 'var(--emerald)' : score >= 60 ? 'var(--amber)' : 'var(--rose)';
+  const ringFg = document.getElementById('score-ring-fg');
+  ringFg.style.stroke = ringColor;
+  setTimeout(() => { ringFg.style.strokeDashoffset = offset; }, 100);
+
+  document.getElementById('result-score').textContent = score + '%';
+  document.getElementById('result-label').textContent = 'Score';
+  document.getElementById('result-title').textContent = score >= 80 ? '🎉 Excellent work!' : score >= 60 ? '👍 Good job!' : '💪 Keep practising!';
+
+  document.getElementById('res-correct').textContent = correct;
+  document.getElementById('res-wrong').textContent   = total - correct;
+  document.getElementById('res-time').textContent    = minutes + 'm';
+
+  // AI Feedback
+  if (data.ai_feedback) {
+    document.getElementById('ai-feedback-box').style.display = 'block';
+    document.getElementById('ai-feedback-text').textContent  = data.ai_feedback;
+  }
+
+  // Question review
+  const reviewEl = document.getElementById('questions-review');
+  const reviewData = state.deliveries.length ? state.deliveries : (data.deliveries || []);
+  if (reviewData.length) {
+    reviewEl.innerHTML = reviewData.map(d => `
+      <div class="question-review ${d.isCorrect || d.is_correct ? 'correct-q' : 'wrong-q'}">
+        <div class="q-review-text">${d.questionText || d.question?.question_text || ''}</div>
+        <div class="q-review-answer">
+          Your answer: <strong>${d.answer || d.student_answer || '—'}</strong> •
+          Correct: <strong>${d.correctAnswer || d.question?.correct_answer || '—'}</strong>
+          ${d.isCorrect || d.is_correct ? ' ✅' : ' ❌'}
+        </div>
+      </div>`).join('');
+  }
+
+  // Confetti for good scores
+  if (score >= 80) launchConfetti();
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════════════════
+function setScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name)?.classList.add('active');
+}
+
+function confirmExit() {
+  if (confirm('Exit this session? Your progress will be saved.')) {
+    clearInterval(state.timerInterval);
+    if (state.sessionId && state.deliveries.length > 0) {
+      // Try to submit partial session
+      apiFetch(`/api/v1/adaptive/sessions/${state.sessionId}/submit`, { method: 'POST' }).catch(() => {});
+    }
+    window.location.href = '/dashboards/student.html';
+  }
+}
+
+function retrySession() {
+  const params = new URLSearchParams();
+  if (state.topicId)   params.set('topic_id', state.topicId);
+  if (state.chapterId) params.set('chapter_id', state.chapterId);
+  if (state.topicTitle) params.set('topic_title', state.topicTitle);
+  window.location.href = `/dashboards/assessment.html?${params}`;
+}
+
+function openTutor() {
+  window.location.href = `/dashboards/student.html`;
+}
+
+function launchConfetti() {
+  const colors = ['#6366F1','#8B5CF6','#10B981','#F59E0B','#F43F5E','#06B6D4'];
+  const wrap = document.createElement('div');
+  wrap.className = 'confetti-wrap';
+  document.body.appendChild(wrap);
+  for (let i = 0; i < 80; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.cssText = `
+      left:${Math.random()*100}%;
+      width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      border-radius:${Math.random()>.5?'50%':'2px'};
+      animation-duration:${2+Math.random()*2}s;
+      animation-delay:${Math.random()*.5}s;
+    `;
+    wrap.appendChild(piece);
+  }
+  setTimeout(() => wrap.remove(), 5000);
+}
+
+async function apiFetch(url, opts = {}) {
+  const res = await fetch(url, {
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...(opts.headers || {}) },
+    ...opts,
+  });
+  if (!res.ok) {
+    if (res.status === 401) { localStorage.removeItem('em_token'); window.location.href = '/'; }
+    throw new Error(`HTTP ${res.status}`);
+  }
+  return res.json();
+}
+</script>
+</body>
+</html>

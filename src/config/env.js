@@ -17,7 +17,20 @@ module.exports = {
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-4o-mini',
 
-  // iGOT Karmayogi
+  // AI Provider configuration
+  AI_PROVIDER: process.env.AI_PROVIDER || 'openai',          // 'openai' | 'gemini'
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+
+  // Content moderation & question validation
+  CONTENT_MODERATION_ENABLED: process.env.CONTENT_MODERATION_ENABLED !== 'false',
+  QUESTION_VALIDATION_ENABLED: process.env.QUESTION_VALIDATION_ENABLED !== 'false',
+
+  // Adaptive assessment tuning
+  ADAPTIVE_MAX_QUESTIONS: parseInt(process.env.ADAPTIVE_MAX_QUESTIONS) || 20,
+  ADAPTIVE_MIN_MASTERY_FOR_ADVANCE: parseInt(process.env.ADAPTIVE_MIN_MASTERY_FOR_ADVANCE) || 70,
+  ADAPTIVE_GAP_THRESHOLD: parseInt(process.env.ADAPTIVE_GAP_THRESHOLD) || 3,  // consecutive wrong → gap
+
+  // iGOT Karmayogi (kept for backward compat)
   IGOT_BASE_URL: process.env.IGOT_BASE_URL || 'https://igot.gov.in/apis',
   IGOT_API_KEY: process.env.IGOT_API_KEY,
 

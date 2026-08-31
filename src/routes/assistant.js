@@ -1,15 +1,9 @@
 const express = require('express');
 const { supabaseAdmin } = require('../config/supabase');
 const { authenticate } = require('../middleware/auth');
-const { OPENAI_API_KEY, OPENAI_MODEL } = require('../config/env');
-const OpenAI = require('openai');
+const AI = require('../services/ai');
 
 const router = express.Router();
-
-function getOpenAI() {
-  if (!OPENAI_API_KEY) return null;
-  return new OpenAI({ apiKey: OPENAI_API_KEY });
-}
 
 const SYSTEM_PROMPT = `You are EduMantra AI Assistant, an expert learning advisor for government officials in India's Official Statistical System. You help users:
 - Understand their skill gaps and competency requirements
@@ -25,10 +19,6 @@ Be concise, practical, and supportive. Use simple language. When referencing cou
 router.post('/chat', authenticate, async (req, res) => {
   const { message, session_id } = req.body;
   if (!message?.trim()) return res.status(422).json({ error: 'message is required' });
-
-  if (!OPENAI_API_KEY) {
-    return res.status(400).json({ error: 'AI assistant not configured. OPENAI_API_KEY missing.' });
-  }
 
   try {
     let sessionId = session_id;
@@ -54,30 +44,19 @@ router.post('/chat', authenticate, async (req, res) => {
       .limit(10);
 
     const messages = [
-      { role: 'system', content: SYSTEM_PROMPT },
-      // Add user context
-      {
-        role: 'system',
-        content: `Current user: ${req.profile.full_name}, Role: ${req.profile.role}, Designation: ${req.profile.designation || 'N/A'}, Experience: ${req.profile.years_of_experience || 0} years`,
-      },
-      ...(history || []),
+      ...(history || []).map(m => ({ role: m.role, content: m.content })),
       { role: 'user', content: message },
     ];
 
-    const openai = getOpenAI();
-    if (!openai) {
-      return res.status(400).json({ error: 'AI assistant not configured. OPENAI_API_KEY missing.' });
-    }
-
-    const completion = await openai.chat.completions.create({
-      model: OPENAI_MODEL,
-      messages,
-      max_tokens: 600,
-      temperature: 0.7,
+    const response = await AI.tutorChat(messages, {
+      full_name: req.profile.full_name,
+      designation: req.profile.designation,
+      role: req.profile.role,
+      subject: 'Statistics and Government Learning',
     });
 
-    const reply = completion.choices[0].message.content;
-    const tokensUsed = completion.usage?.total_tokens || 0;
+    const reply = response.content;
+    const tokensUsed = response.tokens_used || 0;
 
     // Save both messages
     await supabaseAdmin.from('ai_chat_messages').insert([
