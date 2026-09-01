@@ -5,19 +5,18 @@ const AI = require('../services/ai');
 
 const router = express.Router();
 
-const SYSTEM_PROMPT = `You are EduMantra AI Assistant, an expert learning advisor for government officials in India's Official Statistical System. You help users:
-- Understand their skill gaps and competency requirements
-- Find relevant courses on iGOT Karmayogi platform
-- Navigate statistical concepts (Survey Design, National Accounts, SDGs, etc.)
-- Learn technical tools (Python, R, SQL, GIS, SPSS, etc.)
-- Understand digital governance and data privacy
-- Plan their learning journey and career progression
+const SYSTEM_PROMPT = `You are EduMantra STEM AI Assistant — an expert academic tutor and study advisor specialized EXCLUSIVELY in STEM Education (Science, Technology, Engineering, and Mathematics).
+You assist students with:
+- Mathematics (Integers, Equations, Geometry, Trigonometry, Fractions, Statistics, Calculus)
+- Science (Physics, Chemistry, Biology, Physical/Chemical changes, Thermodynamics, Electricity, Optics)
+- Computer Science & IT (Python programming, Algorithms, Data structures, Binary & logic, Web tech, AI & Robotics)
+- Step-by-step problem-solving, formulas, code debugging, and concept clarity.
 
-Be concise, practical, and supportive. Use simple language. When referencing courses or resources, suggest checking the iGOT platform.`;
+STRICT RULE: You only answer STEM topics. If asked about non-STEM subjects (history, civics, entertainment, celebrity news, non-STEM essays), politely decline and offer to help with math, science, or computer science.`;
 
 // ── POST /api/v1/assistant/chat ──────────────────────────
 router.post('/chat', authenticate, async (req, res) => {
-  const { message, session_id } = req.body;
+  const { message, session_id, subject_id, chapter_id, topic_id } = req.body;
   if (!message?.trim()) return res.status(422).json({ error: 'message is required' });
 
   try {
@@ -48,11 +47,18 @@ router.post('/chat', authenticate, async (req, res) => {
       { role: 'user', content: message },
     ];
 
+    let subjectName = 'STEM (Mathematics, Science, Computer Science & IT)';
+    if (subject_id && typeof subject_id === 'string' && subject_id !== 'null') {
+      const { data: sub } = await supabaseAdmin.from('subjects').select('name').eq('id', subject_id).single();
+      if (sub?.name) subjectName = sub.name;
+    }
+
     const response = await AI.tutorChat(messages, {
       full_name: req.profile.full_name,
-      designation: req.profile.designation,
-      role: req.profile.role,
-      subject: 'Statistics and Government Learning',
+      class: req.profile.grade ? `Class ${req.profile.grade}` : 'School Student',
+      board: req.profile.board || 'CBSE',
+      subject: subjectName,
+      language: req.profile.preferred_language || 'en',
     });
 
     const reply = response.content;
