@@ -44,7 +44,9 @@ async function authenticate(req, res, next) {
       };
 
       // Try to upsert the row — silently ignore errors if table doesn't exist yet
-      await supabaseAdmin.from('users').upsert(fallbackProfile).catch(() => {});
+      try {
+        await supabaseAdmin.from('users').upsert(fallbackProfile);
+      } catch (_) {}
 
       req.user    = user;
       req.profile = fallbackProfile;
