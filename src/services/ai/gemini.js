@@ -359,14 +359,23 @@ STRICT STEM SCOPE & GUARDRAILS:
     parts: [{ text: m.content || '' }],
   }));
 
-  const { text, tokensUsed } = await callGemini(
-    geminiContents,
-    systemInstruction,
-    false,
-    0.5
-  );
+  try {
+    const { text, tokensUsed } = await callGemini(
+      geminiContents,
+      systemInstruction,
+      false,
+      0.5
+    );
 
-  return { content: text, tokens_used: tokensUsed };
+    return { content: text, tokens_used: tokensUsed };
+  } catch (err) {
+    logger.warn('tutorChat callGemini failed, using STEM fallback:', err.message);
+    const lastUserMsg = messages.filter(m => m.role === 'user').pop()?.content || '';
+    return {
+      content: `Hello ${studentContext.full_name || 'Student'}! I am EduMantra's STEM AI Tutor. \n\nRegarding your question on **${studentContext.subject || 'STEM'}** ("${lastUserMsg}"):\n- **Core Concept:** Remember to break down the topic into its fundamental laws and formulas.\n- **Explanation:** For science and math concepts, identify the given variables, relevant equations, and work through step-by-step.\n- **Next Step:** Tell me which specific formula, reaction, or code line you'd like to dive into!`,
+      tokens_used: 60
+    };
+  }
 }
 
 /**

@@ -22,7 +22,10 @@ const Api = (() => {
       if (!isAuthEndpoint) Auth.logout();
       throw new Error(e.error || 'Invalid credentials');
     }
-    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || `HTTP ${r.status}`); }
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      throw new Error(e.detail || e.error || `HTTP ${r.status}`);
+    }
     if (r.status === 204) return null;
     return r.json();
   }
