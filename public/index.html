@@ -2425,6 +2425,18 @@
     }
 
 
+    /* -- MATRIX RAIN CANVAS ------------------------------------------ */
+    #matrix-rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 1;
+    }
+
     /* -- MATRIX RAIN VISIBILITY OVERRIDES ----------------------------- */
     /* Body is pure black so matrix renders on solid black */
     body {
@@ -2496,7 +2508,7 @@
       background: linear-gradient(135deg, rgba(0, 229, 160, 0.10), rgba(0, 184, 122, 0.06)) !important;
     }
 
-    /* All page content */
+    /* All page content — must sit above matrix-rain (z-index: 0) */
     .navbar,
     .hero,
     .marquee-section,
@@ -2509,6 +2521,7 @@
     #testimonials,
     #faq {
       position: relative;
+      z-index: 1;
     }
 
     /* ------------------------------------------------------------------
@@ -2782,6 +2795,9 @@
 </head>
 
 <body>
+
+  <!-- Matrix Rain Canvas (fixed background layer) -->
+  <canvas id="matrix-rain" aria-hidden="true"></canvas>
 
   <!-- --------------- NAVBAR --------------- -->
   <nav class="navbar" id="navbar">
@@ -4390,6 +4406,71 @@
         ticking = true;
       }
     }, { passive: true });
+
+    /* -- Matrix Rain --------------------------------------------------- */
+    (function () {
+      const canvas = document.getElementById('matrix-rain');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const FONT_SIZE = 14;
+      const COLOR = '#00e5a0';
+      const BG_ALPHA = 0.05;   // trail fade speed
+
+      let cols, drops;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        cols = Math.floor(canvas.width / FONT_SIZE);
+        drops = drops ? drops.slice(0, cols) : [];
+        while (drops.length < cols) drops.push(Math.random() * -50 | 0);
+      }
+
+      // Katakana + ASCII mix for classic look
+      const CHARS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF';
+
+      function draw() {
+        // Fade the trail
+        ctx.fillStyle = 'rgba(0,0,0,' + BG_ALPHA + ')';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = COLOR;
+        ctx.font = FONT_SIZE + 'px "JetBrains Mono", monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+          const ch = CHARS[Math.random() * CHARS.length | 0];
+          const x = i * FONT_SIZE;
+          const y = drops[i] * FONT_SIZE;
+
+          // Brighter head character
+          if (drops[i] > 0) {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(ch, x, y);
+            ctx.fillStyle = COLOR;
+          }
+
+          // Normal column character
+          ctx.fillText(CHARS[Math.random() * CHARS.length | 0], x, y + FONT_SIZE);
+
+          // Reset column randomly after it passes the screen
+          if (y > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          } else {
+            drops[i]++;
+          }
+        }
+      }
+
+      resize();
+      window.addEventListener('resize', resize, { passive: true });
+
+      // Respect prefers-reduced-motion
+      const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (!mq.matches) {
+        setInterval(draw, 40); // ~25 fps — light on CPU
+      }
+    })();
   </script>
 </body>
 

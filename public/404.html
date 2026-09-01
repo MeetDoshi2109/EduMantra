@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>404 — Page Not Found | EduMantra</title>
+  <meta name="description" content="This page doesn't exist. Let's get you back on track.">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f4f0;
+      --ink: #0f0f0e;
+      --ink-2: #5a5a55;
+      --ink-3: #9a9a92;
+      --accent: #00e5a0;
+      --accent-dark: #009663;
+      --border: #e2e0d8;
+      --card: #ffffff;
+      --font-d: 'Outfit', system-ui, sans-serif;
+      --font-b: 'Inter', system-ui, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem clamp(1.5rem, 5vw, 3rem);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+    }
+
+    .topbar-brand img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .topbar-brand span {
+      font-family: var(--font-d);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    .topbar-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--ink-3);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      padding: 0.3rem 0.85rem;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-dark);
+      flex-shrink: 0;
+    }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(2rem, 8vh, 5rem) clamp(1.5rem, 5vw, 3rem);
+    }
+
+    .container {
+      max-width: 680px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* ── Marquee-style 404 ── */
+    .four-oh-four-wrap {
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 2.5rem;
+      user-select: none;
+    }
+
+    .four-oh-four {
+      font-family: var(--font-d);
+      font-size: clamp(6rem, 22vw, 14rem);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -0.06em;
+      color: var(--ink);
+      display: inline-block;
+      animation: slideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* Outline/ghost style for middle "0" */
+    .four-oh-four .outline {
+      -webkit-text-stroke: 2px var(--ink);
+      color: transparent;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+        clip-path: inset(100% 0 0 0);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        clip-path: inset(0% 0 0 0);
+      }
+    }
+
+    /* ── Accent divider ── */
+    .divider {
+      width: 40px;
+      height: 3px;
+      background: var(--accent-dark);
+      border-radius: 9999px;
+      margin: 0 auto 1.75rem;
+      animation: fadeIn 0.7s ease 0.4s both;
+    }
+
+    /* ── Copy ── */
+    .heading {
+      font-family: var(--font-d);
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+      animation: fadeIn 0.7s ease 0.5s both;
+    }
+
+    .subtext {
+      font-size: 0.95rem;
+      color: var(--ink-2);
+      line-height: 1.7;
+      max-width: 420px;
+      margin: 0 auto 2.25rem;
+      animation: fadeIn 0.7s ease 0.6s both;
+    }
+
+    /* ── URL display chip ── */
+    .url-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.9rem;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      margin-bottom: 2.25rem;
+      animation: fadeIn 0.7s ease 0.65s both;
+      word-break: break-all;
+    }
+
+    .url-chip .url-label {
+      font-family: var(--font-b);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--ink-3);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── Actions ── */
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeIn 0.7s ease 0.75s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.65rem 1.4rem;
+      border-radius: 8px;
+      font-family: var(--font-b);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      background: #1a1a18;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(15, 15, 14, 0.18);
+    }
+
+    .btn-secondary {
+      background: var(--card);
+      color: var(--ink-2);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg);
+      color: var(--ink);
+      transform: translateY(-1px);
+      border-color: #ccc;
+    }
+
+    /* ── Decorative floating cards ── */
+    .floaters {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floater {
+      position: absolute;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-d);
+      font-weight: 800;
+      color: var(--border);
+      font-size: 1.5rem;
+      letter-spacing: -0.04em;
+    }
+
+    .floater-1 {
+      width: 90px;
+      height: 90px;
+      top: 12%;
+      left: 5%;
+      font-size: 2rem;
+      animation: floatA 9s ease-in-out infinite;
+      opacity: 0.7;
+    }
+
+    .floater-2 {
+      width: 64px;
+      height: 64px;
+      top: 60%;
+      left: 8%;
+      font-size: 1.4rem;
+      animation: floatB 11s ease-in-out infinite 1.5s;
+      opacity: 0.5;
+    }
+
+    .floater-3 {
+      width: 76px;
+      height: 76px;
+      top: 20%;
+      right: 6%;
+      font-size: 1.8rem;
+      animation: floatC 10s ease-in-out infinite 0.8s;
+      opacity: 0.6;
+    }
+
+    .floater-4 {
+      width: 52px;
+      height: 52px;
+      bottom: 18%;
+      right: 9%;
+      font-size: 1.1rem;
+      animation: floatA 8s ease-in-out infinite 2s;
+      opacity: 0.45;
+    }
+
+    .floater-5 {
+      width: 44px;
+      height: 44px;
+      bottom: 30%;
+      left: 15%;
+      animation: floatB 12s ease-in-out infinite 3s;
+      opacity: 0.4;
+      border-radius: 50%;
+    }
+
+    @keyframes floatA {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50%       { transform: translateY(-14px) rotate(2deg); }
+    }
+
+    @keyframes floatB {
+      0%, 100% { transform: translateY(0) rotate(1deg); }
+      50%       { transform: translateY(-10px) rotate(-1deg); }
+    }
+
+    @keyframes floatC {
+      0%, 100% { transform: translateY(-6px) rotate(0.5deg); }
+      50%       { transform: translateY(6px) rotate(-0.5deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 1.25rem clamp(1.5rem, 5vw, 3rem);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .footer-links a {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--ink);
+    }
+
+    /* ── Ensure content sits above floaters ── */
+    .topbar, main, footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .actions {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+      }
+
+      .floater-1, .floater-2, .floater-3, .floater-4, .floater-5 {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Decorative background floaters -->
+  <div class="floaters" aria-hidden="true">
+    <div class="floater floater-1">4</div>
+    <div class="floater floater-2">0</div>
+    <div class="floater floater-3">4</div>
+    <div class="floater floater-4">?</div>
+    <div class="floater floater-5"></div>
+  </div>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <a href="/" class="topbar-brand">
+      <img src="/images/logo.png" alt="EduMantra logo" width="32" height="32">
+      <span>EduMantra</span>
+    </a>
+    <div class="topbar-status">
+      <span class="status-dot" aria-hidden="true"></span>
+      All systems operational
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main>
+    <div class="container">
+
+      <!-- Big 404 -->
+      <div class="four-oh-four-wrap" aria-label="404">
+        <span class="four-oh-four">4<span class="outline">0</span>4</span>
+      </div>
+
+      <!-- Accent line -->
+      <div class="divider" aria-hidden="true"></div>
+
+      <!-- Copy -->
+      <h1 class="heading">This page went missing</h1>
+      <p class="subtext">
+        The URL you followed doesn't exist — it may have moved, been deleted,
+        or never existed in the first place.
+      </p>
+
+      <!-- Attempted URL -->
+      <div class="url-chip" id="url-chip" aria-label="Attempted URL">
+        <span class="url-label">URL</span>
+        <span id="attempted-url"></span>
+      </div>
+
+      <!-- CTA buttons -->
+      <div class="actions">
+        <a href="/" class="btn btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/>
+          </svg>
+          Back to home
+        </a>
+        <button class="btn btn-secondary" onclick="history.back()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+          </svg>
+          Go back
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p class="footer-copy">© 2026 EduMantra. All rights reserved.</p>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="/">Home</a>
+      <a href="/login.html">Login</a>
+    </nav>
+  </footer>
+
+  <script>
+    // Show the attempted URL in the chip
+    const urlEl = document.getElementById('attempted-url');
+    const chip  = document.getElementById('url-chip');
+    if (urlEl && window.location.pathname !== '/404.html') {
+      urlEl.textContent = window.location.pathname + window.location.search;
+    } else if (urlEl) {
+      chip.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

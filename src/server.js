@@ -98,9 +98,11 @@ app.get('/api/health', (req, res) => {
 // ── SPA fallback for frontend routes ──────────────────────
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api')) return notFound(req, res);
-  // Let express.static handle .html, .css, .js files first
-  // This fallback only hits for clean URLs (no extension)
-  if (req.path.includes('.')) return notFound(req, res);
+  // Static assets with extensions that weren't found → 404 page
+  if (req.path.includes('.')) {
+    return res.status(404).sendFile(path.join(__dirname, '../public/404.html'));
+  }
+  // Clean URLs: serve SPA shell; the frontend router handles the route
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
