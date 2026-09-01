@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 module.exports = {
-  PORT: process.env.PORT || 3000,
+  PORT: process.env.PORT || 1234,
   NODE_ENV: process.env.NODE_ENV || 'development',
 
   // Supabase
@@ -18,9 +18,9 @@ module.exports = {
   OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-4o-mini',
 
   // AI Provider configuration
-  AI_PROVIDER: process.env.AI_PROVIDER || 'openai',          // 'openai' | 'gemini'
+  AI_PROVIDER: process.env.AI_PROVIDER || 'gemini',          // 'gemini' | 'openai'
   GEMINI_API_KEY: process.env.GEMINI_API_KEY,
-  GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
+  GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite',
 
   // Content moderation & question validation
   CONTENT_MODERATION_ENABLED: process.env.CONTENT_MODERATION_ENABLED !== 'false',
@@ -36,7 +36,7 @@ module.exports = {
   IGOT_API_KEY: process.env.IGOT_API_KEY,
 
   // CORS
-  CORS_ORIGINS: (process.env.CORS_ORIGINS || 'http://localhost:3000').split(','),
+  CORS_ORIGINS: (process.env.CORS_ORIGINS || 'http://localhost:1234,http://localhost:3000').split(','),
 
   // Rate limiting
   RATE_LIMIT_WINDOW_MS: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,

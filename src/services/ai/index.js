@@ -9,24 +9,24 @@
  *   const questions = await AI.generateQuestions(text, config);
  */
 
-const { AI_PROVIDER = 'openai' } = process.env;
+const { AI_PROVIDER = 'gemini' } = require('../../config/env');
 const logger = require('../../config/logger');
 
 let provider;
 
-switch (AI_PROVIDER.toLowerCase()) {
-  case 'openai':
-    provider = require('./openai');
-    break;
+switch ((AI_PROVIDER || 'gemini').toLowerCase()) {
   case 'gemini':
     provider = require('./gemini');
     break;
-  default:
-    logger.warn(`Unknown AI_PROVIDER "${AI_PROVIDER}", falling back to openai`);
+  case 'openai':
     provider = require('./openai');
+    break;
+  default:
+    logger.warn(`Unknown AI_PROVIDER "${AI_PROVIDER}", falling back to gemini`);
+    provider = require('./gemini');
 }
 
-logger.info(`AI Service initialised with provider: ${AI_PROVIDER}`);
+logger.info(`AI Service initialised with provider: ${AI_PROVIDER || 'gemini'}`);
 
 module.exports = {
   /**

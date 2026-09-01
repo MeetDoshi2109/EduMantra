@@ -128,8 +128,8 @@ app.get('*', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// ── Start (local only — Vercel imports the module directly) ──
-if (process.env.NODE_ENV !== 'production') {
+// ── Start (local only — Vercel imports the module via api/index.js) ──
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     logger.info(`EduMantra server running on port ${PORT} [${NODE_ENV}]`);
   });

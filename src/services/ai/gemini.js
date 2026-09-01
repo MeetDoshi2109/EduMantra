@@ -10,14 +10,14 @@ const logger = require('../../config/logger');
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 // Preferred healthy models cascade (tested & fast)
-const DEFAULT_MODEL = CONFIGURED_MODEL || process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
+const DEFAULT_MODEL = CONFIGURED_MODEL || process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite';
 const FALLBACK_MODELS = [
   DEFAULT_MODEL,
-  'gemini-3.5-flash-lite',
-  'gemini-3.5-flash',
   'gemini-3.1-flash-lite',
+  'gemini-3.5-flash',
   'gemini-flash-lite-latest',
   'gemini-3.1-flash-lite-preview',
+  'gemini-3.5-flash-lite',
   'gemini-3.6-flash',
 ].filter((m, idx, arr) => arr.indexOf(m) === idx);
 
@@ -99,12 +99,19 @@ async function callGemini(contents, systemInstruction = null, responseJson = fal
 
       try {
         const url = `${GEMINI_BASE_URL}/${model}:generateContent?key=${apiKey}`;
+        const generationConfig = {
+          temperature,
+          ...(responseJson ? { responseMimeType: 'application/json' } : {}),
+        };
+
+        // Disable heavy thinking delays on 3.x lite models for near-instant responses
+        if (model.includes('3.1-flash') || model.includes('flash-lite')) {
+          generationConfig.thinkingConfig = { thinkingBudget: 0 };
+        }
+
         const body = {
           contents,
-          generationConfig: {
-            temperature,
-            ...(responseJson ? { responseMimeType: 'application/json' } : {}),
-          },
+          generationConfig,
         };
 
         if (systemInstruction) {
@@ -113,12 +120,23 @@ async function callGemini(contents, systemInstruction = null, responseJson = fal
           };
         }
 
-        const res = await fetch(url, {
+        let res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
           signal: controller.signal,
         });
+
+        // If thinkingConfig caused 400 bad request, retry immediately without it
+        if (res.status === 400 && generationConfig.thinkingConfig) {
+          delete generationConfig.thinkingConfig;
+          res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents, generationConfig, ...(systemInstruction ? { systemInstruction: { parts: [{ text: systemInstruction }] } } : {}) }),
+            signal: controller.signal,
+          });
+        }
 
         clearTimeout(timeoutId);
 
