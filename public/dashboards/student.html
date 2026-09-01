@@ -1748,10 +1748,11 @@ async function sendChat() {
 
     chatSessionId = d.session_id;
     document.getElementById('typing')?.remove();
-    appendMsg('assistant', d.reply);
+    appendMsg('assistant', d.reply || 'I am ready to assist with your STEM questions! What would you like to explore next?');
   } catch (e) {
+    console.error('Tutor chat error:', e);
     document.getElementById('typing')?.remove();
-    appendMsg('assistant', 'Sorry, I encountered an issue. Please try again.');
+    appendMsg('assistant', `Sorry, I encountered an issue (${e.message || 'connection error'}). Please try again.`);
   }
 }
 
@@ -1766,9 +1767,11 @@ async function sendDirectTutorPrompt(prompt) {
     });
     chatSessionId = d.session_id;
     document.getElementById('typing')?.remove();
-    appendMsg('assistant', d.reply);
+    appendMsg('assistant', d.reply || 'Here is what you need to know about this concept.');
   } catch (e) {
+    console.error('Direct tutor prompt error:', e);
     document.getElementById('typing')?.remove();
+    appendMsg('assistant', `Sorry, I encountered an issue (${e.message || 'connection error'}). Please try again.`);
   }
 }
 

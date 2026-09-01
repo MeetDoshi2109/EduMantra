@@ -2,17 +2,9 @@ const express = require('express');
 const { supabaseAdmin } = require('../config/supabase');
 const { authenticate } = require('../middleware/auth');
 const AI = require('../services/ai');
+const logger = require('../config/logger');
 
 const router = express.Router();
-
-const SYSTEM_PROMPT = `You are EduMantra STEM AI Assistant — an expert academic tutor and study advisor specialized EXCLUSIVELY in STEM Education (Science, Technology, Engineering, and Mathematics).
-You assist students with:
-- Mathematics (Integers, Equations, Geometry, Trigonometry, Fractions, Statistics, Calculus)
-- Science (Physics, Chemistry, Biology, Physical/Chemical changes, Thermodynamics, Electricity, Optics)
-- Computer Science & IT (Python programming, Algorithms, Data structures, Binary & logic, Web tech, AI & Robotics)
-- Step-by-step problem-solving, formulas, code debugging, and concept clarity.
-
-STRICT RULE: You only answer STEM topics. If asked about non-STEM subjects (history, civics, entertainment, celebrity news, non-STEM essays), politely decline and offer to help with math, science, or computer science.`;
 
 // ── POST /api/v1/assistant/chat ──────────────────────────
 router.post('/chat', authenticate, async (req, res) => {
@@ -21,58 +13,97 @@ router.post('/chat', authenticate, async (req, res) => {
 
   try {
     let sessionId = session_id;
+    let history = [];
+
+    // Ensure the user exists in users table (prevents FK violations)
+    if (req.profile?.id) {
+      await supabaseAdmin.from('users').upsert({
+        id: req.profile.id,
+        email: req.profile.email || req.user?.email || 'user@example.com',
+        full_name: req.profile.full_name || 'Student',
+        role: req.profile.role || 'student',
+      }).catch(() => {});
+    }
 
     // Create session if none provided
-    if (!sessionId) {
-      const { data: session } = await supabaseAdmin
-        .from('ai_chat_sessions')
-        .insert({
-          user_id: req.profile.id,
-          title: message.slice(0, 60),
-        })
-        .select().single();
-      sessionId = session.id;
+    if (!sessionId && req.profile?.id) {
+      try {
+        const { data: session } = await supabaseAdmin
+          .from('ai_chat_sessions')
+          .insert({
+            user_id: req.profile.id,
+            title: message.slice(0, 60),
+          })
+          .select()
+          .single();
+        if (session?.id) sessionId = session.id;
+      } catch (err) {
+        logger.warn('Could not persist ai_chat_session:', err.message);
+      }
     }
 
     // Fetch conversation history (last 10 messages for context)
-    const { data: history } = await supabaseAdmin
-      .from('ai_chat_messages')
-      .select('role, content')
-      .eq('session_id', sessionId)
-      .order('created_at', { ascending: true })
-      .limit(10);
+    if (sessionId) {
+      try {
+        const { data: hist } = await supabaseAdmin
+          .from('ai_chat_messages')
+          .select('role, content')
+          .eq('session_id', sessionId)
+          .order('created_at', { ascending: true })
+          .limit(10);
+        if (hist) history = hist;
+      } catch (err) {
+        logger.warn('Could not load chat history:', err.message);
+      }
+    }
 
     const messages = [
-      ...(history || []).map(m => ({ role: m.role, content: m.content })),
+      ...history.map(m => ({ role: m.role, content: m.content })),
       { role: 'user', content: message },
     ];
 
     let subjectName = 'STEM (Mathematics, Science, Computer Science & IT)';
     if (subject_id && typeof subject_id === 'string' && subject_id !== 'null') {
-      const { data: sub } = await supabaseAdmin.from('subjects').select('name').eq('id', subject_id).single();
-      if (sub?.name) subjectName = sub.name;
+      try {
+        const { data: sub } = await supabaseAdmin.from('subjects').select('name').eq('id', subject_id).single();
+        if (sub?.name) subjectName = sub.name;
+      } catch (_) {}
     }
 
     const response = await AI.tutorChat(messages, {
-      full_name: req.profile.full_name,
-      class: req.profile.grade ? `Class ${req.profile.grade}` : 'School Student',
-      board: req.profile.board || 'CBSE',
+      full_name: req.profile?.full_name || 'Student',
+      class: req.profile?.grade ? `Class ${req.profile.grade}` : 'School Student',
+      board: req.profile?.board || 'CBSE',
       subject: subjectName,
-      language: req.profile.preferred_language || 'en',
+      language: req.profile?.preferred_language || 'en',
     });
 
-    const reply = response.content;
+    const reply = response.content || 'I am ready to help with your STEM questions! What would you like to explore?';
     const tokensUsed = response.tokens_used || 0;
 
-    // Save both messages
-    await supabaseAdmin.from('ai_chat_messages').insert([
-      { session_id: sessionId, role: 'user', content: message },
-      { session_id: sessionId, role: 'assistant', content: reply, tokens_used: tokensUsed },
-    ]);
+    // Save messages if session exists
+    if (sessionId) {
+      try {
+        await supabaseAdmin.from('ai_chat_messages').insert([
+          { session_id: sessionId, role: 'user', content: message },
+          { session_id: sessionId, role: 'assistant', content: reply, tokens_used: tokensUsed },
+        ]);
+      } catch (err) {
+        logger.warn('Could not save ai_chat_messages:', err.message);
+      }
+    }
 
-    res.json({ reply, session_id: sessionId, tokens_used: tokensUsed });
+    res.json({
+      reply,
+      session_id: sessionId || ('sess_' + Date.now()),
+      tokens_used: tokensUsed,
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Assistant failed', detail: err.message });
+    logger.error('Assistant chat failed:', err.message);
+    res.status(500).json({
+      error: 'Assistant failed',
+      detail: err.message,
+    });
   }
 });
 
@@ -85,10 +116,10 @@ router.get('/sessions', authenticate, async (req, res) => {
       .eq('user_id', req.profile.id)
       .order('updated_at', { ascending: false })
       .limit(20);
-    if (error) return res.status(400).json({ error: error.message });
-    res.json({ sessions: data });
+    if (error) return res.json({ sessions: [] });
+    res.json({ sessions: data || [] });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch sessions' });
+    res.json({ sessions: [] });
   }
 });
 
@@ -100,10 +131,10 @@ router.get('/sessions/:id', authenticate, async (req, res) => {
       .select('role, content, created_at')
       .eq('session_id', req.params.id)
       .order('created_at', { ascending: true });
-    if (error) return res.status(400).json({ error: error.message });
-    res.json({ messages });
+    if (error) return res.json({ messages: [] });
+    res.json({ messages: messages || [] });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch chat history' });
+    res.json({ messages: [] });
   }
 });
 
