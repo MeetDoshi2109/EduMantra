@@ -95,7 +95,9 @@ router.post('/login', [
         designation: data.user.user_metadata?.designation || null,
         preferred_language: 'en',
       };
-      await supabaseAdmin.from('users').upsert(profile).catch(() => {});
+      try {
+        await supabaseAdmin.from('users').upsert(profile);
+      } catch (_) {}
     }
 
     // Update last_login_at
