@@ -17,12 +17,14 @@ router.post('/chat', authenticate, async (req, res) => {
 
     // Ensure the user exists in users table (prevents FK violations)
     if (req.profile?.id) {
-      await supabaseAdmin.from('users').upsert({
-        id: req.profile.id,
-        email: req.profile.email || req.user?.email || 'user@example.com',
-        full_name: req.profile.full_name || 'Student',
-        role: req.profile.role || 'student',
-      }).catch(() => {});
+      try {
+        await supabaseAdmin.from('users').upsert({
+          id: req.profile.id,
+          email: req.profile.email || req.user?.email || 'user@example.com',
+          full_name: req.profile.full_name || 'Student',
+          role: req.profile.role || 'student',
+        });
+      } catch (_) {}
     }
 
     // Create session if none provided
