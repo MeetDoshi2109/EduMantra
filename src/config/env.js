@@ -20,6 +20,7 @@ module.exports = {
   // AI Provider configuration
   AI_PROVIDER: process.env.AI_PROVIDER || 'openai',          // 'openai' | 'gemini'
   GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+  GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
 
   // Content moderation & question validation
   CONTENT_MODERATION_ENABLED: process.env.CONTENT_MODERATION_ENABLED !== 'false',
