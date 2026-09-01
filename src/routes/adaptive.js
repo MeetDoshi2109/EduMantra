@@ -243,10 +243,12 @@ router.post('/sessions/:id/answer', authenticate, [
     });
 
     // Update question bank usage stats
-    await supabaseAdmin.from('question_bank').update({
-      times_used: supabaseAdmin.rpc('increment', { row_id: question_id, column_name: 'times_used' }),
-      ...(isCorrect ? { times_correct: supabaseAdmin.rpc('increment', { row_id: question_id, column_name: 'times_correct' }) } : {}),
-    }).eq('id', question_id).catch(() => {}); // Non-critical, ignore failures
+    try {
+      await supabaseAdmin.from('question_bank').update({
+        times_used: supabaseAdmin.rpc('increment', { row_id: question_id, column_name: 'times_used' }),
+        ...(isCorrect ? { times_correct: supabaseAdmin.rpc('increment', { row_id: question_id, column_name: 'times_correct' }) } : {}),
+      }).eq('id', question_id);
+    } catch (_) {} // Non-critical, ignore failures
 
     // Process answer through adaptive engine
     const { nextQuestion, sessionUpdates, gapDetected, gapConceptId } = await engine.processAnswer(
@@ -373,16 +375,17 @@ router.post('/sessions/:id/submit', authenticate, async (req, res) => {
     await engine.updateMastery(req.profile.id, Object.values(conceptsEncountered), sessionId);
 
     // Log learning activity
-    await supabaseAdmin.from('learning_activities').insert({
-      student_id: req.profile.id,
-      activity_type: 'assessment',
-      subject_id: session.subject_id,
-      chapter_id: session.chapter_id,
-      topic_id:   session.topic_id,
-      session_id: sessionId,
-      score:      performance.score,
-      duration_mins: Math.round((Date.now() - new Date(session.started_at).getTime()) / 60000),
-    }).catch(() => {});
+    try {
+      await supabaseAdmin.from('learning_hours_log').insert({
+        user_id:    req.profile.id,
+        subject_id: session.subject_id,
+        chapter_id: session.chapter_id,
+        topic_id:   session.topic_id,
+        session_id: sessionId,
+        score:      performance.score,
+        duration_mins: Math.round((Date.now() - new Date(session.started_at).getTime()) / 60000),
+      });
+    } catch (_) {}
 
     res.json({
       session_id: sessionId,
