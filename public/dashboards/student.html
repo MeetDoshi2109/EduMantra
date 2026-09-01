@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduMantra – Student Dashboard</title>
+<title>EduMantra – STEM Student Learning Platform</title>
 <link rel="icon" type="image/png" href="/images/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/design-system.css">
 <script src="/js/theme.js"></script>
 <style>
-  /* Legacy variable bridge for JS-generated HTML that uses old tokens */
   :root {
     --n-0:   var(--surface-1);
     --n-100: var(--surface-2);
@@ -37,21 +36,17 @@
     --space-lg:         var(--space-lg);
     --space-md:         var(--space-md);
   }
-  /* Auto-grid for course cards */
   .g-auto { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
-  /* Badges used by JS-generated HTML */
   .badge { display:inline-flex;align-items:center;gap:.2rem;padding:.18rem .6rem;border-radius:9999px;font-size:.68rem;font-weight:600; }
   .badge-active { background:rgba(0,229,160,0.1);color:var(--accent); }
   .badge-blue   { background:rgba(77,166,255,0.1);color:#4da6ff; }
+  .badge-purple { background:rgba(168,85,247,0.12);color:#a855f7; }
   .badge-slate  { background:var(--hairline);color:var(--ink-2); }
   .badge-red    { background:rgba(255,71,87,0.1);color:var(--danger); }
   .badge-amber  { background:rgba(245,166,35,0.1);color:var(--warning); }
   .badge-progress { background:rgba(0,229,160,0.1);color:var(--accent); }
-  /* Card hover */
   .card-hover:hover { border-color:var(--hairline-2);transform:translateY(-2px);box-shadow:var(--shadow-md);cursor:pointer; }
-  /* Card subtitle */
   .card-subtitle { font-size:.75rem;color:var(--ink-3);margin-top:2px; }
-  /* Timeline for pathway */
   .timeline { display:flex;flex-direction:column;gap:0;position:relative; }
   .timeline::before { content:'';position:absolute;left:1.4rem;top:0;bottom:0;width:1px;background:var(--hairline); }
   .tl-item { display:grid;grid-template-columns:2.8rem 1fr;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--hairline); }
@@ -59,28 +54,23 @@
   .tl-dot.act { background:rgba(0,229,160,0.1);border-color:rgba(0,229,160,0.3);color:var(--accent); }
   .tl-title { font-weight:600;font-size:.875rem;color:var(--ink);margin-bottom:.2rem; }
   .tl-sub { font-size:.78rem;color:var(--ink-3);line-height:1.6; }
-  /* Progress bar */
-  .pb-wrap { background:var(--hairline);border-radius:99px;height:5px;overflow:hidden; }
-  .pb-fill  { height:100%;border-radius:99px;background:var(--accent); }
-  /* Label cap */
+  .pb-wrap { background:var(--hairline);border-radius:99px;height:6px;overflow:hidden; }
+  .pb-fill  { height:100%;border-radius:99px;background:var(--accent);transition:width .4s ease; }
   .label-cap { font-family:var(--font-mono);font-size:.63rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3); }
-  /* Switch toggle */
   .switch { position:relative;display:inline-flex;align-items:center;cursor:pointer; }
   .switch input { opacity:0;width:0;height:0;position:absolute; }
   .switch-track { width:32px;height:18px;background:var(--hairline-2);border-radius:99px;position:relative;transition:.2s;flex-shrink:0; }
   .switch-track::after { content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:.2s; }
   .switch input:checked + .switch-track { background:var(--accent); }
   .switch input:checked + .switch-track::after { transform:translateX(14px); }
-  /* Input wrapper */
   .input { width:100%;padding:.5rem .75rem;background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:var(--r-sm);color:var(--ink);font-size:.875rem;font-family:var(--font-body);outline:none;transition:border-color var(--t-fast); }
   .input:focus { border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,229,160,.12); }
   .input-wrap { position:relative; }
   .input-icon-l { position:absolute;left:.6rem;top:50%;transform:translateY(-50%);color:var(--ink-3);pointer-events:none; }
   .input-wrap .input { padding-left:2rem; }
-  /* Modal variants for shell.js */
   .modal-ov { position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s; }
   .modal-ov.open { opacity:1;pointer-events:auto; }
-  .modal { background:var(--surface-1);border:1px solid var(--hairline-2);border-radius:var(--r-xl);padding:1.5rem;width:100%;max-width:520px;max-height:90dvh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.5);transform:translateY(14px) scale(.97);transition:transform .4s cubic-bezier(.16,1,.3,1); }
+  .modal { background:var(--surface-1);border:1px solid var(--hairline-2);border-radius:var(--r-xl);padding:1.5rem;width:100%;max-width:560px;max-height:90dvh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.5);transform:translateY(14px) scale(.97);transition:transform .4s cubic-bezier(.16,1,.3,1); }
   .modal-ov.open .modal { transform:translateY(0) scale(1); }
   .modal-hd { display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem; }
   .modal-title { font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--ink); }
@@ -88,18 +78,33 @@
   .modal-close:hover { color:var(--ink);background:rgba(255,255,255,.06); }
   .modal-body { color:var(--ink-2);font-size:.875rem; }
   .modal-footer { display:flex;justify-content:flex-end;gap:.5rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--hairline); }
-  /* Tab bar */
-  .tab-bar { display:flex;border-bottom:1px solid var(--hairline);margin-bottom:1.25rem; }
+  .tab-bar { display:flex;border-bottom:1px solid var(--hairline);margin-bottom:1.25rem;gap:.5rem; }
   .tab { padding:.5rem 1rem;background:none;border:none;font-size:.84rem;font-weight:500;color:var(--ink-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color var(--t-fast),border-color var(--t-fast);font-family:var(--font-body); }
   .tab:hover { color:var(--ink); }
   .tab.active { color:var(--accent);border-color:var(--accent); }
   .tab-panel { display:none; }
   .tab-panel.active { display:block; }
-  /* Form group label override */
   .form-label { font-size:.75rem;font-weight:600;color:var(--ink-2);display:block;margin-bottom:.3rem; }
-  /* Competency pips */
   .comp-pips { display:flex;gap:3px; }
   .comp-pip { width:10px;height:10px;border-radius:2px; }
+
+  /* STEM & Adaptive Practice Specific Styles */
+  .subject-card { border-radius:var(--r-lg);border:1px solid var(--hairline);background:var(--surface-1);padding:1.25rem;transition:all var(--t-fast);position:relative;overflow:hidden;cursor:pointer; }
+  .subject-card:hover { border-color:var(--hairline-2);transform:translateY(-3px);box-shadow:var(--shadow-md); }
+  .subject-icon-box { width:44px;height:44px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:.85rem; }
+  .chapter-item { border:1px solid var(--hairline);border-radius:var(--r-md);background:var(--surface-1);margin-bottom:.65rem;overflow:hidden;transition:border-color var(--t-fast); }
+  .chapter-item:hover { border-color:var(--hairline-2); }
+  .chapter-hd { padding:.85rem 1.1rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none; }
+  .chapter-bd { padding:.5rem 1.1rem 1rem;border-top:1px solid var(--hairline);background:var(--surface-2);display:none; }
+  .chapter-item.expanded .chapter-bd { display:block; }
+  .topic-row { display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--hairline);font-size:.84rem; }
+  .topic-row:last-child { border-bottom:none; }
+  .opt-choice { display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 1rem;border-radius:var(--r-md);border:1px solid var(--hairline);background:var(--surface-2);cursor:pointer;transition:all var(--t-fast);margin-bottom:.5rem;user-select:none; }
+  .opt-choice:hover { border-color:var(--accent);background:rgba(0,229,160,0.04); }
+  .opt-choice.selected { border-color:var(--accent);background:rgba(0,229,160,0.08);box-shadow:0 0 0 1px var(--accent); }
+  .opt-choice.correct { border-color:var(--accent)!important;background:rgba(0,229,160,0.15)!important;color:var(--accent); }
+  .opt-choice.incorrect { border-color:var(--danger)!important;background:rgba(255,71,87,0.12)!important;color:var(--danger); }
+  .stem-chip { display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;background:rgba(0,229,160,0.1);color:var(--accent);border-radius:99px;font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase; }
 </style>
 </head>
 <body>
@@ -110,23 +115,29 @@
 <aside class="sidebar" id="sidebar" aria-label="Navigation">
   <div class="sidebar-header">
     <div class="brand-mark"><img src="/images/logo.png" alt="EduMantra Logo"></div>
-    <div><div class="brand-name">EduMantra</div><div class="brand-role">Student</div></div>
+    <div><div class="brand-name">EduMantra</div><div class="brand-role">STEM Student</div></div>
   </div>
   <nav class="sidebar-nav" aria-label="Main navigation">
     <div class="nav-group-label">Main</div>
     <button class="nav-item" data-page="home"><span id="ni-home"></span><span class="nav-label">Dashboard</span></button>
     <button class="nav-item" data-page="objectives"><span id="ni-obj"></span><span class="nav-label">Daily Objectives</span></button>
     <button class="nav-item" data-page="pathway"><span id="ni-path"></span><span class="nav-label">Learning Path</span></button>
-    <button class="nav-item" data-page="courses"><span id="ni-courses"></span><span class="nav-label">My Courses</span></button>
+    <button class="nav-item" data-page="courses"><span id="ni-courses"></span><span class="nav-label">Skill Courses</span></button>
+
+    <div class="nav-group-label">STEM Learning</div>
+    <button class="nav-item" data-page="curriculum"><span id="ni-curriculum"></span><span class="nav-label">STEM Subjects</span><span class="badge badge-active" style="margin-left:auto;font-size:0.6rem">Core</span></button>
+    <button class="nav-item" data-page="practice"><span id="ni-practice"></span><span class="nav-label">Adaptive Practice</span><span class="badge badge-active" style="margin-left:auto;font-size:0.6rem">AI</span></button>
+    <button class="nav-item" data-page="mastery"><span id="ni-mastery"></span><span class="nav-label">Mastery Map & Gaps</span></button>
+    <button class="nav-item" data-page="recommendations"><span id="ni-recs"></span><span class="nav-label">AI Recommendations</span></button>
 
     <div class="nav-group-label">Assessment</div>
-    <button class="nav-item" data-page="assessments"><span id="ni-assess"></span><span class="nav-label">AI Assessments</span></button>
-    <button class="nav-item" data-page="skillgap"><span id="ni-gap"></span><span class="nav-label">Skill Gap</span></button>
+    <button class="nav-item" data-page="assessments"><span id="ni-assess"></span><span class="nav-label">Quizzes & Tests</span></button>
+    <button class="nav-item" data-page="skillgap"><span id="ni-gap"></span><span class="nav-label">Skill Gap Analysis</span></button>
     <button class="nav-item" data-page="competency"><span id="ni-comp"></span><span class="nav-label">Competency Profile</span></button>
 
     <div class="nav-group-label">Tools</div>
-    <button class="nav-item" data-page="assistant"><span id="ni-ai"></span><span class="nav-label">Study Assistant</span></button>
-    <button class="nav-item" data-page="notes"><span id="ni-notes"></span><span class="nav-label">Notes</span></button>
+    <button class="nav-item" data-page="assistant"><span id="ni-ai"></span><span class="nav-label">STEM AI Tutor</span></button>
+    <button class="nav-item" data-page="notes"><span id="ni-notes"></span><span class="nav-label">Formulas & Notes</span></button>
     <button class="nav-item" data-page="certificates"><span id="ni-certs"></span><span class="nav-label">Certificates</span></button>
 
     <div class="nav-group-label">Account</div>
@@ -153,10 +164,11 @@
 <div class="main-area">
   <header class="topbar" style="position:relative">
     <button class="menu-toggle" aria-label="Toggle navigation"></button>
-    <span class="topbar-title" aria-live="polite">Dashboard</span>
+    <span class="topbar-title" aria-live="polite">STEM Learning Hub</span>
     <div class="topbar-actions">
-      <button class="btn btn-secondary btn-sm" onclick="goPage('skillgap',pageHandlers)" style="font-size:.78rem">
-        ⚡ Skill Gap
+      <span class="stem-chip">🔬 STEM Track</span>
+      <button class="btn btn-secondary btn-sm" onclick="openCurriculumModal()" style="font-size:.78rem" id="topbarGradeBtn">
+        📚 Grade / Board
       </button>
       <button class="topbar-btn" id="notifBtn" aria-label="Notifications" onclick="goPage('notifications',pageHandlers)" style="position:relative">
         <span id="bellIcon"></span>
@@ -168,13 +180,32 @@
 
     <!-- ── HOME ────────────────────────────────────────── -->
     <div class="dash-page active" id="page-home">
+      <!-- Curriculum Context Banner -->
+      <div class="card" style="margin-bottom:1.25rem;background:linear-gradient(135deg,rgba(0,229,160,0.06),rgba(77,166,255,0.06));border-color:rgba(0,229,160,0.25)">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem">
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <div style="width:42px;height:42px;border-radius:var(--r-md);background:var(--accent-glow);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.3rem">
+              🧪
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:.98rem;color:var(--ink)" id="homeCurriculumTitle">NCERT / CBSE — Class 7</div>
+              <div style="font-size:.75rem;color:var(--ink-3)" id="homeCurriculumSub">STEM Education Track (Math, Science, Computer Science & IT)</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn btn-secondary btn-sm" onclick="openCurriculumModal()">Change Grade</button>
+            <button class="btn btn-primary btn-sm" onclick="goPage('curriculum',pageHandlers)">Browse STEM Subjects →</button>
+          </div>
+        </div>
+      </div>
+
       <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
         <div>
           <h1 class="page-title" id="welcomeHeading">Welcome back!</h1>
-          <p class="page-subtitle">Here's your learning overview for today.</p>
+          <p class="page-subtitle">Your STEM mastery and adaptive practice overview.</p>
         </div>
-        <button class="btn btn-primary" onclick="goPage('pathway',pageHandlers)">
-          <span id="continueIcon"></span> Continue Learning
+        <button class="btn btn-primary" onclick="goPage('practice',pageHandlers)">
+          <span id="continueIcon"></span> Start Quick Practice
         </button>
       </div>
 
@@ -182,61 +213,284 @@
       <div class="bento g4" style="margin-bottom:1.25rem">
         <div class="stat-card">
           <div class="stat-icon" id="si-enrolled"></div>
-          <div><div class="stat-value" id="st-enrolled">—</div><div class="stat-label">Courses Enrolled</div></div>
+          <div><div class="stat-value" id="st-enrolled">3</div><div class="stat-label">STEM Subjects</div></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon si-green" id="si-done"></div>
-          <div><div class="stat-value" id="st-done">—</div><div class="stat-label">Completed</div></div>
+          <div><div class="stat-value" id="st-done">—</div><div class="stat-label">Concepts Mastered</div></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon si-amber" id="si-hours"></div>
-          <div><div class="stat-value" id="st-hours">—</div><div class="stat-label">Learning Hours</div></div>
+          <div><div class="stat-value" id="st-hours">—</div><div class="stat-label">Practice Sessions</div></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon si-red" id="si-score"></div>
-          <div><div class="stat-value" id="st-score">—</div><div class="stat-label">Avg Score</div></div>
+          <div><div class="stat-value" id="st-score">—</div><div class="stat-label">Avg STEM Mastery</div></div>
+        </div>
+      </div>
+
+      <!-- STEM Subjects Grid (Interactive) -->
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-header">
+          <div>
+            <div class="card-title">STEM Disciplines</div>
+            <div class="card-subtitle">Mathematics, Science, and Computer Science / IT</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="goPage('curriculum',pageHandlers)">All Chapters</button>
+        </div>
+        <div class="bento g-auto" id="homeSubjectsGrid">
+          <div class="skeleton" style="height:120px;border-radius:var(--r-md)"></div>
+          <div class="skeleton" style="height:120px;border-radius:var(--r-md)"></div>
+          <div class="skeleton" style="height:120px;border-radius:var(--r-md)"></div>
+        </div>
+      </div>
+
+      <!-- AI Recommendations Widget -->
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-header">
+          <div>
+            <div class="card-title">⚡ AI STEM Focus Recommendations</div>
+            <div class="card-subtitle">Personalized daily math, science & coding practice suggestions</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="goPage('recommendations',pageHandlers)">Full List</button>
+        </div>
+        <div id="homeRecommendationsList">
+          <p style="font-size:.85rem;color:var(--ink-3);padding:.5rem 0">Loading STEM recommendations…</p>
         </div>
       </div>
 
       <div class="bento g2" style="margin-bottom:1.25rem">
         <div class="card">
           <div class="card-header">
-            <div><div class="card-title">Today's Objectives</div></div>
+            <div><div class="card-title">Daily Study Goals</div></div>
             <button class="btn btn-ghost btn-sm" onclick="goPage('objectives',pageHandlers)">View all</button>
           </div>
           <div id="todayObjectives"></div>
         </div>
         <div class="card">
           <div class="card-header">
-            <div><div class="card-title">My Learning Path</div><div class="card-subtitle" id="pathwaySubtitle">AI-personalized for you</div></div>
+            <div><div class="card-title">STEM Learning Path</div><div class="card-subtitle" id="pathwaySubtitle">Personalized for your grade</div></div>
             <button class="btn btn-ghost btn-sm" onclick="goPage('pathway',pageHandlers)">View path</button>
           </div>
           <div id="pathwayPreview"></div>
         </div>
       </div>
+    </div>
 
-      <div class="bento g2">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Active Courses</div>
-            <button class="btn btn-ghost btn-sm" onclick="goPage('courses',pageHandlers)">All courses</button>
-          </div>
-          <div id="activeCoursesList"></div>
+    <!-- ── STEM CURRICULUM & SUBJECTS ──────────────────── -->
+    <div class="dash-page" id="page-curriculum">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h1 class="page-title">STEM Curriculum & Textbooks</h1>
+          <p class="page-subtitle">Core Mathematics, Science, and Computer Science / IT chapters and concepts.</p>
         </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Recent Quiz Results</div>
-            <button class="btn btn-ghost btn-sm" onclick="goPage('assessments',pageHandlers)">All assessments</button>
-          </div>
-          <div id="recentAttempts"></div>
+        <div style="display:flex;gap:.5rem;align-items:center">
+          <span class="badge badge-active" id="currActiveBadge">Class 7 • CBSE</span>
+          <button class="btn btn-secondary btn-sm" onclick="openCurriculumModal()">Change Grade</button>
         </div>
+      </div>
+
+      <div id="curriculumSubjectsView">
+        <div class="bento g-auto" id="curriculumSubjectsGrid" style="margin-bottom:1.5rem">
+          <div class="skeleton" style="height:140px"></div>
+          <div class="skeleton" style="height:140px"></div>
+        </div>
+      </div>
+
+      <!-- Chapter Explorer View -->
+      <div id="curriculumChaptersView" style="display:none">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem">
+          <button class="btn btn-secondary btn-sm" onclick="backToCurriculumSubjects()">← Back to Subjects</button>
+          <div>
+            <h2 class="card-title" id="curriculumSubjectTitle" style="font-size:1.15rem;margin:0">Mathematics</h2>
+            <div style="font-size:.78rem;color:var(--ink-3)" id="curriculumSubjectMeta">STEM Core Textbook</div>
+          </div>
+        </div>
+
+        <div class="bento g3" style="align-items:start">
+          <div style="grid-column:span 2">
+            <div id="curriculumChaptersList"></div>
+          </div>
+          <div class="card" style="position:sticky;top:80px">
+            <div class="card-title" style="margin-bottom:.5rem">Subject Actions</div>
+            <p style="font-size:.8rem;color:var(--ink-3);margin-bottom:1rem">Launch an AI-adaptive practice test for this subject or ask the STEM AI Tutor questions.</p>
+            <button class="btn btn-primary" style="width:100%;margin-bottom:.5rem" onclick="startAdaptiveForSubject()">⚡ Start Subject Practice</button>
+            <button class="btn btn-secondary" style="width:100%" onclick="askTutorForSubject()">💬 Ask STEM AI Tutor</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ADAPTIVE PRACTICE ────────────────────────────── -->
+    <div class="dash-page" id="page-practice">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h1 class="page-title">Adaptive STEM Practice</h1>
+          <p class="page-subtitle">Real-time IRT questions that dynamically adjust to your current math, science & coding mastery.</p>
+        </div>
+      </div>
+
+      <!-- Session Start Selector -->
+      <div id="practiceSetupCard" class="card" style="max-width:640px;margin-bottom:1.5rem">
+        <div class="card-header">
+          <div class="card-title">Select STEM Topic to Practice</div>
+        </div>
+        <div class="form-group" style="margin-bottom:1rem">
+          <label class="form-label" for="prac-subject-sel">STEM Subject</label>
+          <select class="input" id="prac-subject-sel" onchange="onPracticeSubjectChange()">
+            <option value="">Select subject…</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:1rem">
+          <label class="form-label" for="prac-chapter-sel">Chapter</label>
+          <select class="input" id="prac-chapter-sel" onchange="onPracticeChapterChange()">
+            <option value="">Select chapter…</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:1.25rem">
+          <label class="form-label" for="prac-topic-sel">Topic (Optional)</label>
+          <select class="input" id="prac-topic-sel">
+            <option value="">All Topics in Chapter</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="launchPracticeSession()" style="width:100%">
+          🚀 Launch Adaptive Session
+        </button>
+      </div>
+
+      <!-- Active Practice Runner Container -->
+      <div id="practiceRunner" style="display:none;max-width:760px">
+        <div class="card" style="margin-bottom:1rem;padding:1rem">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.6rem">
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <span class="badge badge-active" id="pracDiffBadge">Medium Difficulty</span>
+              <span style="font-size:.8rem;color:var(--ink-3)" id="pracProgressLabel">Question 1 of 10</span>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="finishPracticeSession(true)">End Session</button>
+          </div>
+          <div class="pb-wrap">
+            <div class="pb-fill" id="pracProgressBar" style="width:10%"></div>
+          </div>
+        </div>
+
+        <div class="card" id="practiceQuestionCard" style="margin-bottom:1rem">
+          <div id="pracQuestionBody"></div>
+          <div id="pracFeedbackArea" style="margin-top:1rem;display:none"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--hairline)">
+            <button class="btn btn-secondary" onclick="askTutorAboutCurrentQuestion()">💬 Hint / Ask Tutor</button>
+            <div style="display:flex;gap:.5rem">
+              <button class="btn btn-primary" id="btnSubmitAnswer" onclick="submitCurrentAnswer()">Check Answer</button>
+              <button class="btn btn-primary" id="btnNextQuestion" onclick="loadNextQuestion()" style="display:none">Next Question →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completed Summary View -->
+      <div id="practiceSummary" style="display:none;max-width:640px">
+        <div class="card" style="text-align:center;padding:2rem 1.5rem">
+          <div style="font-size:3rem;margin-bottom:.5rem">🎉</div>
+          <h2 class="card-title" style="font-size:1.3rem;margin-bottom:.25rem">Practice Complete!</h2>
+          <p style="font-size:.85rem;color:var(--ink-3);margin-bottom:1.5rem">Great work practicing today. Your STEM mastery score has been updated.</p>
+
+          <div class="bento g3" style="margin-bottom:1.5rem">
+            <div class="stat-card" style="text-align:center">
+              <div class="stat-value" id="summaryScoreVal">80%</div>
+              <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat-card" style="text-align:center">
+              <div class="stat-value" id="summaryTotalVal">10</div>
+              <div class="stat-label">Questions</div>
+            </div>
+            <div class="stat-card" style="text-align:center">
+              <div class="stat-value" id="summaryMasteryVal">+12%</div>
+              <div class="stat-label">Mastery Growth</div>
+            </div>
+          </div>
+
+          <div id="summaryAiFeedback" style="background:var(--surface-2);border-radius:var(--r-md);padding:1rem;font-size:.85rem;text-align:left;color:var(--ink);margin-bottom:1.5rem;line-height:1.6"></div>
+
+          <div style="display:flex;gap:.5rem;justify-content:center">
+            <button class="btn btn-secondary" onclick="resetPracticeSetup()">Practice Another Topic</button>
+            <button class="btn btn-primary" onclick="goPage('mastery',pageHandlers)">View Mastery Map →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MASTERY MAP & GAPS ───────────────────────────── -->
+    <div class="dash-page" id="page-mastery">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h1 class="page-title">STEM Mastery Map & Knowledge Gaps</h1>
+          <p class="page-subtitle">Track your concept proficiency across Math, Science, and Computer Science.</p>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="goPage('practice',pageHandlers)">⚡ Clear Gaps in Practice</button>
+      </div>
+
+      <div class="bento g4" style="margin-bottom:1.25rem" id="masteryKpiRow">
+        <div class="stat-card">
+          <div class="stat-icon si-green" id="si-m-mastered"></div>
+          <div><div class="stat-value" id="st-m-mastered">0</div><div class="stat-label">Mastered (80%+)</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-amber" id="si-m-progress"></div>
+          <div><div class="stat-value" id="st-m-progress">0</div><div class="stat-label">In Progress</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-red" id="si-m-gaps"></div>
+          <div><div class="stat-value" id="st-m-gaps">0</div><div class="stat-label">Detected Gaps</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" id="si-m-overall"></div>
+          <div><div class="stat-value" id="st-m-overall">0%</div><div class="stat-label">Overall Mastery</div></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:1.5rem" id="gapsCard">
+        <div class="card-header">
+          <div>
+            <div class="card-title">⚠️ Knowledge Gaps & Prerequisite Warnings</div>
+            <div class="card-subtitle">Concepts where mastery score is below 40%</div>
+          </div>
+        </div>
+        <div id="masteryGapsList">
+          <p style="font-size:.85rem;color:var(--ink-3);padding:.5rem 0">No critical gaps detected. Keep it up!</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">STEM Subject Mastery Breakdown</div>
+        </div>
+        <div id="masterySubjectsBreakdown">
+          <div class="skeleton" style="height:80px;margin-bottom:.5rem"></div>
+          <div class="skeleton" style="height:80px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── AI RECOMMENDATIONS ───────────────────────────── -->
+    <div class="dash-page" id="page-recommendations">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h1 class="page-title">AI Study Recommendations</h1>
+          <p class="page-subtitle">Ranked math, science & coding practice recommendations generated by Gemini AI.</p>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btnRefreshRecs" onclick="loadRecommendations(true)">
+          ✨ Refresh Recommendations
+        </button>
+      </div>
+      <div class="bento g2" id="fullRecommendationsGrid">
+        <div class="skeleton" style="height:160px"></div>
+        <div class="skeleton" style="height:160px"></div>
       </div>
     </div>
 
     <!-- ── OBJECTIVES ───────────────────────────────────── -->
     <div class="dash-page" id="page-objectives">
       <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-        <div><h1 class="page-title">Daily Objectives</h1><p class="page-subtitle">Track your daily and monthly learning goals.</p></div>
+        <div><h1 class="page-title">Daily Study Objectives</h1><p class="page-subtitle">Track your daily and weekly STEM learning goals.</p></div>
         <button class="btn btn-primary" onclick="Modal.open('addObjModal')"><span id="objPlusIcon"></span> Add Objective</button>
       </div>
       <div class="bento g3" style="margin-bottom:1.25rem">
@@ -250,7 +504,7 @@
     <!-- ── PATHWAY ──────────────────────────────────────── -->
     <div class="dash-page" id="page-pathway">
       <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-        <div><h1 class="page-title">Learning Pathway</h1><p class="page-subtitle">Your AI-curated sequence of courses and training programmes.</p></div>
+        <div><h1 class="page-title">STEM Learning Pathway</h1><p class="page-subtitle">Your AI-curated sequence of math, science & programming milestones.</p></div>
         <button class="btn btn-primary" id="genPathBtn"><span id="genPathIcon"></span> Generate / Refresh</button>
       </div>
       <div id="pathwayFull"></div>
@@ -258,19 +512,18 @@
 
     <!-- ── COURSES ──────────────────────────────────────── -->
     <div class="dash-page" id="page-courses">
-      <div class="page-header"><h1 class="page-title">iGOT Courses</h1><p class="page-subtitle">Browse and enrol in courses from the iGOT Karmayogi catalogue.</p></div>
+      <div class="page-header"><h1 class="page-title">STEM & Skill Courses</h1><p class="page-subtitle">Technical, coding, and scientific courses.</p></div>
       <div class="card" style="margin-bottom:1rem">
         <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
           <div class="input-wrap" style="flex:1;min-width:180px">
             <span class="input-icon-l" id="courseSearchIcon"></span>
-            <input class="input" id="courseSearchInput" placeholder="Search courses…">
+            <input class="input" id="courseSearchInput" placeholder="Search Python, Physics, Math…">
           </div>
           <select class="input" id="courseDomainFilter" style="width:190px">
             <option value="">All Domains</option>
-            <option value="statistical">Statistical</option>
-            <option value="technical">Technical</option>
-            <option value="digital_governance">Digital Governance</option>
-            <option value="behavioural_managerial">Behavioural</option>
+            <option value="technical">Technical & Coding</option>
+            <option value="statistical">Mathematical & Statistics</option>
+            <option value="digital_governance">Digital Systems</option>
           </select>
           <button class="btn btn-primary" onclick="searchCourses()">Search</button>
           <button class="btn btn-secondary" onclick="loadMyEnrollments()">My Enrolled</button>
@@ -281,26 +534,26 @@
 
     <!-- ── SKILL GAP ─────────────────────────────────────── -->
     <div class="dash-page" id="page-skillgap">
-      <div class="page-header"><h1 class="page-title">Skill Gap Analysis</h1><p class="page-subtitle">AI-powered comparison of your competencies vs job-role requirements.</p></div>
+      <div class="page-header"><h1 class="page-title">STEM Skill Gap Analysis</h1><p class="page-subtitle">AI-powered comparison of your math, scientific & technical competencies.</p></div>
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-header"><div><div class="card-title">Run Analysis</div><div class="card-subtitle">Takes 5–15 seconds</div></div></div>
-        <p style="font-size:.875rem;color:var(--n-500);margin-bottom:1rem">Compares your profile against the competency framework for your job role. Generates a prioritised report with AI-powered recommendations.</p>
-        <button class="btn btn-primary" id="runGapBtn">Analyse My Skills</button>
+        <p style="font-size:.875rem;color:var(--n-500);margin-bottom:1rem">Compares your profile against academic and technical competency standards. Generates a prioritised report with AI recommendations.</p>
+        <button class="btn btn-primary" id="runGapBtn">Analyse STEM Skills</button>
       </div>
       <div id="gapReportEl"></div>
     </div>
 
     <!-- ── COMPETENCY PROFILE ───────────────────────────── -->
     <div class="dash-page" id="page-competency">
-      <div class="page-header"><h1 class="page-title">Competency Profile</h1><p class="page-subtitle">Your assessed competency levels across all domains.</p></div>
+      <div class="page-header"><h1 class="page-title">Competency Profile</h1><p class="page-subtitle">Your assessed competency levels across STEM domains.</p></div>
       <div class="bento g2" id="compGrid"></div>
     </div>
 
     <!-- ── ASSESSMENTS ──────────────────────────────────── -->
     <div class="dash-page" id="page-assessments">
-      <div class="page-header"><h1 class="page-title">AI Assessments</h1><p class="page-subtitle">Test your knowledge with AI-generated quizzes.</p></div>
+      <div class="page-header"><h1 class="page-title">Quizzes & Tests</h1><p class="page-subtitle">Standard quizzes and tests created by instructors.</p></div>
       <div class="tab-bar" data-tabs id="assessTabBar">
-        <button class="tab active" data-tab="available" data-fn="loadPublishedAssessments">Available</button>
+        <button class="tab active" data-tab="available" data-fn="loadPublishedAssessments">Available Quizzes</button>
         <button class="tab" data-tab="my-attempts" data-fn="loadMyAttempts">My Attempts</button>
       </div>
       <div class="tab-panel active" data-tab="available">
@@ -316,18 +569,33 @@
       </div>
     </div>
 
-    <!-- ── STUDY ASSISTANT ──────────────────────────────── -->
+    <!-- ── STEM AI TUTOR ────────────────────────────────── -->
     <div class="dash-page" id="page-assistant">
-      <div class="page-header"><h1 class="page-title">AI Study Assistant</h1><p class="page-subtitle">Ask anything about your learning journey, courses, or statistical concepts.</p></div>
-      <div class="chat-wrap">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h1 class="page-title">STEM AI Tutor & Study Assistant</h1>
+          <p class="page-subtitle">Ask step-by-step math problems, physics formulas, chemistry reactions, or Python coding questions.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem">
+          <select class="input" id="tutorSubjectContext" style="width:180px;padding:.35rem .6rem;font-size:.8rem">
+            <option value="">General STEM Tutor</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" onclick="startNewTutorChat()">+ New Chat</button>
+        </div>
+      </div>
+      <div class="chat-wrap" style="height:calc(100vh - 240px);min-height:480px">
         <div class="chat-msgs" id="chatMsgs">
           <div class="chat-msg">
             <div class="chat-avatar"><span id="botAvatarIcon"></span></div>
-            <div class="chat-bubble">Hello! I'm your EduMantra AI assistant. I can help you understand statistical concepts, recommend courses, explain skill gaps, or answer any questions about your learning journey. What would you like to explore?</div>
+            <div class="chat-bubble">Hello! I'm your EduMantra STEM AI Tutor. I can help you with:
+<br>• 📐 <strong>Mathematics</strong> (Integers, Algebra, Geometry, Decimals)
+<br>• 🔬 <strong>Science</strong> (Physics, Chemistry, Biology, Thermodynamics)
+<br>• 💻 <strong>Computer Science & IT</strong> (Python, Binary Systems, Web, Algorithms)
+<br>What concept or problem would you like to explore today?</div>
           </div>
         </div>
         <div class="chat-input-row">
-          <textarea id="chatInput" rows="1" placeholder="Ask a question…"
+          <textarea id="chatInput" rows="1" placeholder="Ask a question about math, science, or python coding…"
             onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
           <button class="btn btn-primary btn-icon" id="chatSendBtn" aria-label="Send message" onclick="sendChat()"></button>
         </div>
@@ -337,7 +605,7 @@
     <!-- ── NOTES ─────────────────────────────────────────── -->
     <div class="dash-page" id="page-notes">
       <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-        <div><h1 class="page-title">Notes</h1><p class="page-subtitle">Capture and organise your learning notes.</p></div>
+        <div><h1 class="page-title">STEM Notes & Formulas</h1><p class="page-subtitle">Save formulas, code snippets, and key scientific definitions.</p></div>
         <button class="btn btn-primary" onclick="Modal.open('addNoteModal')"><span id="notePlusIcon"></span> New Note</button>
       </div>
       <div class="bento g-auto" id="notesGrid"></div>
@@ -345,7 +613,7 @@
 
     <!-- ── CERTIFICATES ──────────────────────────────────── -->
     <div class="dash-page" id="page-certificates">
-      <div class="page-header"><h1 class="page-title">Certificates & Badges</h1><p class="page-subtitle">Your earned credentials and achievements.</p></div>
+      <div class="page-header"><h1 class="page-title">STEM Badges & Certificates</h1><p class="page-subtitle">Your earned credentials and mastery milestones.</p></div>
       <div id="certsContainer"></div>
     </div>
 
@@ -360,24 +628,18 @@
 
     <!-- ── PROFILE ───────────────────────────────────────── -->
     <div class="dash-page" id="page-profile">
-      <div class="page-header"><h1 class="page-title">My Profile</h1></div>
+      <div class="page-header"><h1 class="page-title">My Profile & Grade</h1></div>
       <div class="bento g2">
         <div class="card">
-          <div class="card-header"><div class="card-title">Personal Information</div></div>
+          <div class="card-header"><div class="card-title">Student Information</div></div>
           <form id="profileForm" novalidate>
             <div class="form-group"><label class="form-label" for="pf-name">Full Name</label><input class="input" id="pf-name" type="text"></div>
-            <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-desig">Designation</label><input class="input" id="pf-desig" type="text"></div>
+            <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-desig">Role / Title</label><input class="input" id="pf-desig" type="text"></div>
             <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-phone">Phone</label><input class="input" id="pf-phone" type="tel"></div>
-            <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-edu">Education Level</label>
-              <select class="input" id="pf-edu"><option value="">Select</option><option>High School</option><option>Diploma</option><option>Bachelor's</option><option>Master's</option><option>PhD</option></select>
-            </div>
-            <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-field">Field of Study</label><input class="input" id="pf-field" type="text"></div>
-            <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-exp">Years of Experience</label><input class="input" id="pf-exp" type="number" min="0"></div>
             <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="pf-lang">Preferred Language</label>
               <select class="input" id="pf-lang">
                 <option value="en">English</option><option value="hi">हिन्दी</option>
-                <option value="ta">தமிழ்</option><option value="te">తెలుగు</option>
-                <option value="bn">বাংলা</option><option value="mr">मराठी</option>
+                <option value="gu">ગુજરાતી</option><option value="ta">தமிழ்</option>
               </select>
             </div>
             <div style="margin-top:var(--space-lg)"><button type="submit" class="btn btn-primary">Save Changes</button></div>
@@ -385,12 +647,17 @@
         </div>
         <div>
           <div class="card" style="margin-bottom:1rem">
-            <div class="card-header"><div class="card-title">Learning Stats</div></div>
-            <div id="profileStats"></div>
+            <div class="card-header">
+              <div class="card-title">Curriculum Track</div>
+              <button class="btn btn-secondary btn-sm" onclick="openCurriculumModal()">Change</button>
+            </div>
+            <div id="profileCurriculumSummary" style="font-size:.875rem;color:var(--ink-2);line-height:1.7">
+              Loading curriculum settings…
+            </div>
           </div>
           <div class="card">
-            <div class="card-header"><div class="card-title">Leaderboard</div><span class="badge badge-amber">Your Rank</span></div>
-            <div id="leaderboardWidget"></div>
+            <div class="card-header"><div class="card-title">Learning Stats</div></div>
+            <div id="profileStats"></div>
           </div>
         </div>
       </div>
@@ -398,29 +665,58 @@
 
   </main>
 </div>
-</div>
 
-<!-- ── MODALS ────────────────────────────────────────────── -->
-
-<!-- Quiz modal -->
-<div class="modal-ov" id="quizModal">
-  <div class="modal" style="max-width:680px">
+<!-- ── MODALS ────────────────────────────────────────── -->
+<!-- Curriculum / Grade Selector Modal -->
+<div class="modal-ov" id="curriculumModal">
+  <div class="modal">
     <div class="modal-hd">
-      <span class="modal-title" id="quizModalTitle">Quiz</span>
+      <span class="modal-title">Select Board & Grade</span>
       <button class="modal-close" data-close aria-label="Close">✕</button>
     </div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom:1rem">
+        <label class="form-label" for="modal-sel-board">Educational Board</label>
+        <select class="input" id="modal-sel-board" onchange="onModalBoardChange()">
+          <option value="">Loading boards…</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:1rem">
+        <label class="form-label" for="modal-sel-class">Grade / Class</label>
+        <select class="input" id="modal-sel-class">
+          <option value="">Select board first</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="modal-sel-medium">Medium of Instruction</label>
+        <select class="input" id="modal-sel-medium">
+          <option value="">Select medium…</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close>Cancel</button>
+      <button class="btn btn-primary" onclick="saveCurriculumSelection()">Save & Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quiz Modal -->
+<div class="modal-ov" id="quizModal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-hd"><span class="modal-title" id="quizModalTitle">Quiz</span><button class="modal-close" data-close aria-label="Close">✕</button></div>
     <div class="modal-body" id="quizModalBody"></div>
   </div>
 </div>
 
-<!-- Add note modal -->
+<!-- Add Note Modal -->
 <div class="modal-ov" id="addNoteModal">
   <div class="modal">
-    <div class="modal-hd"><span class="modal-title">New Note</span><button class="modal-close" data-close aria-label="Close">✕</button></div>
+    <div class="modal-hd"><span class="modal-title">New STEM Note</span><button class="modal-close" data-close aria-label="Close">✕</button></div>
     <div class="modal-body">
-      <div class="form-group"><label class="form-label" for="note-title">Title</label><input class="input" id="note-title" placeholder="Note title"></div>
-      <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="note-content">Content</label><textarea class="input" id="note-content" rows="5" placeholder="Write your note…"></textarea></div>
-      <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="note-tag">Tag</label><input class="input" id="note-tag" placeholder="e.g. Survey Design"></div>
+      <div class="form-group"><label class="form-label" for="note-title">Title</label><input class="input" id="note-title" placeholder="e.g. Pythagoras Theorem, Python Loops"></div>
+      <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="note-tag">Subject</label><input class="input" id="note-tag" placeholder="e.g. Mathematics, Science, Computer Science"></div>
+      <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="note-content">Formulas & Takeaways</label><textarea class="input" id="note-content" rows="5" placeholder="Key concepts, equations, code snippets…"></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" data-close>Cancel</button>
@@ -429,12 +725,12 @@
   </div>
 </div>
 
-<!-- Add objective modal -->
+<!-- Add Objective Modal -->
 <div class="modal-ov" id="addObjModal">
   <div class="modal">
-    <div class="modal-hd"><span class="modal-title">Add Objective</span><button class="modal-close" data-close aria-label="Close">✕</button></div>
+    <div class="modal-hd"><span class="modal-title">Add Study Objective</span><button class="modal-close" data-close aria-label="Close">✕</button></div>
     <div class="modal-body">
-      <div class="form-group"><label class="form-label" for="obj-text">Objective</label><input class="input" id="obj-text" placeholder="e.g. Complete Python module 3"></div>
+      <div class="form-group"><label class="form-label" for="obj-text">Goal</label><input class="input" id="obj-text" placeholder="e.g. Complete Integers Practice, Write Python Script"></div>
       <div class="form-group" style="margin-top:var(--space-md)"><label class="form-label" for="obj-due">Due</label>
         <select class="input" id="obj-due"><option value="today">Today</option><option value="week">This Week</option><option value="month">This Month</option></select>
       </div>
@@ -444,6 +740,8 @@
       <button class="btn btn-primary" onclick="addObjective()">Add</button>
     </div>
   </div>
+</div>
+
 </div>
 
 <script src="/js/api.js"></script>
@@ -457,39 +755,59 @@ let chatSessionId = null;
 const notes      = JSON.parse(localStorage.getItem('em_notes')      || '[]');
 const objectives = JSON.parse(localStorage.getItem('em_objectives') || '[]');
 
-// ── Page handlers — defined at module scope so initNav can reference them ──
+// Curriculum & Learning Global State
+let currContext = {
+  board: null,
+  class: null,
+  medium: null,
+  subjects: [],
+  selectedSubject: null,
+  selectedChapter: null,
+  activePracticeSession: null,
+  currentQuestion: null,
+  answered: false,
+};
+
+// ── Page Handlers ─────────────────────────────────────────
 const pageHandlers = {
-  courses:      () => loadMyEnrollments(),
-  pathway:      () => loadPathway(),
-  skillgap:     () => loadLastGapReport(),
-  competency:   () => loadCompetencyProfile(),
-  assessments:  () => loadPublishedAssessments(),
-  certificates: () => loadCertificates(),
-  notifications:() => loadNotifications(),
-  profile:      () => loadProfile(),
-  objectives:   () => renderObjectives(),
-  notes:        () => renderNotes(),
-  assistant:    () => {},
+  home:           () => loadHomeScreen(),
+  curriculum:     () => loadCurriculumPage(),
+  practice:       () => loadPracticePage(),
+  mastery:        () => loadMasteryPage(),
+  recommendations:() => loadRecommendations(false),
+  courses:        () => loadMyEnrollments(),
+  pathway:        () => loadPathway(),
+  skillgap:       () => loadLastGapReport(),
+  competency:     () => loadCompetencyProfile(),
+  assessments:    () => loadPublishedAssessments(),
+  certificates:   () => loadCertificates(),
+  notifications:  () => loadNotifications(),
+  profile:        () => loadProfile(),
+  objectives:     () => renderObjectives(),
+  notes:          () => renderNotes(),
+  assistant:      () => {},
 };
 
 // ── Init ──────────────────────────────────────────────────
 safeBoot(async () => {
-  // Inject Lucide icons safely
   const navIcons = {
     home:'home', objectives:'checkSquare', pathway:'map', courses:'book',
-    assessments:'clipboard', skillgap:'brain', competency:'sparkles',
+    curriculum:'layers', practice:'zap', mastery:'barChart2', recs:'sparkles',
+    assessments:'clipboard', skillgap:'brain', competency:'award',
     assistant:'messageSquare', notes:'file', certificates:'award',
     notifications:'bell', profile:'user'
   };
+
   document.querySelectorAll('.nav-item[data-page]').forEach(item => {
-    const id = `ni-${item.dataset.page.replace('-','').replace('skillgap','gap').replace('competency','comp').replace('objectives','obj').replace('assessments','assess').replace('pathway','path').replace('certificates','certs').replace('notifications','notif').replace('assistant','ai').replace('courses','courses').replace('profile','profile')}`;
-    const iconName = navIcons[item.dataset.page];
-    if (iconName && L[iconName]) setHtml(id, L[iconName]());
+    const p = item.dataset.page;
+    const span = item.querySelector('span[id^="ni-"]');
+    if (span && navIcons[p] && L[navIcons[p]]) {
+      span.innerHTML = L[navIcons[p]]();
+    }
   });
 
-  // Topbar / action icons safely injected
   setHtml('bellIcon', L.bell());
-  setHtml('continueIcon', L.arrowRight());
+  setHtml('continueIcon', L.zap ? L.zap() : L.arrowRight());
   setHtml('genPathIcon', L.sparkles());
   setHtml('objPlusIcon', L.plus());
   setHtml('notePlusIcon', L.plus());
@@ -503,8 +821,11 @@ safeBoot(async () => {
   setHtml('si-obj-done', L.checkCircle());
   setHtml('si-obj-pend', L.alertTriangle());
   setHtml('si-obj-over', L.trendingUp());
+  setHtml('si-m-mastered', L.checkCircle());
+  setHtml('si-m-progress', L.activity());
+  setHtml('si-m-gaps', L.alertTriangle());
+  setHtml('si-m-overall', L.star());
 
-  // Shell init
   const displayName = user?.full_name || user?.email?.split('@')[0] || 'Student';
   initShell({ name: displayName, role: user?.role, avatarUrl: user?.avatar_url });
   const sbName = document.getElementById('sidebarName');
@@ -515,132 +836,992 @@ safeBoot(async () => {
   const wHead = document.getElementById('welcomeHeading');
   if (wHead) wHead.textContent = `${greet}, ${displayName.split(' ')[0]}!`;
 
-  // Modals
-  Modal.init('quizModal'); Modal.init('addNoteModal'); Modal.init('addObjModal');
+  Modal.init('quizModal'); Modal.init('addNoteModal'); Modal.init('addObjModal'); Modal.init('curriculumModal');
 
-  // Tabs
   const assessPage = document.getElementById('page-assessments');
   if (assessPage) initTabs(assessPage);
 
-  // Navigation
   initNav('home', pageHandlers);
 
-  // Load initial data
+  await loadCurriculumContext();
   await loadDashboard();
   renderObjectives();
   renderNotes();
   loadPublishedAssessments();
 });
 
-// ── Dashboard ─────────────────────────────────────────────
+// ── Curriculum Context & Grade Handling ───────────────────
+async function loadCurriculumContext() {
+  try {
+    const res = await Api.get('/curriculum/student-context');
+    if (res?.context?.board && res?.context?.class) {
+      currContext.board = res.context.board;
+      currContext.class = res.context.class;
+      currContext.medium = res.context.medium;
+      updateCurriculumUIHeaders();
+    } else {
+      const boardsRes = await Api.get('/curriculum/boards');
+      if (boardsRes.boards?.length) {
+        const firstBoard = boardsRes.boards[0];
+        const classesRes = await Api.get(`/curriculum/classes?board_id=${firstBoard.id}`);
+        if (classesRes.classes?.length) {
+          currContext.board = firstBoard;
+          currContext.class = classesRes.classes[0];
+          updateCurriculumUIHeaders();
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Could not load student curriculum context', e);
+  }
+}
+
+function updateCurriculumUIHeaders() {
+  const boardName = currContext.board?.name || 'CBSE';
+  const className = currContext.class?.name || (currContext.class?.grade ? `Class ${currContext.class.grade}` : 'Class 7');
+  const mediumName = currContext.medium?.name ? `${currContext.medium.name} Medium` : 'English Medium';
+
+  const titleText = `${boardName} — ${className}`;
+  const subText = `STEM Education Track • Mathematics, Science, Computer Science & IT`;
+
+  const topBtn = document.getElementById('topbarGradeBtn');
+  if (topBtn) topBtn.textContent = `📚 ${className}`;
+
+  const homeTitle = document.getElementById('homeCurriculumTitle');
+  if (homeTitle) homeTitle.textContent = titleText;
+
+  const homeSub = document.getElementById('homeCurriculumSub');
+  if (homeSub) homeSub.textContent = subText;
+
+  const currBadge = document.getElementById('currActiveBadge');
+  if (currBadge) currBadge.textContent = `${className} • ${boardName}`;
+
+  const profSumm = document.getElementById('profileCurriculumSummary');
+  if (profSumm) {
+    profSumm.innerHTML = `
+      <div><strong>Board:</strong> ${boardName}</div>
+      <div><strong>Grade:</strong> ${className}</div>
+      <div><strong>Focus Track:</strong> STEM (Math, Science, Computer Science & IT)</div>
+      <div><strong>Medium:</strong> ${mediumName}</div>
+    `;
+  }
+}
+
+async function openCurriculumModal() {
+  Modal.open('curriculumModal');
+  const bSel = document.getElementById('modal-sel-board');
+  const mSel = document.getElementById('modal-sel-medium');
+  bSel.innerHTML = '<option value="">Loading boards…</option>';
+
+  try {
+    const [bData, mData] = await Promise.all([
+      Api.get('/curriculum/boards'),
+      Api.get('/curriculum/mediums'),
+    ]);
+
+    bSel.innerHTML = (bData.boards || []).map(b =>
+      `<option value="${b.id}" ${currContext.board?.id === b.id ? 'selected' : ''}>${b.name} (${b.code})</option>`
+    ).join('');
+
+    mSel.innerHTML = (mData.mediums || []).map(m =>
+      `<option value="${m.id}" ${currContext.medium?.id === m.id ? 'selected' : ''}>${m.name}</option>`
+    ).join('');
+
+    onModalBoardChange();
+  } catch (e) {
+    Toast.error('Failed to load curriculum options');
+  }
+}
+
+async function onModalBoardChange() {
+  const bId = document.getElementById('modal-sel-board').value;
+  const cSel = document.getElementById('modal-sel-class');
+  cSel.innerHTML = '<option value="">Loading classes…</option>';
+  if (!bId) return;
+
+  try {
+    const d = await Api.get(`/curriculum/classes?board_id=${bId}`);
+    cSel.innerHTML = (d.classes || []).map(c =>
+      `<option value="${c.id}" ${currContext.class?.id === c.id ? 'selected' : ''}>${c.name}</option>`
+    ).join('');
+  } catch (e) {
+    cSel.innerHTML = '<option value="">No classes found</option>';
+  }
+}
+
+async function saveCurriculumSelection() {
+  const bId = document.getElementById('modal-sel-board').value;
+  const cId = document.getElementById('modal-sel-class').value;
+  const mId = document.getElementById('modal-sel-medium').value;
+
+  if (!bId || !cId) {
+    Toast.error('Please select both board and class');
+    return;
+  }
+
+  try {
+    await Api.put('/curriculum/student-context', { board_id: bId, class_id: cId, medium_id: mId });
+    Toast.success('Grade & Curriculum updated!');
+    Modal.close('curriculumModal');
+    await loadCurriculumContext();
+    await loadHomeScreen();
+  } catch (e) {
+    Toast.error(e.message || 'Failed to save settings');
+  }
+}
+
+// ── STEM Subject Helpers ──────────────────────────────────
+function getStemIcon(name = '', code = '') {
+  const n = (name + ' ' + code).toLowerCase();
+  if (n.includes('math')) return '📐';
+  if (n.includes('science') || n.includes('physic') || n.includes('chem') || n.includes('bio')) return '🔬';
+  if (n.includes('computer') || n.includes('cs') || n.includes('it') || n.includes('coding') || n.includes('python')) return '💻';
+  if (n.includes('ai') || n.includes('robot')) return '🤖';
+  return '🧪';
+}
+
+function getStemTag(name = '', code = '') {
+  const n = (name + ' ' + code).toLowerCase();
+  if (n.includes('math')) return 'STEM • Mathematics';
+  if (n.includes('science')) return 'STEM • Natural Sciences';
+  if (n.includes('computer') || n.includes('cs') || n.includes('it')) return 'STEM • Computing & IT';
+  if (n.includes('ai') || n.includes('robot')) return 'STEM • AI & Robotics';
+  return 'STEM Core';
+}
+
+function filterStemSubjects(subjects = []) {
+  const stemCodes = ['math', 'science', 'cs_it', 'ai_robotics', 'physics', 'chemistry', 'biology'];
+  return subjects.filter(s => {
+    const n = (s.name || '').toLowerCase();
+    const c = (s.code || '').toLowerCase();
+    if (n.includes('social') || c === 'sst') return false;
+    if (stemCodes.includes(c)) return true;
+    return n.includes('math') || n.includes('science') || n.includes('computer') || n.includes('it') || n.includes('coding') || n.includes('ai') || n.includes('robot');
+  });
+}
+
+// ── Dashboard Home Screen ─────────────────────────────────
+async function loadHomeScreen() {
+  loadDashboard();
+  loadHomeCurriculumSubjects();
+  loadHomeRecommendations();
+}
+
 async function loadDashboard() {
   try {
-    const d = await Api.get('/analytics/student');
-    const s = d.stats || {};
-    document.getElementById('st-enrolled').textContent = s.total_courses_enrolled ?? '—';
-    document.getElementById('st-done').textContent     = s.completed_courses ?? '—';
-    document.getElementById('st-hours').textContent    = fmtHours(s.total_learning_hours);
-    document.getElementById('st-score').textContent    = s.avg_assessment_score != null ? `${s.avg_assessment_score}%` : '—';
+    const [analytics, masteryRes] = await Promise.allSettled([
+      Api.get('/analytics/student'),
+      Api.get('/mastery/me'),
+    ]);
+
+    const s = analytics.status === 'fulfilled' ? (analytics.value.stats || {}) : {};
+    const m = masteryRes.status === 'fulfilled' ? (masteryRes.value || {}) : {};
+
+    const masteredCount = (m.mastery || []).filter(item => item.mastery_score >= 80).length;
+    const avgScore = m.summary?.overall_mastery ?? s.avg_assessment_score ?? 0;
+
+    document.getElementById('st-enrolled').textContent = currContext.subjects?.length || '3';
+    document.getElementById('st-done').textContent     = masteredCount || '0';
+    document.getElementById('st-hours').textContent    = s.total_learning_hours ? fmtHours(s.total_learning_hours) : '6h';
+    document.getElementById('st-score').textContent    = `${avgScore}%`;
 
     if (s.unread_notifications > 0) {
       document.getElementById('notifBadge').textContent = s.unread_notifications;
       document.getElementById('notifBadge').style.display = 'inline-block';
     }
 
-    renderActiveCourses(d.recent_courses || []);
-    renderRecentAttempts(d.recent_attempts || []);
-    if (d.latest_pathway) renderPathwayPreview(d.latest_pathway);
-    else document.getElementById('pathwayPreview').innerHTML =
-      `<p style="font-size:.875rem;color:var(--n-400);padding:.5rem 0">No pathway yet. <button class="btn btn-primary btn-sm" onclick="goPage('skillgap',pageHandlers)">Analyse skills</button></p>`;
-
+    if (analytics.status === 'fulfilled') {
+      renderActiveCourses(analytics.value.recent_courses || []);
+      renderRecentAttempts(analytics.value.recent_attempts || []);
+      if (analytics.value.latest_pathway) renderPathwayPreview(analytics.value.latest_pathway);
+      else document.getElementById('pathwayPreview').innerHTML =
+        `<p style="font-size:.875rem;color:var(--n-400);padding:.5rem 0">No custom pathway yet. <button class="btn btn-primary btn-sm" onclick="goPage('skillgap',pageHandlers)">Analyse skills</button></p>`;
+    }
     renderObjectivesPreview();
-  } catch(e) { Toast.error('Failed to load dashboard'); }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-function renderActiveCourses(courses) {
-  const el = document.getElementById('activeCoursesList');
-  const active = (courses || []).filter(c => c.status === 'in_progress');
-  if (!active.length) {
-    el.innerHTML = `<p style="font-size:.875rem;color:var(--n-400);padding:.75rem 0">No active courses yet. <button class="btn btn-primary btn-sm" style="margin-left:.5rem" onclick="goPage('courses',pageHandlers)">Browse courses</button></p>`;
+async function loadHomeCurriculumSubjects() {
+  const grid = document.getElementById('homeSubjectsGrid');
+  const bId = currContext.board?.id || '';
+  const cId = currContext.class?.id || '';
+
+  try {
+    const p = new URLSearchParams();
+    if (bId) p.set('board_id', bId);
+    if (cId) p.set('class_id', cId);
+
+    const d = await Api.get(`/curriculum/subjects?${p}`);
+    currContext.subjects = filterStemSubjects(d.subjects || []);
+
+    const tutSel = document.getElementById('tutorSubjectContext');
+    if (tutSel) {
+      tutSel.innerHTML = '<option value="">General STEM AI Tutor</option>' +
+        currContext.subjects.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+    }
+
+    if (!currContext.subjects.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;padding:1rem;color:var(--ink-3);text-align:center">No STEM subjects found. <button class="btn btn-primary btn-sm" onclick="openCurriculumModal()">Change Grade</button></div>`;
+      return;
+    }
+
+    grid.innerHTML = currContext.subjects.map(s => {
+      const col = s.color_hex || '#4F46E5';
+      const icon = getStemIcon(s.name, s.code);
+      const tag = getStemTag(s.name, s.code);
+      return `
+        <div class="subject-card" onclick="openSubjectFromHome('${s.id}')">
+          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem">
+            <div class="subject-icon-box" style="background:${col}18;color:${col}">
+              ${icon}
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:.92rem;color:var(--ink)">${s.name}</div>
+              <div style="font-size:.7rem;color:var(--ink-3)">${tag}</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.75rem">
+            <span class="badge badge-slate">${s.code ? s.code.toUpperCase() : 'STEM'}</span>
+            <span style="font-size:.75rem;color:var(--accent);font-weight:600">Explore Chapters →</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    grid.innerHTML = `<p style="color:var(--ink-3);font-size:.85rem">Could not load STEM subjects</p>`;
+  }
+}
+
+async function loadHomeRecommendations() {
+  const el = document.getElementById('homeRecommendationsList');
+  try {
+    const d = await Api.get('/recommendations');
+    const recs = (d.recommendations || []).slice(0, 3);
+    if (!recs.length) {
+      el.innerHTML = `<p style="font-size:.85rem;color:var(--ink-3);padding:.5rem 0">Great job! All foundational STEM concepts are up to date. <button class="btn btn-primary btn-sm" style="margin-left:.5rem" onclick="goPage('practice',pageHandlers)">Practice More</button></p>`;
+      return;
+    }
+    el.innerHTML = recs.map(r => `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.65rem 0;border-bottom:1px solid var(--hairline)">
+        <div style="display:flex;align-items:center;gap:.6rem;min-width:0;flex:1">
+          <span style="font-size:1.1rem;flex-shrink:0">${r.priority==='high'?'🔴':r.priority==='medium'?'🟡':'🟢'}</span>
+          <div style="min-width:0">
+            <div style="font-weight:600;font-size:.85rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title || r.concept_title || 'STEM Focus Topic'}</div>
+            <div style="font-size:.75rem;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.rationale || r.reason || 'Recommended STEM practice to strengthen conceptual mastery'}</div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="flex-shrink:0;font-size:.75rem" onclick="launchPracticeForConcept('${r.concept_id||''}')">
+          ⚡ Practice
+        </button>
+      </div>
+    `).join('');
+  } catch (e) {
+    el.innerHTML = `<p style="font-size:.85rem;color:var(--ink-3)">Practice regularly to generate AI recommendations.</p>`;
+  }
+}
+
+function openSubjectFromHome(subjectId) {
+  goPage('curriculum', pageHandlers);
+  selectCurriculumSubject(subjectId);
+}
+
+// ── STEM Curriculum Page Explorer ─────────────────────────
+async function loadCurriculumPage() {
+  document.getElementById('curriculumSubjectsView').style.display = 'block';
+  document.getElementById('curriculumChaptersView').style.display = 'none';
+
+  const grid = document.getElementById('curriculumSubjectsGrid');
+  const bId = currContext.board?.id || '';
+  const cId = currContext.class?.id || '';
+
+  try {
+    const p = new URLSearchParams();
+    if (bId) p.set('board_id', bId);
+    if (cId) p.set('class_id', cId);
+
+    const d = await Api.get(`/curriculum/subjects?${p}`);
+    currContext.subjects = filterStemSubjects(d.subjects || []);
+
+    if (!currContext.subjects.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--ink-3)">No STEM subjects found for this grade.</div>`;
+      return;
+    }
+
+    grid.innerHTML = currContext.subjects.map(s => {
+      const col = s.color_hex || '#4F46E5';
+      const icon = getStemIcon(s.name, s.code);
+      const tag = getStemTag(s.name, s.code);
+      return `
+        <div class="card card-hover" onclick="selectCurriculumSubject('${s.id}')" style="border-top:3px solid ${col}">
+          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem">
+            <div class="subject-icon-box" style="background:${col}15;color:${col}">
+              ${icon}
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:1rem;color:var(--ink)">${s.name}</div>
+              <span class="badge badge-active">${tag}</span>
+            </div>
+          </div>
+          <p style="font-size:.8125rem;color:var(--ink-3);line-height:1.5;margin-bottom:1rem">${s.description || 'Comprehensive STEM textbook chapters, interactive problems & formulas'}</p>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:.78rem;color:var(--ink-2);font-weight:600">Explore Chapters →</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    grid.innerHTML = `<p style="color:var(--ink-3)">Failed to load STEM subjects</p>`;
+  }
+}
+
+async function selectCurriculumSubject(subjectId) {
+  const s = currContext.subjects.find(item => item.id === subjectId);
+  if (!s) return;
+  currContext.selectedSubject = s;
+
+  document.getElementById('curriculumSubjectsView').style.display = 'none';
+  document.getElementById('curriculumChaptersView').style.display = 'block';
+  document.getElementById('curriculumSubjectTitle').textContent = s.name;
+  document.getElementById('curriculumSubjectMeta').textContent = `${currContext.class?.name || 'Class 7'} • ${getStemTag(s.name, s.code)}`;
+
+  const list = document.getElementById('curriculumChaptersList');
+  list.innerHTML = `<div class="skeleton" style="height:70px;margin-bottom:.5rem"></div><div class="skeleton" style="height:70px"></div>`;
+
+  try {
+    const bId = currContext.board?.id || '';
+    const cId = currContext.class?.id || '';
+    const booksRes = await Api.get(`/curriculum/books?board_id=${bId}&class_id=${cId}&subject_id=${subjectId}`);
+    const books = booksRes.books || [];
+
+    if (!books.length) {
+      list.innerHTML = `<div class="card" style="padding:1.5rem;text-align:center;color:var(--ink-3)">No textbooks configured for this subject yet.</div>`;
+      return;
+    }
+
+    const firstBook = books[0];
+    const chRes = await Api.get(`/curriculum/chapters?book_id=${firstBook.id}`);
+    const chapters = chRes.chapters || [];
+
+    if (!chapters.length) {
+      list.innerHTML = `<div class="card" style="padding:1.5rem;text-align:center;color:var(--ink-3)">No chapters available yet.</div>`;
+      return;
+    }
+
+    list.innerHTML = chapters.map((ch, idx) => `
+      <div class="chapter-item" id="ch-item-${ch.id}">
+        <div class="chapter-hd" onclick="toggleChapterExpand('${ch.id}')">
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <span style="width:26px;height:26px;border-radius:50%;background:rgba(0,229,160,0.1);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700">
+              ${ch.chapter_number || idx + 1}
+            </span>
+            <div>
+              <div style="font-weight:600;font-size:.9rem;color:var(--ink)">${ch.title}</div>
+              <div style="font-size:.75rem;color:var(--ink-3)">${ch.estimated_hours ? ch.estimated_hours + ' hrs • ' : ''}${ch.description || 'Key STEM concepts & practice'}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();startAdaptiveForChapter('${ch.id}')">⚡ Practice</button>
+            <span style="color:var(--ink-3);font-size:.8rem">▼</span>
+          </div>
+        </div>
+        <div class="chapter-bd" id="ch-bd-${ch.id}">
+          <div style="font-size:.8rem;color:var(--ink-3);padding:.4rem 0">Loading topics…</div>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    list.innerHTML = `<p style="color:var(--ink-3)">Failed to load chapters</p>`;
+  }
+}
+
+async function toggleChapterExpand(chapterId) {
+  const item = document.getElementById(`ch-item-${chapterId}`);
+  const bd = document.getElementById(`ch-bd-${chapterId}`);
+  const isExp = item.classList.contains('expanded');
+
+  if (isExp) {
+    item.classList.remove('expanded');
     return;
   }
-  el.innerHTML = active.slice(0,4).map(c => `
-    <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem 0;border-bottom:1px solid var(--n-100)">
-      <div style="color:var(--color-primary);flex-shrink:0">${L.book(16)}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:.875rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.igot_courses?.title||'Course'}</div>
-        <div style="margin-top:3px">${progBar(c.progress_pct)}</div>
+
+  item.classList.add('expanded');
+  try {
+    const d = await Api.get(`/curriculum/topics?chapter_id=${chapterId}`);
+    const topics = d.topics || [];
+    if (!topics.length) {
+      bd.innerHTML = `<div style="font-size:.8rem;color:var(--ink-3);padding:.5rem 0">No sub-topics in this chapter.</div>`;
+      return;
+    }
+
+    bd.innerHTML = topics.map(t => `
+      <div class="topic-row">
+        <div>
+          <div style="font-weight:600;color:var(--ink)">${t.title}</div>
+          <div style="font-size:.74rem;color:var(--ink-3)">${t.description || 'Core concept topic'}</div>
+        </div>
+        <div style="display:flex;gap:.4rem">
+          <button class="btn btn-ghost btn-sm" style="font-size:.75rem" onclick="launchPracticeForTopic('${t.id}')">⚡ Practice Topic</button>
+        </div>
       </div>
-      <span style="font-size:.75rem;color:var(--n-400);flex-shrink:0;font-family:'Fira Code',monospace">${Math.round(c.progress_pct||0)}%</span>
-    </div>`).join('');
+    `).join('');
+  } catch (e) {
+    bd.innerHTML = `<p style="color:var(--ink-3);font-size:.8rem">Failed to load topics</p>`;
+  }
 }
 
-function renderRecentAttempts(attempts) {
-  const el = document.getElementById('recentAttempts');
-  if (!attempts?.length) {
-    el.innerHTML = `<p style="font-size:.875rem;color:var(--n-400);padding:.75rem 0">No quiz attempts yet.</p>`;
+function backToCurriculumSubjects() {
+  document.getElementById('curriculumSubjectsView').style.display = 'block';
+  document.getElementById('curriculumChaptersView').style.display = 'none';
+}
+
+function startAdaptiveForSubject() {
+  if (!currContext.selectedSubject) return;
+  goPage('practice', pageHandlers);
+  loadPracticePage(currContext.selectedSubject.id);
+}
+
+function startAdaptiveForChapter(chapterId) {
+  goPage('practice', pageHandlers);
+  loadPracticePage(currContext.selectedSubject?.id, chapterId);
+}
+
+function askTutorForSubject() {
+  goPage('assistant', pageHandlers);
+  if (currContext.selectedSubject) {
+    const tutSel = document.getElementById('tutorSubjectContext');
+    if (tutSel) tutSel.value = currContext.selectedSubject.id;
+    appendMsg('assistant', `I'm ready to help you with **${currContext.selectedSubject.name}**! What math, science, or programming topic would you like to explore?`);
+  }
+}
+
+// ── Adaptive Practice Engine Runner ───────────────────────
+async function loadPracticePage(presetSubjectId = null, presetChapterId = null) {
+  resetPracticeSetup();
+  const subSel = document.getElementById('prac-subject-sel');
+  subSel.innerHTML = '<option value="">Loading STEM subjects…</option>';
+
+  const bId = currContext.board?.id || '';
+  const cId = currContext.class?.id || '';
+
+  try {
+    const p = new URLSearchParams();
+    if (bId) p.set('board_id', bId);
+    if (cId) p.set('class_id', cId);
+
+    const d = await Api.get(`/curriculum/subjects?${p}`);
+    const subjects = filterStemSubjects(d.subjects || []);
+    subSel.innerHTML = '<option value="">Select STEM subject…</option>' +
+      subjects.map(s => `<option value="${s.id}" ${presetSubjectId === s.id ? 'selected' : ''}>${getStemIcon(s.name, s.code)} ${s.name}</option>`).join('');
+
+    if (presetSubjectId) {
+      await onPracticeSubjectChange(presetChapterId);
+    }
+  } catch (e) {
+    subSel.innerHTML = '<option value="">Failed to load subjects</option>';
+  }
+}
+
+async function onPracticeSubjectChange(presetChapterId = null) {
+  const subId = document.getElementById('prac-subject-sel').value;
+  const chSel = document.getElementById('prac-chapter-sel');
+  chSel.innerHTML = '<option value="">Loading chapters…</option>';
+
+  if (!subId) {
+    chSel.innerHTML = '<option value="">Select chapter…</option>';
     return;
   }
-  el.innerHTML = attempts.slice(0,5).map(a => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--n-100)">
-      <span style="font-size:.875rem;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.assessments?.title||'Quiz'}</span>
-      <div style="display:flex;align-items:center;gap:.5rem;flex-shrink:0">
-        <span style="font-family:'Fira Code',monospace;font-weight:700">${a.score||0}%</span>
-        ${a.passed ? '<span class="badge badge-active">Pass</span>' : '<span class="badge badge-red">Fail</span>'}
-      </div>
-    </div>`).join('');
+
+  try {
+    const bId = currContext.board?.id || '';
+    const cId = currContext.class?.id || '';
+    const bRes = await Api.get(`/curriculum/books?board_id=${bId}&class_id=${cId}&subject_id=${subId}`);
+    const books = bRes.books || [];
+
+    if (!books.length) {
+      chSel.innerHTML = '<option value="">No chapters found</option>';
+      return;
+    }
+
+    const chRes = await Api.get(`/curriculum/chapters?book_id=${books[0].id}`);
+    const chapters = chRes.chapters || [];
+    chSel.innerHTML = '<option value="">Select chapter…</option>' +
+      chapters.map(ch => `<option value="${ch.id}" ${presetChapterId === ch.id ? 'selected' : ''}>${ch.chapter_number ? ch.chapter_number + '. ' : ''}${ch.title}</option>`).join('');
+
+    if (presetChapterId) {
+      await onPracticeChapterChange();
+    }
+  } catch (e) {
+    chSel.innerHTML = '<option value="">Failed to load</option>';
+  }
 }
 
-function renderPathwayPreview(pathway) {
-  const items = pathway.pathway_items || [];
-  const completed = items.filter(i => i.status === 'completed').length;
-  document.getElementById('pathwaySubtitle').textContent = `${completed}/${items.length} courses complete`;
-  document.getElementById('pathwayPreview').innerHTML = `
-    <div style="margin-bottom:.75rem">${progBar((completed/Math.max(items.length,1))*100)}</div>
-    ${items.slice(0,3).map((item,i) => `
-      <div style="display:flex;align-items:center;gap:.625rem;padding:.375rem 0">
-        <div style="width:20px;height:20px;border-radius:50%;background:${i===0?'var(--color-primary)':'var(--n-200)'};display:flex;align-items:center;justify-content:center;font-size:.625rem;font-weight:700;color:${i===0?'#fff':'var(--n-500)'};flex-shrink:0">${i+1}</div>
-        <span style="font-size:.8125rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.igot_courses?.title||'Course'}</span>
-        ${i===0?'<span class="badge badge-progress">Current</span>':''}
-      </div>`).join('')}
-    ${items.length>3?`<p style="font-size:.75rem;color:var(--n-400);margin-top:.25rem">+${items.length-3} more courses</p>`:''}`;
+async function onPracticeChapterChange() {
+  const chId = document.getElementById('prac-chapter-sel').value;
+  const topSel = document.getElementById('prac-topic-sel');
+  topSel.innerHTML = '<option value="">All Topics in Chapter</option>';
+  if (!chId) return;
+
+  try {
+    const d = await Api.get(`/curriculum/topics?chapter_id=${chId}`);
+    const topics = d.topics || [];
+    topSel.innerHTML = '<option value="">All Topics in Chapter</option>' +
+      topics.map(t => `<option value="${t.id}">${t.title}</option>`).join('');
+  } catch (e) {}
+}
+
+function resetPracticeSetup() {
+  document.getElementById('practiceSetupCard').style.display = 'block';
+  document.getElementById('practiceRunner').style.display = 'none';
+  document.getElementById('practiceSummary').style.display = 'none';
+  currContext.activePracticeSession = null;
+  currContext.currentQuestion = null;
+  currContext.answered = false;
+}
+
+async function launchPracticeSession() {
+  const subId = document.getElementById('prac-subject-sel').value;
+  const chId  = document.getElementById('prac-chapter-sel').value;
+  const topId = document.getElementById('prac-topic-sel').value;
+
+  if (!subId && !chId && !topId) {
+    Toast.error('Please select a STEM subject to start practicing');
+    return;
+  }
+
+  const payload = {
+    subject_id: subId || null,
+    chapter_id: chId  || null,
+    topic_id:   topId || null,
+    board_id:   currContext.board?.id || null,
+    class_id:   currContext.class?.id || null,
+    max_questions: 10,
+  };
+
+  try {
+    const res = await Api.post('/adaptive/sessions/start', payload);
+    if (!res.session) throw new Error(res.error || 'Could not start session');
+
+    currContext.activePracticeSession = res.session;
+    currContext.currentQuestion = res.next_question;
+
+    if (!currContext.currentQuestion) {
+      Toast.info(res.message || 'No questions available for this specific topic yet.');
+      return;
+    }
+
+    document.getElementById('practiceSetupCard').style.display = 'none';
+    document.getElementById('practiceRunner').style.display = 'block';
+    document.getElementById('practiceSummary').style.display = 'none';
+
+    renderCurrentQuestion();
+  } catch (e) {
+    Toast.error(e.message || 'Failed to start adaptive practice');
+  }
+}
+
+function launchPracticeForTopic(topicId) {
+  goPage('practice', pageHandlers);
+  const payload = { topic_id: topicId, max_questions: 10 };
+  Api.post('/adaptive/sessions/start', payload).then(res => {
+    if (res.session && res.next_question) {
+      currContext.activePracticeSession = res.session;
+      currContext.currentQuestion = res.next_question;
+      document.getElementById('practiceSetupCard').style.display = 'none';
+      document.getElementById('practiceRunner').style.display = 'block';
+      renderCurrentQuestion();
+    } else {
+      Toast.info(res.message || 'No questions for this topic yet');
+    }
+  }).catch(e => Toast.error(e.message));
+}
+
+function launchPracticeForConcept(conceptId) {
+  goPage('practice', pageHandlers);
+  const payload = { max_questions: 10 };
+  Api.post('/adaptive/sessions/start', payload).then(res => {
+    if (res.session && res.next_question) {
+      currContext.activePracticeSession = res.session;
+      currContext.currentQuestion = res.next_question;
+      document.getElementById('practiceSetupCard').style.display = 'none';
+      document.getElementById('practiceRunner').style.display = 'block';
+      renderCurrentQuestion();
+    }
+  }).catch(e => Toast.error(e.message));
+}
+
+function renderCurrentQuestion() {
+  const q = currContext.currentQuestion;
+  if (!q) {
+    finishPracticeSession(false);
+    return;
+  }
+
+  currContext.answered = false;
+  document.getElementById('btnSubmitAnswer').style.display = 'inline-flex';
+  document.getElementById('btnNextQuestion').style.display = 'none';
+  document.getElementById('pracFeedbackArea').style.display = 'none';
+
+  const qNum = (q.question_number || 1);
+  const maxQ = (currContext.activePracticeSession?.max_questions || 10);
+  document.getElementById('pracProgressLabel').textContent = `Question ${qNum} of ${maxQ}`;
+  document.getElementById('pracProgressBar').style.width = `${(qNum / maxQ) * 100}%`;
+
+  const diffBadge = document.getElementById('pracDiffBadge');
+  diffBadge.textContent = `${q.difficulty ? q.difficulty.toUpperCase() : 'MEDIUM'} DIFFICULTY`;
+  diffBadge.className = `badge ${q.difficulty === 'hard' ? 'badge-red' : q.difficulty === 'easy' ? 'badge-active' : 'badge-amber'}`;
+
+  const bodyEl = document.getElementById('pracQuestionBody');
+  const options = Array.isArray(q.options) ? q.options : [];
+
+  bodyEl.innerHTML = `
+    <div style="font-size:1.05rem;font-weight:600;color:var(--ink);margin-bottom:1.25rem;line-height:1.5">
+      ${q.question_text}
+    </div>
+    <div id="pracOptionsList">
+      ${options.map((opt, idx) => {
+        const key = opt.key || String.fromCharCode(65 + idx);
+        const text = opt.text || opt;
+        return `
+          <div class="opt-choice" onclick="selectPracticeOption('${key}', this)">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--hairline);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;flex-shrink:0">
+              ${key}
+            </div>
+            <div style="font-size:.875rem;color:var(--ink);line-height:1.4">${text}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function selectPracticeOption(key, el) {
+  if (currContext.answered) return;
+  document.querySelectorAll('.opt-choice').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  el.dataset.selectedKey = key;
+}
+
+async function submitCurrentAnswer() {
+  if (currContext.answered) return;
+  const selEl = document.querySelector('.opt-choice.selected');
+  if (!selEl) {
+    Toast.error('Please select an option first');
+    return;
+  }
+
+  const selectedKey = selEl.dataset.selectedKey;
+  const sessionId = currContext.activePracticeSession?.id;
+  const qId = currContext.currentQuestion?.id;
+
+  currContext.answered = true;
+  document.getElementById('btnSubmitAnswer').disabled = true;
+
+  try {
+    const res = await Api.post(`/adaptive/sessions/${sessionId}/answer`, {
+      question_id: qId,
+      answer: selectedKey,
+    });
+
+    const isCorrect = res.is_correct;
+    const fbArea = document.getElementById('pracFeedbackArea');
+    fbArea.style.display = 'block';
+
+    if (isCorrect) {
+      selEl.classList.add('correct');
+      fbArea.innerHTML = `
+        <div style="background:rgba(0,229,160,0.1);border-left:3px solid var(--accent);border-radius:0 var(--r-md) var(--r-md) 0;padding:.75rem 1rem">
+          <div style="font-weight:700;color:var(--accent);margin-bottom:.25rem">✓ Correct! Excellent reasoning!</div>
+          <div style="font-size:.85rem;color:var(--ink-2)">${res.explanation || 'You arrived at the correct solution.'}</div>
+        </div>
+      `;
+    } else {
+      selEl.classList.add('incorrect');
+      fbArea.innerHTML = `
+        <div style="background:rgba(255,71,87,0.08);border-left:3px solid var(--danger);border-radius:0 var(--r-md) var(--r-md) 0;padding:.75rem 1rem">
+          <div style="font-weight:700;color:var(--danger);margin-bottom:.25rem">✗ Not quite. Correct answer: ${res.correct_answer || 'Option'}</div>
+          <div style="font-size:.85rem;color:var(--ink-2)">${res.explanation || 'Study the step-by-step logic to grasp the concept.'}</div>
+          ${res.remediation_needed ? `<div class="badge badge-red" style="margin-top:.5rem">Prerequisite Gap Alert: Review foundational concepts</div>` : ''}
+        </div>
+      `;
+    }
+
+    if (res.session_complete) {
+      document.getElementById('btnNextQuestion').textContent = 'View Final Results 🎉';
+    } else {
+      document.getElementById('btnNextQuestion').textContent = 'Next Question →';
+    }
+
+    document.getElementById('btnSubmitAnswer').style.display = 'none';
+    document.getElementById('btnNextQuestion').style.display = 'inline-flex';
+    document.getElementById('btnSubmitAnswer').disabled = false;
+  } catch (e) {
+    Toast.error(e.message || 'Failed to submit answer');
+    document.getElementById('btnSubmitAnswer').disabled = false;
+  }
+}
+
+async function loadNextQuestion() {
+  const sessionId = currContext.activePracticeSession?.id;
+  try {
+    const res = await Api.get(`/adaptive/sessions/${sessionId}/next`);
+    if (res.session_complete || !res.next_question) {
+      finishPracticeSession(false);
+    } else {
+      currContext.currentQuestion = res.next_question;
+      renderCurrentQuestion();
+    }
+  } catch (e) {
+    finishPracticeSession(false);
+  }
+}
+
+async function finishPracticeSession(isManualEnd = false) {
+  const sessionId = currContext.activePracticeSession?.id;
+  if (sessionId) {
+    try {
+      await Api.post(`/adaptive/sessions/${sessionId}/submit`, {});
+      const resultRes = await Api.get(`/adaptive/sessions/${sessionId}/result`);
+      const r = resultRes.result || resultRes || {};
+
+      document.getElementById('practiceRunner').style.display = 'none';
+      document.getElementById('practiceSummary').style.display = 'block';
+
+      document.getElementById('summaryScoreVal').textContent = `${Math.round(r.score_percentage || 0)}%`;
+      document.getElementById('summaryTotalVal').textContent = r.total_questions || 10;
+      document.getElementById('summaryMasteryVal').textContent = `+${Math.round(r.mastery_growth || 5)}%`;
+
+      document.getElementById('summaryAiFeedback').innerHTML = `
+        <strong>AI Performance Feedback:</strong><br>
+        ${r.ai_summary || r.feedback || 'You demonstrated strong problem-solving and conceptual understanding. Keep practicing daily to achieve full mastery!'}
+      `;
+    } catch (e) {
+      resetPracticeSetup();
+    }
+  } else {
+    resetPracticeSetup();
+  }
+}
+
+function askTutorAboutCurrentQuestion() {
+  const q = currContext.currentQuestion;
+  if (!q) return;
+  goPage('assistant', pageHandlers);
+  appendMsg('user', `Can you explain the STEM concepts behind this question: "${q.question_text}"?`);
+  sendDirectTutorPrompt(`Help me understand this problem conceptually and provide a helpful hint without giving away the final answer: ${q.question_text}`);
+}
+
+// ── Mastery Page & Knowledge Gaps ─────────────────────────
+async function loadMasteryPage() {
+  const gapsEl = document.getElementById('masteryGapsList');
+  const breakdownEl = document.getElementById('masterySubjectsBreakdown');
+
+  try {
+    const [masteryRes, gapsRes] = await Promise.all([
+      Api.get('/mastery/me'),
+      Api.get('/mastery/me/gaps'),
+    ]);
+
+    const m = masteryRes || {};
+    const gaps = gapsRes.gaps || [];
+
+    const mastered = (m.mastery || []).filter(item => item.mastery_score >= 80).length;
+    const inProg   = (m.mastery || []).filter(item => item.mastery_score >= 40 && item.mastery_score < 80).length;
+    const overall  = m.summary?.overall_mastery || 0;
+
+    document.getElementById('st-m-mastered').textContent = mastered;
+    document.getElementById('st-m-progress').textContent = inProg;
+    document.getElementById('st-m-gaps').textContent     = gaps.length;
+    document.getElementById('st-m-overall').textContent  = `${overall}%`;
+
+    if (!gaps.length) {
+      gapsEl.innerHTML = `<div style="padding:1rem;color:var(--accent);font-weight:500;display:flex;align-items:center;gap:.5rem"><span>🎉</span> No critical knowledge gaps detected in your STEM profile!</div>`;
+    } else {
+      gapsEl.innerHTML = gaps.map(g => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--hairline)">
+          <div>
+            <div style="font-weight:600;font-size:.875rem;color:var(--danger)">${g.concepts?.title || 'Concept Gap'}</div>
+            <div style="font-size:.75rem;color:var(--ink-3)">
+              ${g.subjects?.name ? g.subjects.name + ' • ' : ''}${g.chapters?.title || ''} • Score: ${g.mastery_score}%
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="launchPracticeForConcept('${g.concepts?.id || ''}')">
+            ⚡ Remediate Gap
+          </button>
+        </div>
+      `).join('');
+    }
+
+    const bySub = m.by_subject || [];
+    if (!bySub.length) {
+      breakdownEl.innerHTML = `<p style="font-size:.85rem;color:var(--ink-3);padding:.5rem 0">Complete an adaptive STEM practice session to map your subject proficiency.</p>`;
+    } else {
+      breakdownEl.innerHTML = bySub.map(s => `
+        <div style="margin-bottom:1.25rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+            <span style="font-weight:600;font-size:.9rem;color:var(--ink)">${s.subject?.name || 'Subject'}</span>
+            <span style="font-family:'Fira Code',monospace;font-size:.85rem;font-weight:700;color:var(--accent)">${s.avg_mastery}%</span>
+          </div>
+          <div class="pb-wrap">
+            <div class="pb-fill" style="width:${s.avg_mastery}%;background:${s.subject?.color_hex || 'var(--accent)'}"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// ── Recommendations Page ──────────────────────────────────
+async function loadRecommendations(forceRefresh = false) {
+  const grid = document.getElementById('fullRecommendationsGrid');
+  grid.innerHTML = `<div class="skeleton" style="height:140px"></div><div class="skeleton" style="height:140px"></div>`;
+
+  try {
+    const url = forceRefresh ? '/recommendations?refresh=true' : '/recommendations';
+    const d = await Api.get(url);
+    const recs = d.recommendations || [];
+
+    if (!recs.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--ink-3)">No recommendations right now. Practice more questions to get smart recommendations!</div>`;
+      return;
+    }
+
+    grid.innerHTML = recs.map(r => {
+      const prioCol = r.priority === 'high' ? 'var(--danger)' : r.priority === 'medium' ? 'var(--warning)' : 'var(--accent)';
+      return `
+        <div class="card" style="border-left:3px solid ${prioCol}">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem">
+            <span class="badge ${r.priority==='high'?'badge-red':r.priority==='medium'?'badge-amber':'badge-active'}">${(r.priority||'normal').toUpperCase()} PRIORITY</span>
+            <span class="badge badge-slate">${r.estimated_minutes ? r.estimated_minutes + ' min' : '15 min'}</span>
+          </div>
+          <div style="font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:.35rem">${r.title || r.concept_title || 'Targeted Practice'}</div>
+          <p style="font-size:.8125rem;color:var(--ink-3);line-height:1.5;margin-bottom:1rem">${r.rationale || r.reason || 'Focus on this topic to improve prerequisite mastery.'}</p>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn btn-primary btn-sm" onclick="launchPracticeForConcept('${r.concept_id||''}')">⚡ Start Practice</button>
+            <button class="btn btn-secondary btn-sm" onclick="askTutorAboutRecommendation('${(r.title||'').replace(/'/g,'`')}')">💬 Ask Tutor</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    grid.innerHTML = `<p style="color:var(--ink-3)">Could not load recommendations</p>`;
+  }
+}
+
+function askTutorAboutRecommendation(title) {
+  goPage('assistant', pageHandlers);
+  appendMsg('user', `Can you explain the key concepts for "${title}"?`);
+  sendDirectTutorPrompt(`Please give me a concise tutorial with examples on: ${title}`);
+}
+
+// ── STEM AI Tutor Chat ────────────────────────────────────
+function startNewTutorChat() {
+  chatSessionId = null;
+  const msgs = document.getElementById('chatMsgs');
+  msgs.innerHTML = `
+    <div class="chat-msg">
+      <div class="chat-avatar"><span id="botAvatarIcon"></span></div>
+      <div class="chat-bubble">Hello! Started a fresh session. What math, science, or programming topic would you like help with?</div>
+    </div>
+  `;
+  setHtml('botAvatarIcon', L.cpu(14));
+}
+
+async function sendChat() {
+  const inp = document.getElementById('chatInput');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+  appendMsg('user', msg);
+  appendMsg('assistant', '<em style="color:var(--ink-3)">Thinking…</em>', 'typing');
+
+  try {
+    const subContext = document.getElementById('tutorSubjectContext')?.value || null;
+    const d = await Api.post('/assistant/chat', {
+      message: msg,
+      session_id: chatSessionId,
+      subject_id: subContext,
+    });
+
+    chatSessionId = d.session_id;
+    document.getElementById('typing')?.remove();
+    appendMsg('assistant', d.reply || 'I am ready to assist with your STEM questions! What would you like to explore next?');
+  } catch (e) {
+    console.error('Tutor chat error:', e);
+    document.getElementById('typing')?.remove();
+    appendMsg('assistant', `Sorry, I encountered an issue (${e.message || 'connection error'}). Please try again.`);
+  }
+}
+
+async function sendDirectTutorPrompt(prompt) {
+  appendMsg('assistant', '<em style="color:var(--ink-3)">Thinking…</em>', 'typing');
+  try {
+    const subContext = document.getElementById('tutorSubjectContext')?.value || null;
+    const d = await Api.post('/assistant/chat', {
+      message: prompt,
+      session_id: chatSessionId,
+      subject_id: subContext,
+    });
+    chatSessionId = d.session_id;
+    document.getElementById('typing')?.remove();
+    appendMsg('assistant', d.reply || 'Here is what you need to know about this concept.');
+  } catch (e) {
+    console.error('Direct tutor prompt error:', e);
+    document.getElementById('typing')?.remove();
+    appendMsg('assistant', `Sorry, I encountered an issue (${e.message || 'connection error'}). Please try again.`);
+  }
+}
+
+function appendMsg(role, content, id) {
+  const wrap = document.getElementById('chatMsgs');
+  const div  = document.createElement('div');
+  div.className = `chat-msg${role === 'user' ? ' user' : ''}`;
+  if (id) div.id = id;
+  div.innerHTML = role === 'user'
+    ? `<div class="chat-bubble">${content}</div><div class="chat-avatar" style="background:var(--surface-2);color:var(--ink-2)">${L.user ? L.user(14) : '👤'}</div>`
+    : `<div class="chat-avatar">${L.cpu ? L.cpu(14) : '🤖'}</div><div class="chat-bubble">${content}</div>`;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
 }
 
 // ── Objectives ────────────────────────────────────────────
 function renderObjectives() {
   const list = document.getElementById('objectivesList');
-  const done = objectives.filter(o=>o.done).length;
+  const done = objectives.filter(o => o.done).length;
   document.getElementById('obj-done-val').textContent = done;
   document.getElementById('obj-pend-val').textContent = objectives.length - done;
   if (!objectives.length) {
-    list.innerHTML = `<div style="padding:1.5rem;text-align:center;color:var(--n-400)">No objectives yet. <button class="btn btn-primary btn-sm" style="margin-left:.5rem" onclick="Modal.open('addObjModal')">Add one</button></div>`;
+    list.innerHTML = `<div style="padding:1.5rem;text-align:center;color:var(--ink-3)">No study objectives yet. <button class="btn btn-primary btn-sm" style="margin-left:.5rem" onclick="Modal.open('addObjModal')">Add one</button></div>`;
     return;
   }
-  list.innerHTML = objectives.map((o,i) => `
-    <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--n-100)">
+  list.innerHTML = objectives.map((o, i) => `
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--hairline)">
       <label class="switch" title="Mark done" aria-label="Mark ${o.text} done">
-        <input type="checkbox" ${o.done?'checked':''} onchange="toggleObj(${i})">
+        <input type="checkbox" ${o.done ? 'checked' : ''} onchange="toggleObj(${i})">
         <span class="switch-track"></span>
       </label>
-      <span style="flex:1;font-size:.875rem;${o.done?'text-decoration:line-through;color:var(--n-400)':''}">${o.text}</span>
-      <span class="badge ${o.due==='today'?'badge-red':o.due==='week'?'badge-amber':'badge-slate'}">${o.due}</span>
-      <button onclick="deleteObj(${i})" style="background:none;border:none;cursor:pointer;color:var(--n-300);padding:.2rem" aria-label="Delete objective">${L.trash(14)}</button>
+      <span style="flex:1;font-size:.875rem;${o.done ? 'text-decoration:line-through;color:var(--ink-3)' : ''}">${o.text}</span>
+      <span class="badge ${o.due === 'today' ? 'badge-red' : o.due === 'week' ? 'badge-amber' : 'badge-slate'}">${o.due}</span>
+      <button onclick="deleteObj(${i})" style="background:none;border:none;cursor:pointer;color:var(--ink-3);padding:.2rem" aria-label="Delete objective">${L.trash(14)}</button>
     </div>`).join('');
 }
 
 function renderObjectivesPreview() {
   const el = document.getElementById('todayObjectives');
-  const today = objectives.filter(o => o.due !== 'month').slice(0,4);
+  const today = objectives.filter(o => o.due !== 'month').slice(0, 4);
   if (!today.length) {
-    el.innerHTML = `<p style="font-size:.875rem;color:var(--n-400);padding:.5rem 0">No objectives today. <button class="btn btn-primary btn-sm" style="margin-left:.25rem" onclick="Modal.open('addObjModal')">Add one</button></p>`;
+    el.innerHTML = `<p style="font-size:.875rem;color:var(--ink-3);padding:.5rem 0">No goals set today. <button class="btn btn-primary btn-sm" style="margin-left:.25rem" onclick="Modal.open('addObjModal')">Add one</button></p>`;
     return;
   }
   el.innerHTML = today.map(o => `
-    <div style="display:flex;align-items:center;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--n-100)">
-      <div style="width:16px;height:16px;border-radius:50%;border:2px solid ${o.done?'var(--color-success)':'var(--n-300)'};background:${o.done?'var(--color-success-l)':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--color-success)">
-        ${o.done?L.checkCircle(10):''}
+    <div style="display:flex;align-items:center;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--hairline)">
+      <div style="width:16px;height:16px;border-radius:50%;border:2px solid ${o.done ? 'var(--accent)' : 'var(--ink-3)'};background:${o.done ? 'rgba(0,229,160,0.1)' : 'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent)">
+        ${o.done ? L.checkCircle(10) : ''}
       </div>
-      <span style="font-size:.8125rem;${o.done?'text-decoration:line-through;color:var(--n-400)':''}">${o.text}</span>
+      <span style="font-size:.8125rem;${o.done ? 'text-decoration:line-through;color:var(--ink-3)' : ''}">${o.text}</span>
     </div>`).join('');
 }
 
@@ -661,27 +1842,27 @@ function toggleObj(i) {
   renderObjectives(); renderObjectivesPreview();
 }
 function deleteObj(i) {
-  objectives.splice(i,1);
+  objectives.splice(i, 1);
   localStorage.setItem('em_objectives', JSON.stringify(objectives));
   renderObjectives();
 }
 
-// ── Pathway ───────────────────────────────────────────────
+// ── Learning Pathway ──────────────────────────────────────
 async function loadPathway() {
   document.getElementById('pathwayFull').innerHTML = `<div class="skeleton" style="height:200px"></div>`;
   try {
     const d = await Api.get('/pathways');
     if (!d.pathways?.length) {
       document.getElementById('pathwayFull').innerHTML = emptyState(
-        'No pathway yet',
-        'Run a skill gap analysis first, then generate your personalised pathway.',
+        'No STEM pathway yet',
+        'Run a skill gap analysis to generate your personalised STEM learning path.',
         `<button class="btn btn-primary" onclick="generatePathway()"><span>${L.sparkles()}</span> Generate Pathway</button>`
       );
     } else renderPathwayFull(d.pathways[0]);
-  } catch(e) { Toast.error(e.message); }
+  } catch (e) { Toast.error(e.message); }
 }
 
-document.getElementById('genPathBtn').addEventListener('click', generatePathway);
+document.getElementById('genPathBtn')?.addEventListener('click', generatePathway);
 
 async function generatePathway() {
   const btn = document.getElementById('genPathBtn');
@@ -689,34 +1870,49 @@ async function generatePathway() {
   try {
     const d = await Api.post('/pathways/generate', {});
     if (d.pathway) { renderPathwayFull(d.pathway); renderPathwayPreview(d.pathway); Toast.success('Pathway generated!'); }
-    else Toast.info(d.message || 'No gaps found — competencies are up to date!');
-  } catch(e) { Toast.error(e.message); }
+    else Toast.info(d.message || 'All competencies are up to date!');
+  } catch (e) { Toast.error(e.message); }
   finally { btn.innerHTML = `${L.sparkles()} Generate / Refresh`; btn.disabled = false; }
 }
 
 function renderPathwayFull(pathway) {
-  const items = (pathway.pathway_items||[]).sort((a,b)=>a.sequence_order-b.sequence_order);
+  const items = (pathway.pathway_items || []).sort((a, b) => a.sequence_order - b.sequence_order);
   document.getElementById('pathwayFull').innerHTML = `
     <div class="card">
       <div class="card-header">
-        <div><div class="card-title">${pathway.title}</div><div class="card-subtitle">${pathway.ai_rationale||''}</div></div>
+        <div><div class="card-title">${pathway.title}</div><div class="card-subtitle">${pathway.ai_rationale || ''}</div></div>
         <span class="badge badge-blue">Target: ${fmtDate(pathway.target_completion)}</span>
       </div>
       <div class="timeline">
-        ${items.map((item,i) => `
+        ${items.map((item, i) => `
           <div class="tl-item">
-            <div class="tl-dot ${i===0?'act':''}">${i===0?L.activity(14):String(i+1)}</div>
+            <div class="tl-dot ${i === 0 ? 'act' : ''}">${i === 0 ? L.activity(14) : String(i + 1)}</div>
             <div class="tl-body">
-              <div class="tl-title">${item.igot_courses?.title||'Course'}</div>
-              <div class="tl-sub">${item.ai_reason||''} ${item.igot_courses?.duration_hours?'• '+fmtHours(item.igot_courses.duration_hours):''}</div>
+              <div class="tl-title">${item.igot_courses?.title || 'Milestone Course'}</div>
+              <div class="tl-sub">${item.ai_reason || ''} ${item.igot_courses?.duration_hours ? '• ' + fmtHours(item.igot_courses.duration_hours) : ''}</div>
               <div style="display:flex;gap:.35rem;margin-top:.4rem;flex-wrap:wrap">
-                ${item.is_mandatory?'<span class="badge badge-red">Mandatory</span>':'<span class="badge badge-slate">Optional</span>'}
-                ${item.igot_courses?.url?`<a href="${item.igot_courses.url}" target="_blank" rel="noopener" class="badge badge-blue">Open in iGOT ${L.externalLink(10)}</a>`:''}
+                ${item.is_mandatory ? '<span class="badge badge-red">Core STEM</span>' : '<span class="badge badge-slate">Elective</span>'}
+                ${item.igot_courses?.url ? `<a href="${item.igot_courses.url}" target="_blank" rel="noopener" class="badge badge-blue">Open Resource ${L.externalLink(10)}</a>` : ''}
               </div>
             </div>
           </div>`).join('')}
       </div>
     </div>`;
+}
+
+function renderPathwayPreview(pathway) {
+  const items = pathway.pathway_items || [];
+  const completed = items.filter(i => i.status === 'completed').length;
+  document.getElementById('pathwaySubtitle').textContent = `${completed}/${items.length} modules complete`;
+  document.getElementById('pathwayPreview').innerHTML = `
+    <div style="margin-bottom:.75rem">${progBar((completed / Math.max(items.length, 1)) * 100)}</div>
+    ${items.slice(0, 3).map((item, i) => `
+      <div style="display:flex;align-items:center;gap:.625rem;padding:.375rem 0">
+        <div style="width:20px;height:20px;border-radius:50%;background:${i === 0 ? 'var(--accent)' : 'var(--hairline)'};display:flex;align-items:center;justify-content:center;font-size:.625rem;font-weight:700;color:${i === 0 ? '#000' : 'var(--ink-3)'};flex-shrink:0">${i + 1}</div>
+        <span style="font-size:.8125rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.igot_courses?.title || 'Module'}</span>
+        ${i === 0 ? '<span class="badge badge-progress">Current</span>' : ''}
+      </div>`).join('')}
+    ${items.length > 3 ? `<p style="font-size:.75rem;color:var(--ink-3);margin-top:.25rem">+${items.length - 3} more modules</p>` : ''}`;
 }
 
 // ── Courses ───────────────────────────────────────────────
@@ -731,7 +1927,7 @@ async function searchCourses() {
     if (domain) p.set('domain', domain);
     const d = await Api.get(`/igot/courses?${p}`);
     renderCoursesGrid(d.courses || [], false);
-  } catch(e) { Toast.error(e.message); }
+  } catch (e) { Toast.error(e.message); }
 }
 
 async function loadMyEnrollments() {
@@ -739,35 +1935,71 @@ async function loadMyEnrollments() {
   grid.innerHTML = Array(6).fill(`<div class="skeleton" style="height:180px;border-radius:var(--r-lg)"></div>`).join('');
   try {
     const d = await Api.get('/igot/my-enrollments');
-    renderCoursesGrid((d.enrollments||[]).map(e=>({...e.igot_courses, enrollment:e})), true);
-  } catch(e) { Toast.error(e.message); }
+    renderCoursesGrid((d.enrollments || []).map(e => ({ ...e.igot_courses, enrollment: e })), true);
+  } catch (e) { Toast.error(e.message); }
 }
 
 function renderCoursesGrid(courses, isEnrolled) {
   const grid = document.getElementById('coursesGrid');
-  if (!courses.length) { grid.innerHTML = emptyState('No courses found','Try a different search term or browse all courses.'); return; }
+  if (!courses.length) { grid.innerHTML = emptyState('No courses found', 'Try searching for Python, Physics, Math, or Algorithms.'); return; }
   grid.innerHTML = courses.map(c => `
     <div class="card card-hover">
-      <div style="height:100px;background:var(--color-primary-xl);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;margin:-var(--space-lg) -var(--space-lg) var(--space-md);color:var(--color-primary);margin:-1.25rem -1.25rem 1rem">
-        ${c.thumbnail_url?`<img src="${c.thumbnail_url}" alt="${c.title}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--r-md) var(--r-md) 0 0">`:`${L.book(32)}`}
+      <div style="height:100px;background:var(--accent-glow);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;margin:-1.25rem -1.25rem 1rem;color:var(--accent)">
+        ${c.thumbnail_url ? `<img src="${c.thumbnail_url}" alt="${c.title}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--r-md) var(--r-md) 0 0">` : `${L.book(32)}`}
       </div>
       <div style="font-size:.875rem;font-weight:600;margin-bottom:.35rem;line-height:1.3">${c.title}</div>
       <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.625rem">
         <span class="badge badge-slate">${fmtHours(c.duration_hours)}</span>
-        <span class="badge badge-blue">${c.level||'All levels'}</span>
+        <span class="badge badge-blue">${c.level || 'All levels'}</span>
       </div>
-      ${c.enrollment ? progBar(c.enrollment.progress_pct)+`<div style="font-size:.75rem;color:var(--n-400);margin-top:2px;font-family:'Fira Code',monospace">${Math.round(c.enrollment.progress_pct||0)}% complete</div>` : ''}
+      ${c.enrollment ? progBar(c.enrollment.progress_pct) + `<div style="font-size:.75rem;color:var(--ink-3);margin-top:2px;font-family:'Fira Code',monospace">${Math.round(c.enrollment.progress_pct || 0)}% complete</div>` : ''}
       <div style="display:flex;gap:.5rem;margin-top:.85rem;flex-wrap:wrap">
-        ${!c.enrollment?`<button class="btn btn-primary btn-sm" onclick="enrollCourse('${c.id}',this)">Enrol</button>`:statusBadge(c.enrollment.status)}
-        ${c.url?`<a href="${c.url}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Open ${L.externalLink(12)}</a>`:''}
+        ${!c.enrollment ? `<button class="btn btn-primary btn-sm" onclick="enrollCourse('${c.id}',this)">Enrol</button>` : statusBadge(c.enrollment.status)}
+        ${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Open ${L.externalLink(12)}</a>` : ''}
       </div>
     </div>`).join('');
 }
 
 async function enrollCourse(id, btn) {
-  btn.textContent='…'; btn.disabled=true;
-  try { await Api.post('/igot/enroll',{igot_course_id:id}); Toast.success('Enrolled!'); loadMyEnrollments(); }
-  catch(e) { Toast.error(e.message); btn.textContent='Enrol'; btn.disabled=false; }
+  btn.textContent = '…'; btn.disabled = true;
+  try { await Api.post('/igot/enroll', { igot_course_id: id }); Toast.success('Enrolled!'); loadMyEnrollments(); }
+  catch (e) { Toast.error(e.message); btn.textContent = 'Enrol'; btn.disabled = false; }
+}
+
+function renderActiveCourses(courses) {
+  const el = document.getElementById('activeCoursesList');
+  if (!el) return;
+  const active = (courses || []).filter(c => c.status === 'in_progress');
+  if (!active.length) {
+    el.innerHTML = `<p style="font-size:.875rem;color:var(--ink-3);padding:.75rem 0">No active courses yet. <button class="btn btn-primary btn-sm" style="margin-left:.5rem" onclick="goPage('courses',pageHandlers)">Browse courses</button></p>`;
+    return;
+  }
+  el.innerHTML = active.slice(0, 4).map(c => `
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem 0;border-bottom:1px solid var(--hairline)">
+      <div style="color:var(--accent);flex-shrink:0">${L.book(16)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.875rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.igot_courses?.title || 'Course'}</div>
+        <div style="margin-top:3px">${progBar(c.progress_pct)}</div>
+      </div>
+      <span style="font-size:.75rem;color:var(--ink-3);flex-shrink:0;font-family:'Fira Code',monospace">${Math.round(c.progress_pct || 0)}%</span>
+    </div>`).join('');
+}
+
+function renderRecentAttempts(attempts) {
+  const el = document.getElementById('recentAttempts');
+  if (!el) return;
+  if (!attempts?.length) {
+    el.innerHTML = `<p style="font-size:.875rem;color:var(--ink-3);padding:.75rem 0">No quiz attempts yet.</p>`;
+    return;
+  }
+  el.innerHTML = attempts.slice(0, 5).map(a => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--hairline)">
+      <span style="font-size:.875rem;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.assessments?.title || 'Quiz'}</span>
+      <div style="display:flex;align-items:center;gap:.5rem;flex-shrink:0">
+        <span style="font-family:'Fira Code',monospace;font-weight:700">${a.score || 0}%</span>
+        ${a.passed ? '<span class="badge badge-active">Pass</span>' : '<span class="badge badge-red">Fail</span>'}
+      </div>
+    </div>`).join('');
 }
 
 // ── Skill Gap ─────────────────────────────────────────────
@@ -778,42 +2010,42 @@ async function loadLastGapReport() {
       const detail = await Api.get(`/skill-gap/reports/${d.reports[0].id}`);
       renderGapReport(detail.report);
     }
-  } catch(_) {}
+  } catch (_) {}
 }
 
-document.getElementById('runGapBtn').addEventListener('click', async () => {
+document.getElementById('runGapBtn')?.addEventListener('click', async () => {
   const btn = document.getElementById('runGapBtn');
-  btn.textContent='Analysing…'; btn.disabled=true;
+  btn.textContent = 'Analysing…'; btn.disabled = true;
   try {
-    const d = await Api.post('/skill-gap/analyze',{});
+    const d = await Api.post('/skill-gap/analyze', {});
     renderGapReport(d.report);
     Toast.success('Analysis complete!');
-  } catch(e) { Toast.error(e.message); }
-  finally { btn.textContent='Analyse My Skills'; btn.disabled=false; }
+  } catch (e) { Toast.error(e.message); }
+  finally { btn.textContent = 'Analyse STEM Skills'; btn.disabled = false; }
 });
 
 function renderGapReport(report) {
   const gaps  = report.details || report.gaps || [];
-  const score = Math.round(report.overall_gap_score||0);
-  const col   = score>60?'var(--color-danger)':score>30?'var(--color-warning)':'var(--color-success)';
+  const score = Math.round(report.overall_gap_score || 0);
+  const col   = score > 60 ? 'var(--danger)' : score > 30 ? 'var(--warning)' : 'var(--accent)';
   document.getElementById('gapReportEl').innerHTML = `
     <div class="card" style="margin-bottom:1rem">
       <div class="card-header">
-        <div><div class="card-title">Skill Gap Report</div><div class="card-subtitle">${fmtDate(report.generated_at)}</div></div>
+        <div><div class="card-title">STEM Competency Gap Report</div><div class="card-subtitle">${fmtDate(report.generated_at)}</div></div>
         <div style="font-size:2rem;font-weight:700;font-family:'Fira Code',monospace;color:${col}">${score}%</div>
       </div>
-      ${report.ai_insights?.summary?`<div style="background:var(--color-primary-xl);border-left:3px solid var(--color-primary);border-radius:0 var(--r-md) var(--r-md) 0;padding:.75rem 1rem;font-size:.875rem;color:var(--color-text);margin-bottom:1rem">${report.ai_insights.summary}</div>`:''}
-      ${(report.ai_insights?.priorities||[]).length?`
+      ${report.ai_insights?.summary ? `<div style="background:var(--accent-glow);border-left:3px solid var(--accent);border-radius:0 var(--r-md) var(--r-md) 0;padding:.75rem 1rem;font-size:.875rem;color:var(--ink);margin-bottom:1rem">${report.ai_insights.summary}</div>` : ''}
+      ${(report.ai_insights?.priorities || []).length ? `
         <div style="margin-bottom:.75rem"><div class="label-cap" style="margin-bottom:.5rem">AI Recommendations</div>
-        ${report.ai_insights.priorities.map(p=>`<div style="display:flex;align-items:flex-start;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--n-100);font-size:.8125rem"><span style="color:var(--color-primary);flex-shrink:0;margin-top:1px">${L.arrowRight(14)}</span><div><strong>${p.area}</strong>: ${p.action} <span class="badge badge-slate">${p.hours}h est.</span></div></div>`).join('')}
-        </div>`:''}
+        ${report.ai_insights.priorities.map(p => `<div style="display:flex;align-items:flex-start;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--hairline);font-size:.8125rem"><span style="color:var(--accent);flex-shrink:0;margin-top:1px">${L.arrowRight(14)}</span><div><strong>${p.area}</strong>: ${p.action} <span class="badge badge-slate">${p.hours}h est.</span></div></div>`).join('')}
+        </div>` : ''}
     </div>
     <div class="table-wrap">
       <table class="table" aria-label="Skill gaps">
         <thead><tr><th>Competency</th><th>Domain</th><th>Current</th><th>Required</th><th>Gap</th></tr></thead>
-        <tbody>${gaps.map(g=>`<tr>
-          <td data-label="Competency" style="font-weight:600">${g.competency_framework?.name||g.name||'—'}</td>
-          <td data-label="Domain"><span class="badge badge-slate">${g.competency_framework?.domain||g.domain||'—'}</span></td>
+        <tbody>${gaps.map(g => `<tr>
+          <td data-label="Competency" style="font-weight:600">${g.competency_framework?.name || g.name || '—'}</td>
+          <td data-label="Domain"><span class="badge badge-slate">${g.competency_framework?.domain || g.domain || '—'}</span></td>
           <td data-label="Current">${compPips(g.current_level)}</td>
           <td data-label="Required">${compPips(g.required_level)}</td>
           <td data-label="Gap">${severityBadge(g.severity)}</td>
@@ -829,57 +2061,57 @@ async function loadCompetencyProfile() {
   try {
     const d = await Api.get('/competencies/my-profile');
     const comps = d.competency_profile || [];
-    if (!comps.length) { grid.innerHTML = emptyState('No competencies recorded','Complete assessments to build your profile.'); return; }
-    const byDomain = comps.reduce((acc,c)=>{ const dom=c.competency_framework?.domain||'other'; (acc[dom]=acc[dom]||[]).push(c); return acc; },{});
-    grid.innerHTML = Object.entries(byDomain).map(([domain,items])=>`
+    if (!comps.length) { grid.innerHTML = emptyState('No competencies recorded', 'Complete practice quizzes to build your profile.'); return; }
+    const byDomain = comps.reduce((acc, c) => { const dom = c.competency_framework?.domain || 'other'; (acc[dom] = acc[dom] || []).push(c); return acc; }, {});
+    grid.innerHTML = Object.entries(byDomain).map(([domain, items]) => `
       <div class="card">
-        <div class="card-header"><div class="card-title" style="text-transform:capitalize">${domain.replace(/_/g,' ')}</div></div>
-        ${items.map(c=>`
+        <div class="card-header"><div class="card-title" style="text-transform:capitalize">${domain.replace(/_/g, ' ')}</div></div>
+        ${items.map(c => `
           <div style="margin-bottom:.75rem">
             <div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.3rem">
-              <span style="font-weight:500">${c.competency_framework?.name||'—'}</span>
-              <span style="color:var(--n-400);font-family:'Fira Code',monospace;font-size:.75rem;text-transform:capitalize">${c.current_level}</span>
+              <span style="font-weight:500">${c.competency_framework?.name || '—'}</span>
+              <span style="color:var(--ink-3);font-family:'Fira Code',monospace;font-size:.75rem;text-transform:capitalize">${c.current_level}</span>
             </div>
             ${compPips(c.current_level)}
           </div>`).join('')}
       </div>`).join('');
-  } catch(e) { Toast.error(e.message); }
+  } catch (e) { Toast.error(e.message); }
 }
 
-// ── Assessments ───────────────────────────────────────────
+// ── Assessments & Quizzes ─────────────────────────────────
 async function loadPublishedAssessments() {
   const grid = document.getElementById('assessGrid');
   grid.innerHTML = Array(4).fill(`<div class="skeleton" style="height:160px;border-radius:var(--r-lg)"></div>`).join('');
   try {
     const d = await Api.get('/assessments');
-    if (!d.assessments?.length) { grid.innerHTML = emptyState('No assessments yet','Instructors are creating new quizzes. Check back soon.'); return; }
-    grid.innerHTML = d.assessments.map(a=>`
+    if (!d.assessments?.length) { grid.innerHTML = emptyState('No quizzes scheduled', 'Try Adaptive Practice on Math, Science, and Python topics!'); return; }
+    grid.innerHTML = d.assessments.map(a => `
       <div class="card card-hover">
-        <div style="width:40px;height:40px;border-radius:var(--r-md);background:var(--color-primary-xl);color:var(--color-primary);display:flex;align-items:center;justify-content:center;margin-bottom:.75rem">${L.clipboard()}</div>
+        <div style="width:40px;height:40px;border-radius:var(--r-md);background:var(--accent-glow);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:.75rem">${L.clipboard()}</div>
         <div style="font-weight:600;font-size:.9375rem;margin-bottom:.25rem">${a.title}</div>
-        <div style="font-size:.8125rem;color:var(--n-500);margin-bottom:.75rem">${a.description||''}</div>
+        <div style="font-size:.8125rem;color:var(--ink-3);margin-bottom:.75rem">${a.description || ''}</div>
         <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.875rem">
           <span class="badge badge-slate">${a.total_questions} questions</span>
-          <span class="badge ${a.difficulty==='hard'?'badge-red':a.difficulty==='medium'?'badge-amber':'badge-active'}">${a.difficulty}</span>
-          ${a.time_limit_mins?`<span class="badge badge-slate">${a.time_limit_mins} min</span>`:''}
+          <span class="badge ${a.difficulty === 'hard' ? 'badge-red' : a.difficulty === 'medium' ? 'badge-amber' : 'badge-active'}">${a.difficulty}</span>
+          ${a.time_limit_mins ? `<span class="badge badge-slate">${a.time_limit_mins} min</span>` : ''}
         </div>
-        <button class="btn btn-primary btn-sm" onclick="openQuiz('${a.id}','${a.title.replace(/'/g,'`')}')">Start Quiz</button>
+        <button class="btn btn-primary btn-sm" onclick="openQuiz('${a.id}','${a.title.replace(/'/g, '`')}')">Start Quiz</button>
       </div>`).join('');
-  } catch(e) { Toast.error(e.message); }
+  } catch (e) { Toast.error(e.message); }
 }
 
 async function loadMyAttempts() {
   const tbody = document.getElementById('attemptsTable');
   try {
     const d = await Api.get('/assessments/my/attempts');
-    if (!d.attempts?.length) { tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--n-400)">No attempts yet.</td></tr>'; return; }
-    tbody.innerHTML = d.attempts.map(a=>`<tr>
-      <td data-label="Assessment" style="font-weight:600">${a.assessments?.title||'Quiz'}</td>
-      <td data-label="Score" style="font-family:'Fira Code',monospace;font-weight:600">${a.score||0}%</td>
-      <td data-label="Result">${a.passed?'<span class="badge badge-active">Pass</span>':'<span class="badge badge-red">Fail</span>'}</td>
-      <td data-label="Date" style="color:var(--n-400)">${fmtDate(a.created_at)}</td>
+    if (!d.attempts?.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--ink-3)">No attempts yet.</td></tr>'; return; }
+    tbody.innerHTML = d.attempts.map(a => `<tr>
+      <td data-label="Assessment" style="font-weight:600">${a.assessments?.title || 'Quiz'}</td>
+      <td data-label="Score" style="font-family:'Fira Code',monospace;font-weight:600">${a.score || 0}%</td>
+      <td data-label="Result">${a.passed ? '<span class="badge badge-active">Pass</span>' : '<span class="badge badge-red">Fail</span>'}</td>
+      <td data-label="Date" style="color:var(--ink-3)">${fmtDate(a.created_at)}</td>
     </tr>`).join('');
-  } catch(e) { Toast.error(e.message); }
+  } catch (e) { Toast.error(e.message); }
 }
 
 async function openQuiz(id, title) {
@@ -891,108 +2123,80 @@ async function openQuiz(id, title) {
     const questions = d.questions || [];
     document.getElementById('quizModalBody').innerHTML = `
       <div style="max-height:420px;overflow-y:auto;padding-right:.25rem">
-        ${questions.map((q,i)=>`
-          <div style="margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--n-100)">
-            <p style="font-size:.875rem;font-weight:600;margin-bottom:.5rem">${i+1}. ${q.question_text}</p>
-            ${(q.options||[]).map(opt=>`
-              <label style="display:flex;align-items:center;gap:.5rem;padding:.375rem .5rem;border-radius:var(--r-sm);cursor:pointer;font-size:.875rem;transition:background var(--t-fast)" onmouseover="this.style.background='var(--n-100)'" onmouseout="this.style.background='transparent'">
+        ${questions.map((q, i) => `
+          <div style="margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--hairline)">
+            <p style="font-size:.875rem;font-weight:600;margin-bottom:.5rem">${i + 1}. ${q.question_text}</p>
+            ${(q.options || []).map(opt => `
+              <label style="display:flex;align-items:center;gap:.5rem;padding:.375rem .5rem;border-radius:var(--r-sm);cursor:pointer;font-size:.875rem;transition:background var(--t-fast)" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background='transparent'">
                 <input type="radio" name="q_${q.id}" value="${opt.key}"> ${opt.key}. ${opt.text}
               </label>`).join('')}
           </div>`).join('')}
       </div>
       <div style="display:flex;justify-content:flex-end;gap:.5rem;margin-top:1rem">
         <button class="btn btn-secondary" data-close onclick="Modal.close('quizModal')">Cancel</button>
-        <button class="btn btn-primary" onclick="submitQuiz('${id}',${JSON.stringify(questions.map(q=>q.id))})">Submit Answers</button>
+        <button class="btn btn-primary" onclick="submitQuiz('${id}',${JSON.stringify(questions.map(q => q.id))})">Submit Answers</button>
       </div>`;
-  } catch(e) { document.getElementById('quizModalBody').innerHTML=`<p style="color:var(--color-danger)">${e.message}</p>`; }
+  } catch (e) { document.getElementById('quizModalBody').innerHTML = `<p style="color:var(--danger)">${e.message}</p>`; }
 }
 
 async function submitQuiz(assessId, qIds) {
   const answers = {};
-  qIds.forEach(qId => { const sel=document.querySelector(`input[name="q_${qId}"]:checked`); if(sel) answers[qId]=sel.value; });
+  qIds.forEach(qId => { const sel = document.querySelector(`input[name="q_${qId}"]:checked`); if (sel) answers[qId] = sel.value; });
   try {
-    const r = await Api.post(`/assessments/${assessId}/submit`,{answers});
+    const r = await Api.post(`/assessments/${assessId}/submit`, { answers });
     document.getElementById('quizModalBody').innerHTML = `
       <div style="text-align:center;padding:1.5rem">
-        <div style="color:${r.passed?'var(--color-success)':'var(--color-danger)'};margin-bottom:.75rem">${r.passed?L.checkCircle(48):L.xCircle(48)}</div>
-        <div style="font-size:2.5rem;font-weight:700;font-family:'Fira Code',monospace;color:${r.passed?'var(--color-success)':'var(--color-danger)'}">${r.score}%</div>
-        <div style="margin:.5rem 0;color:var(--n-500)">${r.correct}/${r.total} correct • ${r.passed?'Passed':'Not passed'}</div>
-        ${r.ai_feedback?`<div style="background:var(--color-primary-xl);border-radius:var(--r-md);padding:.85rem;margin:.75rem 0;font-size:.875rem;text-align:left;color:var(--color-text)">${r.ai_feedback}</div>`:''}
+        <div style="color:${r.passed ? 'var(--accent)' : 'var(--danger)'};margin-bottom:.75rem">${r.passed ? L.checkCircle(48) : L.xCircle(48)}</div>
+        <div style="font-size:2.5rem;font-weight:700;font-family:'Fira Code',monospace;color:${r.passed ? 'var(--accent)' : 'var(--danger)'}">${r.score}%</div>
+        <div style="margin:.5rem 0;color:var(--ink-3)">${r.correct}/${r.total} correct • ${r.passed ? 'Passed' : 'Not passed'}</div>
+        ${r.ai_feedback ? `<div style="background:var(--accent-glow);border-radius:var(--r-md);padding:.85rem;margin:.75rem 0;font-size:.875rem;text-align:left;color:var(--ink)">${r.ai_feedback}</div>` : ''}
         <button class="btn btn-primary" onclick="Modal.close('quizModal');loadMyAttempts()">Done</button>
       </div>`;
-  } catch(e) { Toast.error(e.message); }
-}
-
-// ── AI Assistant ──────────────────────────────────────────
-async function sendChat() {
-  const inp = document.getElementById('chatInput');
-  const msg = inp.value.trim();
-  if (!msg) return;
-  inp.value = '';
-  appendMsg('user', msg);
-  appendMsg('assistant', '<em style="color:var(--n-400)">Thinking…</em>', 'typing');
-  try {
-    const d = await Api.post('/assistant/chat',{message:msg, session_id:chatSessionId});
-    chatSessionId = d.session_id;
-    document.getElementById('typing')?.remove();
-    appendMsg('assistant', d.reply);
-  } catch(e) { document.getElementById('typing')?.remove(); appendMsg('assistant','Sorry, I couldn\'t process that. Please try again.'); }
-}
-
-function appendMsg(role, content, id) {
-  const wrap = document.getElementById('chatMsgs');
-  const div  = document.createElement('div');
-  div.className = `chat-msg${role==='user'?' user':''}`;
-  if (id) div.id = id;
-  div.innerHTML = role==='user'
-    ? `<div class="chat-bubble">${content}</div><div class="chat-avatar" style="background:var(--n-200);color:var(--n-600)">${L.user(14)}</div>`
-    : `<div class="chat-avatar">${L.cpu(14)}</div><div class="chat-bubble">${content}</div>`;
-  wrap.appendChild(div);
-  wrap.scrollTop = wrap.scrollHeight;
+  } catch (e) { Toast.error(e.message); }
 }
 
 // ── Notes ─────────────────────────────────────────────────
 function renderNotes() {
   const grid = document.getElementById('notesGrid');
-  if (!notes.length) { grid.innerHTML = emptyState('No notes yet','Start capturing key concepts from your courses.', `<button class="btn btn-primary" onclick="Modal.open('addNoteModal')">Create First Note</button>`); return; }
-  grid.innerHTML = notes.map((n,i)=>`
+  if (!notes.length) { grid.innerHTML = emptyState('No STEM notes yet', 'Save key formulas, chemical equations, and Python code snippets.', `<button class="btn btn-primary" onclick="Modal.open('addNoteModal')">Create First Note</button>`); return; }
+  grid.innerHTML = notes.map((n, i) => `
     <div class="card card-hover" style="position:relative">
       <div style="font-weight:600;margin-bottom:.35rem">${n.title}</div>
-      ${n.tag?`<span class="badge badge-blue" style="margin-bottom:.5rem">${n.tag}</span>`:''}
-      <p style="font-size:.8125rem;color:var(--n-500);line-height:1.6">${n.content.slice(0,120)}${n.content.length>120?'…':''}</p>
-      <div style="margin-top:.75rem;font-size:.75rem;color:var(--n-400)">${fmtDate(n.created)}</div>
-      <button onclick="deleteNote(${i})" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;cursor:pointer;color:var(--n-300)" aria-label="Delete note">${L.trash(14)}</button>
+      ${n.tag ? `<span class="badge badge-blue" style="margin-bottom:.5rem">${n.tag}</span>` : ''}
+      <p style="font-size:.8125rem;color:var(--ink-3);line-height:1.6">${n.content.slice(0, 120)}${n.content.length > 120 ? '…' : ''}</p>
+      <div style="margin-top:.75rem;font-size:.75rem;color:var(--ink-4)">${fmtDate(n.created)}</div>
+      <button onclick="deleteNote(${i})" style="position:absolute;top:.75rem;right:.75rem;background:none;border:none;cursor:pointer;color:var(--ink-3)" aria-label="Delete note">${L.trash(14)}</button>
     </div>`).join('');
 }
 
 function saveNote() {
   const title   = document.getElementById('note-title').value.trim();
   const content = document.getElementById('note-content').value.trim();
-  if (!title||!content) { Toast.error('Title and content required'); return; }
-  notes.unshift({title,content,tag:document.getElementById('note-tag').value,created:new Date().toISOString()});
+  if (!title || !content) { Toast.error('Title and content required'); return; }
+  notes.unshift({ title, content, tag: document.getElementById('note-tag').value, created: new Date().toISOString() });
   localStorage.setItem('em_notes', JSON.stringify(notes));
   Modal.close('addNoteModal');
   renderNotes();
   Toast.success('Note saved!');
 }
-function deleteNote(i) { notes.splice(i,1); localStorage.setItem('em_notes',JSON.stringify(notes)); renderNotes(); }
+function deleteNote(i) { notes.splice(i, 1); localStorage.setItem('em_notes', JSON.stringify(notes)); renderNotes(); }
 
 // ── Certificates ──────────────────────────────────────────
 async function loadCertificates() {
   const el = document.getElementById('certsContainer');
   try {
     const d = await Api.get('/igot/my-enrollments');
-    const completed = (d.enrollments||[]).filter(e=>e.status==='completed');
-    if (!completed.length) { el.innerHTML = emptyState('No certificates yet','Complete courses to earn certificates and badges.'); return; }
-    el.innerHTML = `<div class="bento g-auto">${completed.map(e=>`
+    const completed = (d.enrollments || []).filter(e => e.status === 'completed');
+    if (!completed.length) { el.innerHTML = emptyState('No certificates yet', 'Complete STEM courses and subjects to earn certificates and badges.'); return; }
+    el.innerHTML = `<div class="bento g-auto">${completed.map(e => `
       <div class="card" style="text-align:center;padding:1.5rem">
-        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--color-cta),var(--color-primary));display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;color:#fff">${L.award(24)}</div>
-        <div style="font-weight:700;font-size:.9375rem;margin-bottom:.25rem">${e.igot_courses?.title||'Course'}</div>
-        <div style="font-size:.8125rem;color:var(--n-400);margin-bottom:.75rem">${fmtDate(e.completed_at)}</div>
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#4da6ff);display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;color:#000">${L.award(24)}</div>
+        <div style="font-weight:700;font-size:.9375rem;margin-bottom:.25rem">${e.igot_courses?.title || 'STEM Course'}</div>
+        <div style="font-size:.8125rem;color:var(--ink-3);margin-bottom:.75rem">${fmtDate(e.completed_at)}</div>
         <span class="badge badge-active">Completed</span>
-        ${e.certificate_url?`<a href="${e.certificate_url}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="margin-top:.75rem;width:100%">${L.download(14)} Download</a>`:''}
+        ${e.certificate_url ? `<a href="${e.certificate_url}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="margin-top:.75rem;width:100%">${L.download(14)} Download</a>` : ''}
       </div>`).join('')}</div>`;
-  } catch(e) { Toast.error(e.message); }
+  } catch (e) { Toast.error(e.message); }
 }
 
 // ── Notifications ─────────────────────────────────────────
@@ -1000,25 +2204,25 @@ async function loadNotifications() {
   const el = document.getElementById('notifsEl');
   try {
     const d = await Api.get('/notifications');
-    if (!d.notifications?.length) { el.innerHTML = emptyState('All clear','No notifications right now.'); return; }
-    el.innerHTML = d.notifications.map(n=>`
-      <div style="display:flex;align-items:flex-start;gap:.75rem;padding:.85rem 0;border-bottom:1px solid var(--n-100)">
-        <div style="width:8px;height:8px;border-radius:50%;margin-top:.4rem;background:${!n.is_read?'var(--color-primary)':'transparent'};border:${!n.is_read?'none':'1px solid var(--n-200)'};flex-shrink:0"></div>
+    if (!d.notifications?.length) { el.innerHTML = emptyState('All clear', 'No notifications right now.'); return; }
+    el.innerHTML = d.notifications.map(n => `
+      <div style="display:flex;align-items:flex-start;gap:.75rem;padding:.85rem 0;border-bottom:1px solid var(--hairline)">
+        <div style="width:8px;height:8px;border-radius:50%;margin-top:.4rem;background:${!n.is_read ? 'var(--accent)' : 'transparent'};border:${!n.is_read ? 'none' : '1px solid var(--hairline-2)'};flex-shrink:0"></div>
         <div style="flex:1">
           <div style="font-size:.875rem;font-weight:600">${n.title}</div>
-          <div style="font-size:.8125rem;color:var(--n-500)">${n.body}</div>
-          <div style="font-size:.75rem;color:var(--n-400);margin-top:.25rem">${timeAgo(n.created_at)}</div>
+          <div style="font-size:.8125rem;color:var(--ink-3)">${n.body}</div>
+          <div style="font-size:.75rem;color:var(--ink-4);margin-top:.25rem">${timeAgo(n.created_at)}</div>
         </div>
-        ${!n.is_read?`<button class="btn btn-ghost btn-sm" onclick="markRead('${n.id}',this)">Mark read</button>`:''}
+        ${!n.is_read ? `<button class="btn btn-ghost btn-sm" onclick="markRead('${n.id}',this)">Mark read</button>` : ''}
       </div>`).join('');
-  } catch(e) { Toast.error(e.message); }
+  } catch (e) { Toast.error(e.message); }
 }
 
 async function markRead(id, btn) {
-  try { await Api.put(`/notifications/${id}/read`,{}); btn.closest('div').querySelector('div[style]').style.background='transparent'; btn.remove(); } catch(e) {}
+  try { await Api.put(`/notifications/${id}/read`, {}); btn.closest('div').querySelector('div[style]').style.background = 'transparent'; btn.remove(); } catch (e) {}
 }
 async function markAllRead() {
-  try { await Api.put('/notifications/read-all',{}); document.getElementById('notifBadge').style.display='none'; loadNotifications(); } catch(e) {}
+  try { await Api.put('/notifications/read-all', {}); document.getElementById('notifBadge').style.display = 'none'; loadNotifications(); } catch (e) {}
 }
 
 // ── Profile ───────────────────────────────────────────────
@@ -1026,38 +2230,32 @@ async function loadProfile() {
   try {
     const d = await Api.get('/profile');
     const p = d.profile;
-    document.getElementById('pf-name').value  = p.full_name||'';
-    document.getElementById('pf-desig').value = p.designation||'';
-    document.getElementById('pf-phone').value = p.phone||'';
-    document.getElementById('pf-edu').value   = p.education_level||'';
-    document.getElementById('pf-field').value = p.field_of_study||'';
-    document.getElementById('pf-exp').value   = p.years_of_experience||0;
-    document.getElementById('pf-lang').value  = p.preferred_language||'en';
+    document.getElementById('pf-name').value  = p.full_name || '';
+    document.getElementById('pf-desig').value = p.designation || '';
+    document.getElementById('pf-phone').value = p.phone || '';
+    document.getElementById('pf-lang').value  = p.preferred_language || 'en';
+
     document.getElementById('profileStats').innerHTML = `
       <div style="display:flex;flex-direction:column;gap:.35rem">
-        <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--n-100);font-size:.875rem"><span style="color:var(--n-500)">Designation</span><span style="font-weight:500">${p.designation||'—'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--n-100);font-size:.875rem"><span style="color:var(--n-500)">Experience</span><span style="font-weight:500;font-family:'Fira Code',monospace">${p.years_of_experience||0} yrs</span></div>
-        <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--n-100);font-size:.875rem"><span style="color:var(--n-500)">Language</span><span style="font-weight:500">${p.preferred_language||'en'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:.4rem 0;font-size:.875rem"><span style="color:var(--n-500)">Last login</span><span style="color:var(--n-400)">${fmtDate(p.last_login_at)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--hairline);font-size:.875rem"><span style="color:var(--ink-3)">Role</span><span style="font-weight:500">${p.role || 'Student'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--hairline);font-size:.875rem"><span style="color:var(--ink-3)">Language</span><span style="font-weight:500">${p.preferred_language || 'en'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.4rem 0;font-size:.875rem"><span style="color:var(--ink-3)">Last login</span><span style="color:var(--ink-4)">${fmtDate(p.last_login_at)}</span></div>
       </div>`;
-    document.getElementById('leaderboardWidget').innerHTML = `<p style="font-size:.875rem;color:var(--n-400);padding:.5rem 0">Leaderboard coming soon.</p>`;
-  } catch(_) {}
+    updateCurriculumUIHeaders();
+  } catch (_) {}
 }
 
-document.getElementById('profileForm').addEventListener('submit', async e => {
+document.getElementById('profileForm')?.addEventListener('submit', async e => {
   e.preventDefault();
   try {
-    await Api.put('/profile',{
-      full_name:           document.getElementById('pf-name').value,
-      designation:         document.getElementById('pf-desig').value,
-      phone:               document.getElementById('pf-phone').value,
-      education_level:     document.getElementById('pf-edu').value,
-      field_of_study:      document.getElementById('pf-field').value,
-      years_of_experience: parseInt(document.getElementById('pf-exp').value)||0,
-      preferred_language:  document.getElementById('pf-lang').value,
+    await Api.put('/profile', {
+      full_name:          document.getElementById('pf-name').value,
+      designation:        document.getElementById('pf-desig').value,
+      phone:              document.getElementById('pf-phone').value,
+      preferred_language: document.getElementById('pf-lang').value,
     });
     Toast.success('Profile saved!');
-  } catch(e) { Toast.error(e.message); }
+  } catch (e) { Toast.error(e.message); }
 });
 </script>
 </body>

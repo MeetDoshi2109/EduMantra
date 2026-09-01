@@ -14,8 +14,18 @@ const Api = (() => {
     const cfg = { method, headers: h };
     if (body) cfg.body = isForm ? body : JSON.stringify(body);
     const r = await fetch(`${API}${path}`, cfg);
-    if (r.status === 401) { Auth.logout(); return; }
-    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || `HTTP ${r.status}`); }
+    // On 401: if it's an auth endpoint, throw the error (don't logout).
+    // If it's a protected endpoint, the session expired — logout and redirect.
+    if (r.status === 401) {
+      const e = await r.json().catch(() => ({}));
+      const isAuthEndpoint = path.startsWith('/auth/');
+      if (!isAuthEndpoint) Auth.logout();
+      throw new Error(e.error || 'Invalid credentials');
+    }
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      throw new Error(e.detail || e.error || `HTTP ${r.status}`);
+    }
     if (r.status === 204) return null;
     return r.json();
   }

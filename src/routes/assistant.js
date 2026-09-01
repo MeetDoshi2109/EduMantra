@@ -1,93 +1,109 @@
 const express = require('express');
 const { supabaseAdmin } = require('../config/supabase');
 const { authenticate } = require('../middleware/auth');
-const { OPENAI_API_KEY, OPENAI_MODEL } = require('../config/env');
-const OpenAI = require('openai');
+const AI = require('../services/ai');
+const logger = require('../config/logger');
 
 const router = express.Router();
 
-function getOpenAI() {
-  if (!OPENAI_API_KEY) return null;
-  return new OpenAI({ apiKey: OPENAI_API_KEY });
-}
-
-const SYSTEM_PROMPT = `You are EduMantra AI Assistant, an expert learning advisor for government officials in India's Official Statistical System. You help users:
-- Understand their skill gaps and competency requirements
-- Find relevant courses on iGOT Karmayogi platform
-- Navigate statistical concepts (Survey Design, National Accounts, SDGs, etc.)
-- Learn technical tools (Python, R, SQL, GIS, SPSS, etc.)
-- Understand digital governance and data privacy
-- Plan their learning journey and career progression
-
-Be concise, practical, and supportive. Use simple language. When referencing courses or resources, suggest checking the iGOT platform.`;
-
 // ── POST /api/v1/assistant/chat ──────────────────────────
 router.post('/chat', authenticate, async (req, res) => {
-  const { message, session_id } = req.body;
+  const { message, session_id, subject_id, chapter_id, topic_id } = req.body;
   if (!message?.trim()) return res.status(422).json({ error: 'message is required' });
-
-  if (!OPENAI_API_KEY) {
-    return res.status(400).json({ error: 'AI assistant not configured. OPENAI_API_KEY missing.' });
-  }
 
   try {
     let sessionId = session_id;
+    let history = [];
+
+    // Ensure the user exists in users table (prevents FK violations)
+    if (req.profile?.id) {
+      await supabaseAdmin.from('users').upsert({
+        id: req.profile.id,
+        email: req.profile.email || req.user?.email || 'user@example.com',
+        full_name: req.profile.full_name || 'Student',
+        role: req.profile.role || 'student',
+      }).catch(() => {});
+    }
 
     // Create session if none provided
-    if (!sessionId) {
-      const { data: session } = await supabaseAdmin
-        .from('ai_chat_sessions')
-        .insert({
-          user_id: req.profile.id,
-          title: message.slice(0, 60),
-        })
-        .select().single();
-      sessionId = session.id;
+    if (!sessionId && req.profile?.id) {
+      try {
+        const { data: session } = await supabaseAdmin
+          .from('ai_chat_sessions')
+          .insert({
+            user_id: req.profile.id,
+            title: message.slice(0, 60),
+          })
+          .select()
+          .single();
+        if (session?.id) sessionId = session.id;
+      } catch (err) {
+        logger.warn('Could not persist ai_chat_session:', err.message);
+      }
     }
 
     // Fetch conversation history (last 10 messages for context)
-    const { data: history } = await supabaseAdmin
-      .from('ai_chat_messages')
-      .select('role, content')
-      .eq('session_id', sessionId)
-      .order('created_at', { ascending: true })
-      .limit(10);
+    if (sessionId) {
+      try {
+        const { data: hist } = await supabaseAdmin
+          .from('ai_chat_messages')
+          .select('role, content')
+          .eq('session_id', sessionId)
+          .order('created_at', { ascending: true })
+          .limit(10);
+        if (hist) history = hist;
+      } catch (err) {
+        logger.warn('Could not load chat history:', err.message);
+      }
+    }
 
     const messages = [
-      { role: 'system', content: SYSTEM_PROMPT },
-      // Add user context
-      {
-        role: 'system',
-        content: `Current user: ${req.profile.full_name}, Role: ${req.profile.role}, Designation: ${req.profile.designation || 'N/A'}, Experience: ${req.profile.years_of_experience || 0} years`,
-      },
-      ...(history || []),
+      ...history.map(m => ({ role: m.role, content: m.content })),
       { role: 'user', content: message },
     ];
 
-    const openai = getOpenAI();
-    if (!openai) {
-      return res.status(400).json({ error: 'AI assistant not configured. OPENAI_API_KEY missing.' });
+    let subjectName = 'STEM (Mathematics, Science, Computer Science & IT)';
+    if (subject_id && typeof subject_id === 'string' && subject_id !== 'null') {
+      try {
+        const { data: sub } = await supabaseAdmin.from('subjects').select('name').eq('id', subject_id).single();
+        if (sub?.name) subjectName = sub.name;
+      } catch (_) {}
     }
 
-    const completion = await openai.chat.completions.create({
-      model: OPENAI_MODEL,
-      messages,
-      max_tokens: 600,
-      temperature: 0.7,
+    const response = await AI.tutorChat(messages, {
+      full_name: req.profile?.full_name || 'Student',
+      class: req.profile?.grade ? `Class ${req.profile.grade}` : 'School Student',
+      board: req.profile?.board || 'CBSE',
+      subject: subjectName,
+      language: req.profile?.preferred_language || 'en',
     });
 
-    const reply = completion.choices[0].message.content;
-    const tokensUsed = completion.usage?.total_tokens || 0;
+    const reply = response.content || 'I am ready to help with your STEM questions! What would you like to explore?';
+    const tokensUsed = response.tokens_used || 0;
 
-    // Save both messages
-    await supabaseAdmin.from('ai_chat_messages').insert([
-      { session_id: sessionId, role: 'user', content: message },
-      { session_id: sessionId, role: 'assistant', content: reply, tokens_used: tokensUsed },
-    ]);
+    // Save messages if session exists
+    if (sessionId) {
+      try {
+        await supabaseAdmin.from('ai_chat_messages').insert([
+          { session_id: sessionId, role: 'user', content: message },
+          { session_id: sessionId, role: 'assistant', content: reply, tokens_used: tokensUsed },
+        ]);
+      } catch (err) {
+        logger.warn('Could not save ai_chat_messages:', err.message);
+      }
+    }
 
-    res.json({ reply, session_id: sessionId, tokens_used: tokensUsed });
+    res.json({
+      reply,
+      session_id: sessionId || ('sess_' + Date.now()),
+      tokens_used: tokensUsed,
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Assistant failed', detail: err.message });
+    logger.error('Assistant chat failed:', err.message);
+    res.status(500).json({
+      error: 'Assistant failed',
+      detail: err.message,
+    });
   }
 });
 
@@ -100,10 +116,10 @@ router.get('/sessions', authenticate, async (req, res) => {
       .eq('user_id', req.profile.id)
       .order('updated_at', { ascending: false })
       .limit(20);
-    if (error) return res.status(400).json({ error: error.message });
-    res.json({ sessions: data });
+    if (error) return res.json({ sessions: [] });
+    res.json({ sessions: data || [] });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch sessions' });
+    res.json({ sessions: [] });
   }
 });
 
@@ -115,10 +131,10 @@ router.get('/sessions/:id', authenticate, async (req, res) => {
       .select('role, content, created_at')
       .eq('session_id', req.params.id)
       .order('created_at', { ascending: true });
-    if (error) return res.status(400).json({ error: error.message });
-    res.json({ messages });
+    if (error) return res.json({ messages: [] });
+    res.json({ messages: messages || [] });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch chat history' });
+    res.json({ messages: [] });
   }
 });
 

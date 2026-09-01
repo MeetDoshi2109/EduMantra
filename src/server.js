@@ -10,7 +10,7 @@ const { PORT, CORS_ORIGINS, RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX, NODE_ENV } = r
 const logger = require('./config/logger');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 
-// Routes
+// ── Existing Routes ───────────────────────────────────────────
 const authRoutes        = require('./routes/auth');
 const profileRoutes     = require('./routes/profile');
 const competencyRoutes  = require('./routes/competency');
@@ -23,6 +23,17 @@ const assistantRoutes   = require('./routes/assistant');
 const developerRoutes   = require('./routes/developer');
 const organizationRoutes = require('./routes/organization');
 const notificationRoutes = require('./routes/notifications');
+
+// ── New School Learning Routes ────────────────────────────────
+const curriculumRoutes     = require('./routes/curriculum');
+const contentRoutes        = require('./routes/content');
+const questionsRoutes      = require('./routes/questions');
+const adaptiveRoutes       = require('./routes/adaptive');
+const masteryRoutes        = require('./routes/mastery');
+const recommendationsRoutes = require('./routes/recommendations');
+const tutorRoutes          = require('./routes/tutor');
+
+
 
 const app = express();
 
@@ -66,7 +77,7 @@ app.use('/api', limiter);
 // ── Static frontend ────────────────────────────────────────
 app.use(express.static(path.join(__dirname, '../public')));
 
-// ── API Routes ─────────────────────────────────────────────
+// ── API Routes — Existing ──────────────────────────────────
 app.use('/api/v1/auth',          authRoutes);
 app.use('/api/v1/profile',       profileRoutes);
 app.use('/api/v1/competencies',  competencyRoutes);
@@ -75,10 +86,19 @@ app.use('/api/v1/pathways',      pathwayRoutes);
 app.use('/api/v1/igot',          igotRoutes);
 app.use('/api/v1/assessments',   assessmentRoutes);
 app.use('/api/v1/analytics',     analyticsRoutes);
-app.use('/api/v1/assistant',     assistantRoutes);
+app.use('/api/v1/assistant',     assistantRoutes);  // legacy AI assistant kept
 app.use('/api/v1/developer',     developerRoutes);
 app.use('/api/v1/organization',  organizationRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
+
+// ── API Routes — School Learning (new) ────────────────────
+app.use('/api/v1/curriculum',     curriculumRoutes);
+app.use('/api/v1/content',        contentRoutes);
+app.use('/api/v1/questions',      questionsRoutes);
+app.use('/api/v1/adaptive',       adaptiveRoutes);
+app.use('/api/v1/mastery',        masteryRoutes);
+app.use('/api/v1/recommendations', recommendationsRoutes);
+app.use('/api/v1/tutor',          tutorRoutes);
 
 // ── Health check ───────────────────────────────────────────
 app.get('/api/health', (req, res) => {
@@ -110,8 +130,8 @@ app.get('*', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// ── Start (local only — Vercel imports the module directly) ──
-if (process.env.NODE_ENV !== 'production') {
+// ── Start (local only — Vercel imports the module via api/index.js) ──
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     logger.info(`EduMantra server running on port ${PORT} [${NODE_ENV}]`);
   });

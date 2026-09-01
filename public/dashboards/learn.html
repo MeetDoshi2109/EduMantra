@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduMantra – Learn</title>
+<meta name="description" content="EduMantra adaptive learning dashboard — CBSE, NCERT & State Board curriculum-aligned AI assessments for Classes 1–10">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/design-system.css">
+<script src="/js/theme.js"></script>
+<style>
+:root {
+  --purple:   #8B5CF6;
+  --indigo:   #6366F1;
+  --cyan:     #06B6D4;
+  --amber:    #F59E0B;
+  --rose:     #F43F5E;
+  --emerald:  #10B981;
+  --sky:      #38BDF8;
+}
+
+/* ── Layout ───────────────────────────────────────────────── */
+.learn-layout { display:grid; grid-template-columns:260px 1fr; min-height:100vh; }
+@media(max-width:768px){ .learn-layout { grid-template-columns:1fr; } }
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+.sidebar {
+  background: var(--surface-2);
+  border-right: 1px solid var(--hairline);
+  display: flex; flex-direction: column;
+  padding: 1.25rem 0;
+  position: sticky; top:0; height:100vh; overflow-y:auto;
+}
+.sidebar-brand { display:flex;align-items:center;gap:.75rem;padding:.5rem 1.25rem 1.25rem; }
+.sidebar-logo { width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--indigo),var(--purple));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1rem; }
+.sidebar-name { font-weight:700;font-size:1.05rem;color:var(--ink); }
+.sidebar-tag  { font-size:.65rem;color:var(--ink-3);font-weight:500;text-transform:uppercase;letter-spacing:.05em; }
+
+.sidebar-nav { flex:1; }
+.nav-section { padding:.5rem 1.25rem .25rem;font-size:.65rem;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:.08em; }
+.nav-item {
+  display:flex;align-items:center;gap:.75rem;
+  padding:.6rem 1.25rem;margin:.1rem .5rem;border-radius:8px;
+  font-size:.875rem;font-weight:500;color:var(--ink-2);
+  cursor:pointer;transition:all .15s;text-decoration:none;
+}
+.nav-item:hover { background:var(--hairline);color:var(--ink); }
+.nav-item.active { background:rgba(99,102,241,.12);color:var(--indigo);font-weight:600; }
+.nav-icon { width:18px;height:18px;opacity:.7;flex-shrink:0; }
+.nav-item.active .nav-icon { opacity:1; }
+
+.sidebar-curriculum {
+  padding:.75rem 1.25rem;margin:.5rem;
+  background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(139,92,246,.08));
+  border-radius:12px; border:1px solid rgba(99,102,241,.2);
+}
+.curr-label { font-size:.7rem;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem; }
+.curr-value { font-size:.82rem;font-weight:600;color:var(--indigo); }
+
+/* ── Main content ─────────────────────────────────────────── */
+.main-content { display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden; }
+
+/* ── Topbar ──────────────────────────────────────────────── */
+.topbar {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 2rem;border-bottom:1px solid var(--hairline);
+  background:var(--surface-1);position:sticky;top:0;z-index:50;
+}
+.topbar-greeting h2 { font-size:1.1rem;font-weight:700;color:var(--ink);margin:0; }
+.topbar-greeting p  { font-size:.8rem;color:var(--ink-3);margin:0; }
+.topbar-actions { display:flex;align-items:center;gap:.75rem; }
+.avatar { width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--purple));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.875rem;cursor:pointer; }
+
+/* ── Page sections ───────────────────────────────────────── */
+.page { padding:2rem;display:none; }
+.page.active { display:block; }
+.page-title { font-size:1.5rem;font-weight:800;color:var(--ink);margin-bottom:.25rem; }
+.page-sub   { font-size:.875rem;color:var(--ink-3);margin-bottom:2rem; }
+
+/* ── Grid helpers ─────────────────────────────────────────── */
+.g2 { display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem; }
+.g3 { display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem; }
+.g4 { display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem; }
+.g-auto { display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem; }
+@media(max-width:900px){ .g4,.g3{grid-template-columns:repeat(2,1fr);} }
+@media(max-width:600px){ .g4,.g3,.g2{grid-template-columns:1fr;} }
+
+/* ── Cards ───────────────────────────────────────────────── */
+.card {
+  background:var(--surface-2);border:1px solid var(--hairline);
+  border-radius:16px;padding:1.25rem;
+  transition:all .2s;
+}
+.card-hover:hover { border-color:var(--hairline-2);transform:translateY(-2px);box-shadow:var(--shadow-md);cursor:pointer; }
+.card-sm { padding:.875rem; }
+
+/* ── Stat cards ──────────────────────────────────────────── */
+.stat-card {
+  border-radius:16px;padding:1.25rem;
+  display:flex;align-items:center;gap:1rem;
+  border:1px solid transparent;
+}
+.stat-icon { width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0; }
+.stat-val   { font-size:1.75rem;font-weight:800;line-height:1; }
+.stat-lbl   { font-size:.78rem;color:var(--ink-3);margin-top:2px; }
+
+.stat-indigo  { background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.15); }
+.stat-purple  { background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.15); }
+.stat-emerald { background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.15); }
+.stat-amber   { background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.15); }
+.stat-rose    { background:rgba(244,63,94,.08);border-color:rgba(244,63,94,.15); }
+.stat-cyan    { background:rgba(6,182,212,.08);border-color:rgba(6,182,212,.15); }
+
+/* ── Subject cards ───────────────────────────────────────── */
+.subject-card {
+  border-radius:16px;padding:1.25rem;cursor:pointer;
+  border:1px solid var(--hairline);background:var(--surface-2);
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.subject-card::before {
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:100px;height:100px;border-radius:50%;opacity:.08;
+}
+.subject-card:hover { transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--hairline-2); }
+.subject-icon { width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:.75rem; }
+.subject-name { font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:.5rem; }
+.subject-meta { font-size:.75rem;color:var(--ink-3);margin-bottom:.75rem; }
+
+/* ── Progress bar ─────────────────────────────────────────── */
+.pbar-wrap { height:6px;background:var(--hairline);border-radius:999px;overflow:hidden; }
+.pbar { height:100%;border-radius:999px;transition:width .6s ease;background:currentColor; }
+
+/* ── Mastery meter ───────────────────────────────────────── */
+.mastery-ring { position:relative;width:80px;height:80px; }
+.mastery-ring svg { transform:rotate(-90deg); }
+.mastery-ring .ring-bg { fill:none;stroke:var(--hairline);stroke-width:6; }
+.mastery-ring .ring-fg { fill:none;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .8s ease; }
+.mastery-ring .ring-val { position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.875rem;font-weight:700;color:var(--ink); }
+
+/* ── Knowledge gap card ──────────────────────────────────── */
+.gap-card {
+  background:rgba(244,63,94,.04);border:1px solid rgba(244,63,94,.2);
+  border-radius:12px;padding:1rem;display:flex;align-items:center;gap:.75rem;
+}
+.gap-icon { width:36px;height:36px;border-radius:10px;background:rgba(244,63,94,.1);color:var(--rose);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0; }
+.gap-title { font-size:.85rem;font-weight:600;color:var(--ink);margin-bottom:2px; }
+.gap-sub   { font-size:.75rem;color:var(--ink-3); }
+.gap-score { font-size:1.1rem;font-weight:800;color:var(--rose);margin-left:auto;flex-shrink:0; }
+
+/* ── Recommendation card ─────────────────────────────────── */
+.rec-card {
+  background:var(--surface-2);border:1px solid var(--hairline);border-radius:12px;
+  padding:1rem;display:flex;gap:.875rem;align-items:flex-start;
+  transition:all .2s;cursor:pointer;
+}
+.rec-card:hover { border-color:var(--hairline-2);transform:translateY(-1px); }
+.rec-type-badge {
+  padding:.25rem .6rem;border-radius:6px;font-size:.65rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;
+}
+.rec-type-revise  { background:rgba(245,158,11,.1);color:var(--amber); }
+.rec-type-practice{ background:rgba(99,102,241,.1);color:var(--indigo); }
+.rec-type-assess  { background:rgba(16,185,129,.1);color:var(--emerald); }
+.rec-type-explore { background:rgba(6,182,212,.1);color:var(--cyan); }
+.rec-title { font-size:.875rem;font-weight:600;color:var(--ink);margin-bottom:3px; }
+.rec-desc  { font-size:.78rem;color:var(--ink-3);line-height:1.4; }
+
+/* ── Chapter browser ─────────────────────────────────────── */
+.chapter-row {
+  display:flex;align-items:center;gap:1rem;padding:.875rem 1rem;
+  border-radius:12px;background:var(--surface-2);border:1px solid var(--hairline);
+  cursor:pointer;transition:all .15s;margin-bottom:.5rem;
+}
+.chapter-row:hover { border-color:var(--hairline-2);background:var(--surface-3,var(--surface-2)); }
+.chapter-num { width:28px;height:28px;border-radius:8px;background:var(--hairline);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:var(--ink-3);flex-shrink:0; }
+.chapter-info { flex:1;min-width:0; }
+.chapter-title { font-size:.875rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.chapter-meta  { font-size:.72rem;color:var(--ink-3); }
+.chapter-mastery { font-size:.875rem;font-weight:700;flex-shrink:0; }
+
+/* ── Start assessment CTA ────────────────────────────────── */
+.start-cta {
+  background:linear-gradient(135deg,var(--indigo),var(--purple));
+  border-radius:16px;padding:2rem;color:#fff;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  margin-bottom:2rem;
+}
+.start-cta h3 { font-size:1.2rem;font-weight:700;margin:0 0 .5rem; }
+.start-cta p  { font-size:.875rem;opacity:.85;margin:0; }
+.btn-white { background:#fff;color:var(--indigo);border:none;padding:.65rem 1.5rem;border-radius:10px;font-weight:700;font-size:.875rem;cursor:pointer;transition:all .15s; }
+.btn-white:hover { background:rgba(255,255,255,.9);transform:translateY(-1px); }
+
+/* ── Selector (Board/Class/Subject) ──────────────────────── */
+.selector-modal { position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem; }
+.selector-box { background:var(--surface-2);border-radius:20px;padding:2rem;width:100%;max-width:480px;border:1px solid var(--hairline-2); }
+.selector-title { font-size:1.2rem;font-weight:800;color:var(--ink);margin-bottom.5rem; }
+.selector-sub { font-size:.875rem;color:var(--ink-3);margin-bottom:1.5rem; }
+.sel-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.75rem;margin-bottom:1rem; }
+.sel-option {
+  padding:.875rem;border-radius:12px;border:2px solid var(--hairline);
+  background:var(--surface-1);cursor:pointer;text-align:center;
+  font-size:.85rem;font-weight:600;color:var(--ink-2);transition:all .15s;
+}
+.sel-option:hover { border-color:var(--indigo);color:var(--indigo);background:rgba(99,102,241,.06); }
+.sel-option.selected { border-color:var(--indigo);background:rgba(99,102,241,.1);color:var(--indigo); }
+.sel-step { font-size:.75rem;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;margin:.75rem 0 .5rem; }
+.btn-primary { background:var(--indigo);color:#fff;border:none;padding:.7rem 1.5rem;border-radius:10px;font-weight:700;font-size:.875rem;cursor:pointer;transition:all .15s;width:100%; }
+.btn-primary:hover { background:#4F46E5; }
+.btn-primary:disabled { opacity:.5;cursor:not-allowed; }
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.btn { display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.2rem;border-radius:9px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .15s; }
+.btn-sm { padding:.4rem .9rem;font-size:.8rem; }
+.btn-indigo { background:var(--indigo);color:#fff; }
+.btn-indigo:hover { background:#4F46E5; }
+.btn-ghost { background:transparent;border:1px solid var(--hairline-2);color:var(--ink-2); }
+.btn-ghost:hover { background:var(--hairline);color:var(--ink); }
+.btn-danger { background:var(--rose);color:#fff; }
+
+/* ── Topic list ──────────────────────────────────────────── */
+.topic-item {
+  display:flex;align-items:center;gap:.75rem;padding:.75rem .875rem;
+  border-radius:10px;cursor:pointer;transition:all .15s;border:1px solid transparent;
+}
+.topic-item:hover { background:var(--surface-2);border-color:var(--hairline); }
+.topic-dot { width:8px;height:8px;border-radius:50%;background:var(--indigo);flex-shrink:0; }
+.topic-dot.gap { background:var(--rose); }
+.topic-dot.mastered { background:var(--emerald); }
+.topic-info { flex:1; }
+.topic-name   { font-size:.875rem;font-weight:500;color:var(--ink); }
+.topic-status { font-size:.72rem;color:var(--ink-3); }
+
+/* ── Activity feed ───────────────────────────────────────── */
+.activity-item { display:flex;align-items:center;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--hairline); }
+.activity-item:last-child { border-bottom:none; }
+.act-icon { width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.875rem;flex-shrink:0; }
+.act-label { font-size:.875rem;font-weight:500;color:var(--ink); }
+.act-sub   { font-size:.75rem;color:var(--ink-3); }
+.act-score { font-size:.875rem;font-weight:700;margin-left:auto;flex-shrink:0; }
+
+/* ── Tutor chat preview ──────────────────────────────────── */
+.tutor-input-wrap { display:flex;gap:.5rem;margin-top:1rem; }
+.tutor-input { flex:1;background:var(--surface-1);border:1px solid var(--hairline-2);border-radius:10px;padding:.6rem .875rem;font-size:.875rem;color:var(--ink);outline:none; }
+.tutor-input:focus { border-color:var(--indigo); }
+.tutor-msg { padding:.625rem .875rem;border-radius:10px;font-size:.85rem;line-height:1.5;max-width:90%;margin-bottom:.5rem; }
+.tutor-msg.user { background:rgba(99,102,241,.1);color:var(--ink);margin-left:auto;border-bottom-right-radius:3px; }
+.tutor-msg.ai   { background:var(--surface-2);border:1px solid var(--hairline);color:var(--ink-2);border-bottom-left-radius:3px; }
+
+/* ── Loading states ──────────────────────────────────────── */
+.skeleton { background:linear-gradient(90deg,var(--hairline) 25%,var(--hairline-2,var(--surface-3,var(--surface-2))) 50%,var(--hairline) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.loading-pulse { animation:pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── Empty state ─────────────────────────────────────────── */
+.empty-state { text-align:center;padding:3rem 1rem; }
+.empty-icon { font-size:3rem;margin-bottom:1rem; }
+.empty-title { font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:.5rem; }
+.empty-sub   { font-size:.875rem;color:var(--ink-3);margin-bottom:1.5rem; }
+
+/* ── Chips ───────────────────────────────────────────────── */
+.chip { display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;background:var(--hairline);border-radius:99px;font-size:.72rem;font-weight:600;color:var(--ink-3); }
+
+/* ── Toast ───────────────────────────────────────────────── */
+#toast-container { position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem; }
+.toast { background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:10px;padding:.75rem 1.25rem;font-size:.85rem;font-weight:500;color:var(--ink);box-shadow:var(--shadow-lg);animation:slideIn .2s ease; }
+.toast.success { border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.06); }
+.toast.error   { border-color:rgba(244,63,94,.3);background:rgba(244,63,94,.06); }
+@keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+</style>
+</head>
+<body>
+<div class="learn-layout">
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">E</div>
+      <div>
+        <div class="sidebar-name">EduMantra</div>
+        <div class="sidebar-tag">Adaptive Learning</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">Learn</div>
+      <a class="nav-item active" data-page="home" onclick="showPage('home');return false;">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </a>
+      <a class="nav-item" data-page="subjects" onclick="showPage('subjects');return false;">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Subjects
+      </a>
+      <a class="nav-item" data-page="mastery" onclick="showPage('mastery');return false;">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        My Mastery
+      </a>
+      <a class="nav-item" data-page="practice" onclick="showPage('practice');return false;">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        Practice
+      </a>
+
+      <div class="nav-section" style="margin-top:.75rem;">Support</div>
+      <a class="nav-item" data-page="tutor" onclick="showPage('tutor');return false;">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        AI Tutor
+      </a>
+    </nav>
+
+    <!-- Curriculum context pill -->
+    <div class="sidebar-curriculum" id="sidebar-context" style="display:none;">
+      <div class="curr-label">My Curriculum</div>
+      <div class="curr-value" id="ctx-board-class">—</div>
+      <div style="font-size:.78rem;color:var(--ink-3);margin-top:2px;" id="ctx-medium">—</div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:.5rem;width:100%;justify-content:center;" onclick="openCurriculumSelector()">Change</button>
+    </div>
+    <div style="padding:.5rem 1rem;">
+      <button id="btn-sign-out" class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main-content">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-greeting">
+        <h2 id="greeting-text">Welcome back! 👋</h2>
+        <p id="greeting-sub">Let's continue your learning journey</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm" onclick="showPage('practice')">⚡ Practice Now</button>
+        <div class="avatar" id="user-avatar">S</div>
+      </div>
+    </header>
+
+    <!-- ═══ HOME PAGE ═══ -->
+    <div class="page active" id="page-home">
+      <!-- Onboarding CTA if no curriculum set -->
+      <div id="onboarding-cta" style="display:none;">
+        <div class="start-cta" style="background:linear-gradient(135deg,#4F46E5,#7C3AED);">
+          <div>
+            <h3>🎓 Set up your learning profile</h3>
+            <p>Choose your board, class & medium to get personalized practice</p>
+          </div>
+          <button class="btn-white" onclick="openCurriculumSelector()">Get Started →</button>
+        </div>
+      </div>
+
+      <!-- Daily goal / continue learning -->
+      <div id="continue-section" style="display:none;margin-bottom:2rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <h3 style="font-size:1rem;font-weight:700;color:var(--ink);margin:0;">🔥 Continue Learning</h3>
+          <button class="btn btn-ghost btn-sm" onclick="showPage('subjects')">View all</button>
+        </div>
+        <div id="continue-cards" class="g3"></div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="g4" style="margin-bottom:2rem;" id="stats-row">
+        <div class="stat-card stat-indigo skeleton" style="height:90px;"></div>
+        <div class="stat-card stat-emerald skeleton" style="height:90px;"></div>
+        <div class="stat-card stat-amber skeleton" style="height:90px;"></div>
+        <div class="stat-card stat-rose skeleton" style="height:90px;"></div>
+      </div>
+
+      <!-- Recommendations + Gaps -->
+      <div class="g2" style="margin-bottom:2rem;">
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;">
+            <h3 style="font-size:1rem;font-weight:700;color:var(--ink);margin:0;">💡 Recommended for You</h3>
+            <button class="btn btn-ghost btn-sm" id="btn-refresh-recs" onclick="refreshRecommendations()">Refresh</button>
+          </div>
+          <div id="recommendations-list"></div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;">
+            <h3 style="font-size:1rem;font-weight:700;color:var(--ink);margin:0;">🎯 Knowledge Gaps</h3>
+            <span id="gap-count" class="chip">0 gaps</span>
+          </div>
+          <div id="gaps-list"></div>
+        </div>
+      </div>
+
+      <!-- Recent activity -->
+      <div class="card">
+        <h3 style="font-size:1rem;font-weight:700;color:var(--ink);margin:0 0 1rem;">📅 Recent Activity</h3>
+        <div id="recent-activity">
+          <div class="empty-state">
+            <div class="empty-icon">📚</div>
+            <div class="empty-sub">No activity yet. Start a practice session!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SUBJECTS PAGE ═══ -->
+    <div class="page" id="page-subjects">
+      <div class="page-title">📚 Subjects</div>
+      <div class="page-sub" id="subjects-page-sub">Your curriculum subjects</div>
+
+      <!-- Subject selector -->
+      <div id="subjects-grid" class="g-auto" style="margin-bottom:2rem;"></div>
+
+      <!-- Chapter browser (shows when subject selected) -->
+      <div id="chapter-browser" style="display:none;">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;">
+          <button class="btn btn-ghost btn-sm" onclick="backToSubjects()">← Back</button>
+          <div>
+            <div style="font-size:1rem;font-weight:700;color:var(--ink);" id="subject-browser-title">Subject</div>
+            <div style="font-size:.78rem;color:var(--ink-3);" id="subject-browser-meta"></div>
+          </div>
+        </div>
+        <div id="chapters-list"></div>
+      </div>
+
+      <!-- Topic list (shows when chapter selected) -->
+      <div id="topic-browser" style="display:none;">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;">
+          <button class="btn btn-ghost btn-sm" id="btn-back-to-chapters" onclick="backToChapters()">← Chapters</button>
+          <div>
+            <div style="font-size:1rem;font-weight:700;color:var(--ink);" id="chapter-browser-title"></div>
+            <div style="font-size:.78rem;color:var(--ink-3);" id="chapter-browser-meta"></div>
+          </div>
+        </div>
+        <div class="g2">
+          <div>
+            <h4 style="font-size:.875rem;font-weight:700;color:var(--ink-2);margin:0 0 .75rem;">Topics</h4>
+            <div id="topics-list"></div>
+          </div>
+          <div>
+            <div class="card" style="position:sticky;top:80px;">
+              <h4 style="font-size:.875rem;font-weight:700;color:var(--ink);margin:0 0 1rem;">Chapter Mastery</h4>
+              <div style="text-align:center;margin-bottom:1.25rem;">
+                <div class="mastery-ring" style="margin:0 auto;">
+                  <svg width="80" height="80" viewBox="0 0 80 80">
+                    <circle class="ring-bg" cx="40" cy="40" r="32"/>
+                    <circle class="ring-fg" id="chapter-ring-fg" cx="40" cy="40" r="32" style="stroke:var(--indigo);" stroke-dasharray="201" stroke-dashoffset="201"/>
+                  </svg>
+                  <div class="ring-val" id="chapter-ring-val">—</div>
+                </div>
+                <div style="font-size:.8rem;color:var(--ink-3);margin-top:.5rem;" id="chapter-mastery-label">Not started yet</div>
+              </div>
+              <button class="btn btn-indigo" style="width:100%;" id="btn-start-chapter-assessment"
+                onclick="startChapterAssessment()">⚡ Start Practice</button>
+              <button class="btn btn-ghost" style="width:100%;margin-top:.5rem;" onclick="openTutorForChapter()">💬 Ask AI Tutor</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MASTERY PAGE ═══ -->
+    <div class="page" id="page-mastery">
+      <div class="page-title">📊 My Mastery</div>
+      <div class="page-sub">Concept-level mastery across all subjects</div>
+
+      <div class="g4" style="margin-bottom:2rem;" id="mastery-summary-stats"></div>
+
+      <div id="mastery-by-subject"></div>
+    </div>
+
+    <!-- ═══ PRACTICE PAGE ═══ -->
+    <div class="page" id="page-practice">
+      <div class="page-title">⚡ Quick Practice</div>
+      <div class="page-sub">Start a focused adaptive session</div>
+      <div id="practice-options"></div>
+    </div>
+
+    <!-- ═══ TUTOR PAGE ═══ -->
+    <div class="page" id="page-tutor">
+      <div class="page-title">💬 AI Tutor</div>
+      <div class="page-sub">Ask anything about your curriculum</div>
+
+      <div class="g2" style="height:calc(100vh - 160px);">
+        <!-- Session list -->
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+            <h4 style="font-size:.875rem;font-weight:700;color:var(--ink-2);margin:0;">Sessions</h4>
+            <button class="btn btn-indigo btn-sm" onclick="startNewTutorSession()">+ New</button>
+          </div>
+          <div id="tutor-sessions-list"></div>
+        </div>
+        <!-- Active chat -->
+        <div class="card" style="display:flex;flex-direction:column;height:100%;min-height:400px;">
+          <div id="chat-context" style="padding:.5rem .75rem;background:rgba(99,102,241,.06);border-radius:8px;font-size:.78rem;color:var(--indigo);font-weight:600;margin-bottom:.75rem;display:none;"></div>
+          <div id="tutor-messages" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:.25rem;"></div>
+          <div class="tutor-input-wrap">
+            <input type="text" class="tutor-input" id="tutor-input" placeholder="Ask about anything in your curriculum…" onkeydown="if(event.key==='Enter')sendTutorMessage()">
+            <button class="btn btn-indigo" onclick="sendTutorMessage()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Curriculum Selector Modal -->
+<div class="selector-modal" id="curriculum-selector" style="display:none;">
+  <div class="selector-box">
+    <div class="selector-title" style="margin-bottom:.25rem;">🎓 Your Learning Profile</div>
+    <div class="selector-sub">Choose your board, class & medium of instruction</div>
+
+    <div class="sel-step">1. Select Board</div>
+    <div class="sel-grid" id="board-options"></div>
+
+    <div class="sel-step">2. Select Class</div>
+    <div class="sel-grid" id="class-options"></div>
+
+    <div class="sel-step">3. Medium of Instruction</div>
+    <div class="sel-grid" id="medium-options"></div>
+
+    <button class="btn-primary" id="btn-save-curriculum" onclick="saveCurriculumContext()" disabled>Save Profile</button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:.5rem;justify-content:center;" id="btn-cancel-selector" onclick="closeCurriculumSelector()">Cancel</button>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script src="/js/api.js"></script>
+<script>
+// ══════════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════════
+const state = {
+  profile: null,
+  boards: [], classes: [], mediums: [], subjects: [], books: [],
+  selectedBoard: null, selectedClass: null, selectedMedium: null,
+  selectedSubject: null, selectedBook: null, selectedChapter: null,
+  mastery: null, gaps: [], recommendations: [],
+  tutorSessionId: null,
+  token: localStorage.getItem('em_token'),
+};
+
+// ══════════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!state.token) return (window.location.href = '/');
+  try {
+    state.profile = await apiFetch('/api/v1/profile');
+    initUI();
+    loadHomeData();
+  } catch {
+    window.location.href = '/';
+  }
+});
+
+function initUI() {
+  const p = state.profile;
+  document.getElementById('greeting-text').textContent = `Welcome back, ${p.full_name?.split(' ')[0] || 'Student'}! 👋`;
+  document.getElementById('user-avatar').textContent = (p.full_name || 'S')[0].toUpperCase();
+  document.getElementById('btn-sign-out').onclick = () => { localStorage.removeItem('em_token'); window.location.href = '/'; };
+
+  if (p.board_id && p.class_id) {
+    document.getElementById('sidebar-context').style.display = 'block';
+    document.getElementById('onboarding-cta').style.display = 'none';
+    document.getElementById('continue-section').style.display = 'block';
+    updateSidebarContext(p);
+  } else {
+    document.getElementById('onboarding-cta').style.display = 'block';
+    document.getElementById('continue-section').style.display = 'none';
+    document.getElementById('sidebar-context').style.display = 'none';
+  }
+}
+
+async function loadHomeData() {
+  await Promise.all([loadStats(), loadRecommendations(), loadGaps(), loadRecentActivity()]);
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// PAGE NAVIGATION
+// ══════════════════════════════════════════════════════════════════════
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name)?.classList.add('active');
+  document.querySelector(`[data-page="${name}"]`)?.classList.add('active');
+
+  if (name === 'subjects') loadSubjectsPage();
+  if (name === 'mastery')  loadMasteryPage();
+  if (name === 'practice') loadPracticePage();
+  if (name === 'tutor')    loadTutorPage();
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// CURRICULUM SELECTOR
+// ══════════════════════════════════════════════════════════════════════
+async function openCurriculumSelector() {
+  document.getElementById('curriculum-selector').style.display = 'flex';
+  state.selectedBoard = null; state.selectedClass = null; state.selectedMedium = null;
+
+  // Load boards
+  if (!state.boards.length) {
+    const { boards } = await apiFetch('/api/v1/curriculum/boards').catch(() => ({ boards: [] }));
+    state.boards = boards || [];
+  }
+  if (!state.mediums.length) {
+    const { mediums } = await apiFetch('/api/v1/curriculum/mediums').catch(() => ({ mediums: [] }));
+    state.mediums = mediums || [];
+  }
+
+  renderSelectorOptions('board-options', state.boards, 'name', (b) => { state.selectedBoard = b; loadClassOptions(); updateSaveButton(); });
+  renderSelectorOptions('medium-options', state.mediums, 'name', (m) => { state.selectedMedium = m; updateSaveButton(); });
+  renderSelectorOptions('class-options', [], 'name', null, 'Select board first');
+}
+
+function renderSelectorOptions(containerId, items, labelKey, onSelect, emptyMsg = 'None available') {
+  const c = document.getElementById(containerId);
+  if (!items.length) { c.innerHTML = `<p style="font-size:.8rem;color:var(--ink-4);">${emptyMsg}</p>`; return; }
+  c.innerHTML = items.map(item => `
+    <div class="sel-option" onclick="handleSelOption(this, '${containerId}', '${JSON.stringify(item).replace(/'/g,"&#39;")}', '${labelKey}', ${onSelect?.name || 'null'})">
+      ${item[labelKey]}
+    </div>`).join('');
+  // Bind correctly
+  c.querySelectorAll('.sel-option').forEach((el, i) => {
+    el.onclick = () => {
+      c.querySelectorAll('.sel-option').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      onSelect?.(items[i]);
+    };
+  });
+}
+
+async function loadClassOptions() {
+  if (!state.selectedBoard) return;
+  const { classes } = await apiFetch(`/api/v1/curriculum/classes?board_id=${state.selectedBoard.id}`).catch(() => ({ classes: [] }));
+  state.classes = classes || [];
+  renderSelectorOptions('class-options', state.classes, 'name', (c) => { state.selectedClass = c; updateSaveButton(); });
+}
+
+function updateSaveButton() {
+  document.getElementById('btn-save-curriculum').disabled = !(state.selectedBoard && state.selectedClass);
+}
+
+function closeCurriculumSelector() {
+  document.getElementById('curriculum-selector').style.display = 'none';
+}
+
+async function saveCurriculumContext() {
+  try {
+    await apiFetch('/api/v1/curriculum/student-context', {
+      method: 'PUT',
+      body: JSON.stringify({
+        board_id:  state.selectedBoard.id,
+        class_id:  state.selectedClass.id,
+        medium_id: state.selectedMedium?.id || null,
+      }),
+    });
+    state.profile.board_id  = state.selectedBoard.id;
+    state.profile.class_id  = state.selectedClass.id;
+    state.profile.medium_id = state.selectedMedium?.id || null;
+    state.profile.grade     = state.selectedClass.grade;
+
+    closeCurriculumSelector();
+    updateSidebarContext(state.profile);
+    document.getElementById('sidebar-context').style.display = 'block';
+    document.getElementById('onboarding-cta').style.display = 'none';
+    document.getElementById('continue-section').style.display = 'block';
+    showToast('Curriculum profile saved! 🎓', 'success');
+    loadSubjectsPage(); loadHomeData();
+  } catch (err) {
+    showToast('Failed to save. Try again.', 'error');
+  }
+}
+
+function updateSidebarContext(p) {
+  const board = state.boards.find(b => b.id === p.board_id);
+  const cls   = state.classes.find(c => c.id === p.class_id);
+  const medium = state.mediums.find(m => m.id === p.medium_id);
+  document.getElementById('ctx-board-class').textContent = `${board?.name || 'Board'} | ${cls?.name || `Class ${p.grade}`}`;
+  document.getElementById('ctx-medium').textContent = medium?.name ? `Medium: ${medium.name}` : '';
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// HOME — STATS, RECOMMENDATIONS, GAPS, ACTIVITY
+// ══════════════════════════════════════════════════════════════════════
+async function loadStats() {
+  const statsRow = document.getElementById('stats-row');
+  try {
+    // Sessions stats
+    const [sessions, mastery] = await Promise.all([
+      apiFetch('/api/v1/adaptive/sessions?limit=100').catch(() => ({ sessions: [], total: 0 })),
+      apiFetch('/api/v1/mastery/me').catch(() => ({ summary: { overall_mastery: 0, total_concepts_assessed: 0, gap_count: 0 } })),
+    ]);
+
+    const completed = sessions.sessions?.filter(s => s.status === 'completed') || [];
+    const avgScore = completed.length ? Math.round(completed.reduce((a, s) => a + (s.score || 0), 0) / completed.length) : 0;
+
+    statsRow.innerHTML = `
+      <div class="stat-card stat-indigo">
+        <div class="stat-icon" style="background:rgba(99,102,241,.1);">🧠</div>
+        <div><div class="stat-val" style="color:var(--indigo);">${mastery.summary?.overall_mastery || 0}%</div><div class="stat-lbl">Overall Mastery</div></div>
+      </div>
+      <div class="stat-card stat-emerald">
+        <div class="stat-icon" style="background:rgba(16,185,129,.1);">✅</div>
+        <div><div class="stat-val" style="color:var(--emerald);">${completed.length}</div><div class="stat-lbl">Sessions Done</div></div>
+      </div>
+      <div class="stat-card stat-amber">
+        <div class="stat-icon" style="background:rgba(245,158,11,.1);">⭐</div>
+        <div><div class="stat-val" style="color:var(--amber);">${avgScore}%</div><div class="stat-lbl">Avg Score</div></div>
+      </div>
+      <div class="stat-card stat-rose">
+        <div class="stat-icon" style="background:rgba(244,63,94,.1);">🎯</div>
+        <div><div class="stat-val" style="color:var(--rose);">${mastery.summary?.gap_count || 0}</div><div class="stat-lbl">Knowledge Gaps</div></div>
+      </div>
+    `;
+  } catch { statsRow.innerHTML = '<p style="color:var(--ink-3);">Stats unavailable</p>'; }
+}
+
+async function loadRecommendations() {
+  const el = document.getElementById('recommendations-list');
+  el.innerHTML = '<div class="skeleton" style="height:60px;margin-bottom:.5rem;"></div>'.repeat(3);
+  try {
+    const { recommendations } = await apiFetch('/api/v1/recommendations/me');
+    state.recommendations = recommendations || [];
+    if (!recommendations?.length) {
+      el.innerHTML = `<div class="empty-state" style="padding:1.5rem;"><div class="empty-icon">💡</div><div class="empty-sub">No recommendations yet. Complete a practice session!</div></div>`;
+      return;
+    }
+    el.innerHTML = recommendations.slice(0, 4).map(r => `
+      <div class="rec-card" onclick="handleRecAction('${r.id}', '${r.type}')">
+        <span class="rec-type-badge rec-type-${r.type}">${r.type}</span>
+        <div>
+          <div class="rec-title">${r.title}</div>
+          <div class="rec-desc">${r.description || ''}</div>
+          ${r.subjects ? `<div class="chip" style="margin-top:.4rem;">${r.subjects.name}</div>` : ''}
+        </div>
+      </div>`).join('');
+  } catch { el.innerHTML = '<p style="font-size:.8rem;color:var(--ink-3);">Unavailable</p>'; }
+}
+
+async function refreshRecommendations() {
+  const btn = document.getElementById('btn-refresh-recs');
+  btn.textContent = '…'; btn.disabled = true;
+  try {
+    await apiFetch('/api/v1/recommendations/generate', { method: 'POST' });
+    await loadRecommendations();
+    showToast('Recommendations refreshed!', 'success');
+  } catch { showToast('Failed to refresh', 'error'); }
+  btn.textContent = 'Refresh'; btn.disabled = false;
+}
+
+async function loadGaps() {
+  const el = document.getElementById('gaps-list');
+  const countEl = document.getElementById('gap-count');
+  el.innerHTML = '<div class="skeleton" style="height:50px;margin-bottom:.5rem;"></div>'.repeat(3);
+  try {
+    const { gaps } = await apiFetch('/api/v1/mastery/me/gaps');
+    state.gaps = gaps || [];
+    countEl.textContent = `${gaps?.length || 0} gaps`;
+    if (!gaps?.length) {
+      el.innerHTML = `<div class="empty-state" style="padding:1.5rem;"><div class="empty-icon">🎉</div><div class="empty-sub">No gaps found! Keep practising.</div></div>`;
+      return;
+    }
+    el.innerHTML = gaps.slice(0, 5).map(g => `
+      <div class="gap-card" onclick="startConceptPractice('${g.concepts?.id}', '${g.concepts?.title}')">
+        <div class="gap-icon">⚠️</div>
+        <div>
+          <div class="gap-title">${g.concepts?.title || 'Concept'}</div>
+          <div class="gap-sub">${g.subjects?.name || ''} • ${g.chapters?.title || ''}</div>
+        </div>
+        <div class="gap-score">${Math.round(g.mastery_score)}%</div>
+      </div>`).join('');
+  } catch { el.innerHTML = '<p style="font-size:.8rem;color:var(--ink-3);">Unavailable</p>'; }
+}
+
+async function loadRecentActivity() {
+  const el = document.getElementById('recent-activity');
+  try {
+    const { sessions } = await apiFetch('/api/v1/adaptive/sessions?limit=5&status=completed');
+    if (!sessions?.length) return;
+    el.innerHTML = sessions.map(s => {
+      const score = Math.round(s.score || 0);
+      const color = score >= 80 ? 'var(--emerald)' : score >= 60 ? 'var(--amber)' : 'var(--rose)';
+      return `
+        <div class="activity-item">
+          <div class="act-icon" style="background:rgba(99,102,241,.1);">📝</div>
+          <div>
+            <div class="act-label">${s.topics?.title || s.chapters?.title || s.subjects?.name || 'Practice Session'}</div>
+            <div class="act-sub">${new Date(s.completed_at || s.started_at).toLocaleDateString('en-IN', {day:'numeric',month:'short'})}</div>
+          </div>
+          <div class="act-score" style="color:${color};">${score}%</div>
+        </div>`;
+    }).join('');
+  } catch {}
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// SUBJECTS PAGE
+// ══════════════════════════════════════════════════════════════════════
+async function loadSubjectsPage() {
+  const grid = document.getElementById('subjects-grid');
+  document.getElementById('chapter-browser').style.display = 'none';
+  document.getElementById('topic-browser').style.display = 'none';
+  grid.style.display = 'grid';
+
+  if (!state.profile.board_id) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">📚</div><div class="empty-title">Select your curriculum first</div><div class="empty-sub">Set up your board and class to see subjects.</div><button class="btn btn-indigo" onclick="openCurriculumSelector()">Set Up Now</button></div>`;
+    return;
+  }
+
+  grid.innerHTML = `<div class="skeleton" style="height:140px;border-radius:16px;"></div>`.repeat(6);
+
+  try {
+    const [{ subjects }, { books }, boardRes] = await Promise.all([
+      apiFetch(`/api/v1/curriculum/subjects?board_id=${state.profile.board_id}`),
+      apiFetch(`/api/v1/curriculum/books?board_id=${state.profile.board_id}&class_id=${state.profile.class_id}`).catch(() => ({ books: [] })),
+      apiFetch('/api/v1/curriculum/boards').catch(() => ({ boards: [] })),
+    ]);
+    state.subjects = subjects || [];
+    state.books    = books || [];
+
+    const boardName = boardRes.boards?.find(b => b.id === state.profile.board_id)?.name || 'Board';
+    document.getElementById('subjects-page-sub').textContent = `${boardName} | Class ${state.profile.grade}`;
+
+    const ICONS = { math:'🔢', science:'🔬', english:'📖', hindi:'🇮🇳', sst:'🌍', sanskrit:'📜', gujarati:'🟡' };
+    grid.innerHTML = subjects.map(s => {
+      const bk = books.find(b => b.subjects?.code === s.code);
+      const color = s.color_hex || '#6366F1';
+      const icon = ICONS[s.code] || '📚';
+      return `
+        <div class="subject-card card-hover" onclick="openSubjectBrowser('${s.id}', '${s.name}', '${s.code}', '${color}', ${JSON.stringify(bk || null)?.replace(/"/g,"'")||null})">
+          <div style="position:absolute;top:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:${color};opacity:.08;"></div>
+          <div class="subject-icon" style="background:${color}20;font-size:1.4rem;">${icon}</div>
+          <div class="subject-name">${s.name}</div>
+          <div class="subject-meta">${bk?.title || s.name} • ${state.profile.grade ? `Class ${state.profile.grade}` : ''}</div>
+          <div class="pbar-wrap"><div class="pbar" style="width:0%;color:${color};" data-subject="${s.id}"></div></div>
+          <div style="font-size:.72rem;color:var(--ink-4);margin-top:4px;">Loading mastery…</div>
+        </div>`;
+    }).join('');
+
+    // Load mastery per subject
+    const { by_subject } = await apiFetch('/api/v1/mastery/me').catch(() => ({ by_subject: [] }));
+    if (by_subject) {
+      by_subject.forEach(bs => {
+        const bar = document.querySelector(`.pbar[data-subject="${bs.subject?.id}"]`);
+        if (bar) {
+          bar.style.width = `${bs.avg_mastery}%`;
+          bar.parentElement.nextElementSibling.textContent = `${bs.avg_mastery}% mastered`;
+        }
+      });
+    }
+  } catch (err) {
+    grid.innerHTML = '<p>Failed to load subjects</p>';
+  }
+}
+
+async function openSubjectBrowser(subjectId, subjectName, subjectCode, color, book) {
+  state.selectedSubject = { id: subjectId, name: subjectName, code: subjectCode, color };
+  state.selectedBook    = book;
+
+  document.getElementById('subjects-grid').style.display = 'none';
+  document.getElementById('chapter-browser').style.display = 'block';
+  document.getElementById('topic-browser').style.display   = 'none';
+
+  document.getElementById('subject-browser-title').textContent = subjectName;
+  document.getElementById('subject-browser-meta').textContent  = book?.title || subjectName;
+
+  const chapList = document.getElementById('chapters-list');
+  chapList.innerHTML = '<div class="skeleton" style="height:60px;margin-bottom:.5rem;"></div>'.repeat(5);
+
+  if (!state.selectedBook?.id) {
+    // Find book
+    const matchBook = state.books.find(b => b.subjects?.code === subjectCode || b.subjects?.id === subjectId);
+    state.selectedBook = matchBook || null;
+  }
+
+  if (!state.selectedBook?.id) {
+    chapList.innerHTML = `<div class="empty-state"><div class="empty-icon">📘</div><div class="empty-sub">No book found for this subject in your class. Content is being added.</div></div>`;
+    return;
+  }
+
+  try {
+    const { chapters } = await apiFetch(`/api/v1/curriculum/chapters?book_id=${state.selectedBook.id}`);
+    // Load chapter mastery
+    const subjectMastery = await apiFetch(`/api/v1/mastery/me/subject/${subjectId}`).catch(() => ({ by_chapter: [] }));
+    const masteryByChapter = {};
+    (subjectMastery.by_chapter || []).forEach(bc => { masteryByChapter[bc.chapter?.id] = bc.avg_mastery; });
+
+    chapList.innerHTML = chapters.map(ch => {
+      const m = masteryByChapter[ch.id] !== undefined ? masteryByChapter[ch.id] : null;
+      const color = m === null ? 'var(--ink-4)' : m < 40 ? 'var(--rose)' : m < 70 ? 'var(--amber)' : 'var(--emerald)';
+      return `
+        <div class="chapter-row" onclick="openChapterBrowser('${ch.id}', '${ch.title.replace(/'/g,"\\'")}', '${ch.chapter_number}')">
+          <div class="chapter-num">${ch.chapter_number}</div>
+          <div class="chapter-info">
+            <div class="chapter-title">${ch.title}</div>
+            <div class="chapter-meta">${ch.learning_goals?.slice(0,2).join(' • ') || ''}</div>
+          </div>
+          <div class="chapter-mastery" style="color:${color};">${m !== null ? m+'%' : '—'}</div>
+        </div>`;
+    }).join('');
+  } catch { chapList.innerHTML = '<p>Failed to load chapters</p>'; }
+}
+
+function backToSubjects() {
+  document.getElementById('subjects-grid').style.display = 'grid';
+  document.getElementById('chapter-browser').style.display = 'none';
+  document.getElementById('topic-browser').style.display   = 'none';
+  state.selectedSubject = null; state.selectedBook = null; state.selectedChapter = null;
+}
+
+function backToChapters() {
+  document.getElementById('chapter-browser').style.display = 'block';
+  document.getElementById('topic-browser').style.display   = 'none';
+  state.selectedChapter = null;
+}
+
+async function openChapterBrowser(chapterId, chapterTitle, chapterNum) {
+  state.selectedChapter = { id: chapterId, title: chapterTitle, number: chapterNum };
+  document.getElementById('chapter-browser').style.display = 'none';
+  document.getElementById('topic-browser').style.display = 'block';
+  document.getElementById('chapter-browser-title').textContent = `Ch. ${chapterNum}: ${chapterTitle}`;
+  document.getElementById('chapter-browser-meta').textContent  = state.selectedSubject?.name || '';
+
+  const topicsList = document.getElementById('topics-list');
+  topicsList.innerHTML = '<div class="skeleton" style="height:42px;margin-bottom:.4rem;"></div>'.repeat(5);
+
+  try {
+    const { topics } = await apiFetch(`/api/v1/curriculum/topics?chapter_id=${chapterId}`);
+    const masteryData = state.mastery || {};
+
+    topicsList.innerHTML = topics.map(t => {
+      const mastery = null; // would need per-topic mastery lookup
+      return `
+        <div class="topic-item" onclick="startTopicPractice('${t.id}', '${t.title.replace(/'/g,"\\'")}')">
+          <div class="topic-dot"></div>
+          <div class="topic-info">
+            <div class="topic-name">${t.title}</div>
+            <div class="topic-status">Tap to practice</div>
+          </div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;color:var(--ink-4);flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>`;
+    }).join('');
+
+    // Update mastery ring
+    const { by_chapter } = await apiFetch(`/api/v1/mastery/me/subject/${state.selectedSubject?.id}`).catch(() => ({ by_chapter: [] }));
+    const chapMastery = by_chapter?.find(bc => bc.chapter?.id === chapterId);
+    const score = chapMastery?.avg_mastery || 0;
+    const circumference = 2 * Math.PI * 32;
+    const offset = circumference - (score / 100) * circumference;
+    document.getElementById('chapter-ring-fg').style.strokeDashoffset = offset;
+    document.getElementById('chapter-ring-val').textContent = score + '%';
+    document.getElementById('chapter-mastery-label').textContent = score === 0 ? 'Not started yet' : score < 40 ? 'Needs work' : score < 70 ? 'Developing' : score < 90 ? 'Proficient' : 'Mastered!';
+  } catch { topicsList.innerHTML = '<p>Failed to load topics</p>'; }
+}
+
+function startChapterAssessment() {
+  if (!state.selectedChapter) return;
+  const params = new URLSearchParams({ chapter_id: state.selectedChapter.id, chapter_title: state.selectedChapter.title });
+  window.location.href = `/dashboards/assessment.html?${params}`;
+}
+
+function startTopicPractice(topicId, topicTitle) {
+  const params = new URLSearchParams({ topic_id: topicId, topic_title: topicTitle });
+  window.location.href = `/dashboards/assessment.html?${params}`;
+}
+
+function startConceptPractice(conceptId, conceptTitle) {
+  const params = new URLSearchParams({ concept_id: conceptId || '', topic_title: conceptTitle || 'Practice' });
+  window.location.href = `/dashboards/assessment.html?${params}`;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// MASTERY PAGE
+// ══════════════════════════════════════════════════════════════════════
+async function loadMasteryPage() {
+  const summaryEl = document.getElementById('mastery-summary-stats');
+  const bySubjectEl = document.getElementById('mastery-by-subject');
+  summaryEl.innerHTML = '<div class="skeleton" style="height:90px;"></div>'.repeat(4);
+  bySubjectEl.innerHTML = '<div class="skeleton" style="height:200px;margin-bottom:1rem;border-radius:16px;"></div>'.repeat(3);
+
+  try {
+    const { mastery, by_subject, summary } = await apiFetch('/api/v1/mastery/me');
+    state.mastery = { mastery, by_subject, summary };
+
+    summaryEl.innerHTML = `
+      <div class="stat-card stat-indigo">
+        <div class="stat-icon" style="background:rgba(99,102,241,.1);">🧠</div>
+        <div><div class="stat-val" style="color:var(--indigo);">${summary?.overall_mastery || 0}%</div><div class="stat-lbl">Overall Mastery</div></div>
+      </div>
+      <div class="stat-card stat-emerald">
+        <div class="stat-icon" style="background:rgba(16,185,129,.1);">✅</div>
+        <div><div class="stat-val" style="color:var(--emerald);">${summary?.total_concepts_assessed || 0}</div><div class="stat-lbl">Concepts Assessed</div></div>
+      </div>
+      <div class="stat-card stat-rose">
+        <div class="stat-icon" style="background:rgba(244,63,94,.1);">🎯</div>
+        <div><div class="stat-val" style="color:var(--rose);">${summary?.gap_count || 0}</div><div class="stat-lbl">Gaps Detected</div></div>
+      </div>
+      <div class="stat-card stat-amber">
+        <div class="stat-icon" style="background:rgba(245,158,11,.1);">⭐</div>
+        <div><div class="stat-val" style="color:var(--amber);">${(by_subject||[]).filter(s=>s.avg_mastery>=80).length}</div><div class="stat-lbl">Strong Subjects</div></div>
+      </div>`;
+
+    if (!by_subject?.length) {
+      bySubjectEl.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">No mastery data yet</div><div class="empty-sub">Complete practice sessions to build your mastery map.</div><button class="btn btn-indigo" onclick="showPage('practice')">Start Practising</button></div>`;
+      return;
+    }
+
+    bySubjectEl.innerHTML = by_subject.map(bs => {
+      const subjectColor = bs.subject?.color_hex || '#6366F1';
+      const m = bs.avg_mastery;
+      const barColor = m < 40 ? 'var(--rose)' : m < 70 ? 'var(--amber)' : 'var(--emerald)';
+
+      return `
+        <div class="card" style="margin-bottom:1.25rem;">
+          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
+            <div style="width:36px;height:36px;border-radius:10px;background:${subjectColor}20;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">
+              ${{ math:'🔢', science:'🔬', english:'📖', hindi:'🇮🇳', sst:'🌍', sanskrit:'📜', gujarati:'🟡' }[bs.subject?.code] || '📚'}
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:.95rem;font-weight:700;color:var(--ink);">${bs.subject?.name}</div>
+              <div style="font-size:.75rem;color:var(--ink-3);">${bs.total_concepts} concepts assessed</div>
+            </div>
+            <div style="font-size:1.5rem;font-weight:800;color:${barColor};">${m}%</div>
+          </div>
+          <div class="pbar-wrap" style="height:8px;margin-bottom:1rem;">
+            <div class="pbar" style="width:${m}%;background:${barColor};"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem;">
+            ${(bs.concepts||[]).slice(0,6).map(c => {
+              const cm = Math.round(c.mastery_score);
+              const cc = cm < 40 ? 'var(--rose)' : cm < 70 ? 'var(--amber)' : 'var(--emerald)';
+              return `
+                <div style="padding:.5rem .625rem;border-radius:8px;background:var(--surface-1);border:1px solid var(--hairline);">
+                  <div style="font-size:.75rem;font-weight:600;color:var(--ink);margin-bottom:2px;">${c.concepts?.title || '—'}</div>
+                  <div style="font-size:.875rem;font-weight:800;color:${cc};">${cm}%</div>
+                  <div class="pbar-wrap" style="height:3px;margin-top:4px;"><div class="pbar" style="width:${cm}%;background:${cc};"></div></div>
+                </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+    }).join('');
+  } catch { bySubjectEl.innerHTML = '<p>Failed to load mastery data</p>'; }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// PRACTICE PAGE
+// ══════════════════════════════════════════════════════════════════════
+async function loadPracticePage() {
+  const el = document.getElementById('practice-options');
+  el.innerHTML = '';
+
+  // Quick-start options
+  el.innerHTML = `
+    <div class="g3" style="margin-bottom:2rem;">
+      <div class="card card-hover" style="border:2px solid rgba(99,102,241,.3);background:rgba(99,102,241,.05);" onclick="startQuickPractice('random')">
+        <div style="font-size:2rem;margin-bottom:.75rem;">🎲</div>
+        <div style="font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:.25rem;">Random Practice</div>
+        <div style="font-size:.78rem;color:var(--ink-3);">Mix of your weak and strong topics</div>
+      </div>
+      <div class="card card-hover" style="border:2px solid rgba(244,63,94,.3);background:rgba(244,63,94,.05);" onclick="startQuickPractice('gaps')">
+        <div style="font-size:2rem;margin-bottom:.75rem;">🎯</div>
+        <div style="font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:.25rem;">Fix My Gaps</div>
+        <div style="font-size:.78rem;color:var(--ink-3);">Focus on knowledge gaps first</div>
+      </div>
+      <div class="card card-hover" style="border:2px solid rgba(16,185,129,.3);background:rgba(16,185,129,.05);" onclick="showPage('subjects')">
+        <div style="font-size:2rem;margin-bottom:.75rem;">📚</div>
+        <div style="font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:.25rem;">Choose Topic</div>
+        <div style="font-size:.78rem;color:var(--ink-3);">Select a specific chapter or topic</div>
+      </div>
+    </div>
+    <h3 style="font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:1rem;">📋 Recent Sessions</h3>
+    <div id="practice-sessions"></div>`;
+
+  const sessionsEl = document.getElementById('practice-sessions');
+  sessionsEl.innerHTML = '<div class="skeleton" style="height:60px;margin-bottom:.5rem;"></div>'.repeat(3);
+  try {
+    const { sessions } = await apiFetch('/api/v1/adaptive/sessions?limit=8');
+    if (!sessions?.length) {
+      sessionsEl.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-sub">No sessions yet. Start one above!</div></div>`;
+      return;
+    }
+    sessionsEl.innerHTML = sessions.map(s => {
+      const score = Math.round(s.score || 0);
+      const color = score >= 80 ? 'var(--emerald)' : score >= 60 ? 'var(--amber)' : 'var(--rose)';
+      const statusBadge = s.status === 'active' ? '<span style="color:var(--indigo);font-weight:700;font-size:.75rem;">● Active</span>' : '';
+      return `
+        <div class="chapter-row" onclick="window.location.href='/dashboards/assessment.html?session_id=${s.id}'">
+          <div class="chapter-num" style="background:${color}20;color:${color};">${score || '—'}%</div>
+          <div class="chapter-info">
+            <div class="chapter-title">${s.topics?.title || s.chapters?.title || s.subjects?.name || 'Practice Session'}</div>
+            <div class="chapter-meta">${s.questions_answered || 0}/${s.max_questions || 20} questions • ${new Date(s.started_at).toLocaleDateString()}</div>
+          </div>
+          ${statusBadge}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;color:var(--ink-4);"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>`;
+    }).join('');
+  } catch { sessionsEl.innerHTML = '<p>Failed to load</p>'; }
+}
+
+function startQuickPractice(type) {
+  const params = new URLSearchParams({ mode: type });
+  if (state.profile.board_id) params.set('board_id', state.profile.board_id);
+  if (state.profile.class_id) params.set('class_id', state.profile.class_id);
+  window.location.href = `/dashboards/assessment.html?${params}`;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// TUTOR PAGE
+// ══════════════════════════════════════════════════════════════════════
+let tutorContext = {};
+
+async function loadTutorPage() {
+  const sessionsEl = document.getElementById('tutor-sessions-list');
+  sessionsEl.innerHTML = '<div class="skeleton" style="height:44px;margin-bottom:.4rem;"></div>'.repeat(4);
+  // Default welcome message
+  showWelcomeMessage();
+  try {
+    const { sessions } = await apiFetch('/api/v1/tutor/sessions');
+    if (!sessions?.length) {
+      sessionsEl.innerHTML = `<div style="font-size:.78rem;color:var(--ink-3);text-align:center;padding:1rem;">No sessions yet</div>`;
+      return;
+    }
+    sessionsEl.innerHTML = sessions.map(s => `
+      <div class="nav-item ${state.tutorSessionId === s.id ? 'active' : ''}" onclick="loadTutorSession('${s.id}', '${s.title?.replace(/'/g,"\\'")}')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.title || 'Session'}</span>
+      </div>`).join('');
+  } catch {}
+}
+
+function showWelcomeMessage() {
+  const msgs = document.getElementById('tutor-messages');
+  msgs.innerHTML = `
+    <div class="tutor-msg ai">
+      👋 Hi! I'm your AI Tutor. I can help you understand concepts from your curriculum, explain questions you got wrong, and guide you step by step. What would you like to learn today?
+    </div>`;
+}
+
+function startNewTutorSession() {
+  state.tutorSessionId = null;
+  tutorContext = {
+    subject_id: state.selectedSubject?.id,
+    chapter_id: state.selectedChapter?.id,
+  };
+  showWelcomeMessage();
+  document.getElementById('chat-context').style.display = 'none';
+}
+
+async function loadTutorSession(sessionId, title) {
+  state.tutorSessionId = sessionId;
+  const msgs = document.getElementById('tutor-messages');
+  msgs.innerHTML = '<div class="loading-pulse" style="text-align:center;color:var(--ink-3);padding:1rem;">Loading…</div>';
+
+  try {
+    const { messages } = await apiFetch(`/api/v1/tutor/sessions/${sessionId}`);
+    msgs.innerHTML = messages.map(m => `<div class="tutor-msg ${m.role === 'user' ? 'user' : 'ai'}">${m.content}</div>`).join('');
+    msgs.scrollTop = msgs.scrollHeight;
+    document.getElementById('chat-context').textContent = title;
+    document.getElementById('chat-context').style.display = 'block';
+  } catch {
+    msgs.innerHTML = '<p style="color:var(--ink-3);">Failed to load session</p>';
+  }
+}
+
+async function sendTutorMessage() {
+  const input = document.getElementById('tutor-input');
+  const message = input.value.trim();
+  if (!message) return;
+  input.value = '';
+
+  const msgs = document.getElementById('tutor-messages');
+  msgs.innerHTML += `<div class="tutor-msg user">${message}</div>`;
+  msgs.innerHTML += `<div class="tutor-msg ai loading-pulse" id="tutor-typing">Thinking…</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  try {
+    const payload = {
+      message,
+      session_id: state.tutorSessionId || undefined,
+      subject_id: tutorContext.subject_id || undefined,
+      chapter_id: tutorContext.chapter_id || undefined,
+    };
+    const { reply, session_id } = await apiFetch('/api/v1/tutor/chat', { method: 'POST', body: JSON.stringify(payload) });
+    state.tutorSessionId = session_id;
+
+    document.getElementById('tutor-typing')?.remove();
+    msgs.innerHTML += `<div class="tutor-msg ai">${reply}</div>`;
+    msgs.scrollTop = msgs.scrollHeight;
+    document.getElementById('chat-context').textContent = message.slice(0, 60);
+    document.getElementById('chat-context').style.display = 'block';
+  } catch {
+    document.getElementById('tutor-typing')?.remove();
+    msgs.innerHTML += `<div class="tutor-msg ai" style="color:var(--rose);">Sorry, I'm having trouble right now. Please try again.</div>`;
+  }
+}
+
+function openTutorForChapter() {
+  tutorContext = { chapter_id: state.selectedChapter?.id, subject_id: state.selectedSubject?.id };
+  showPage('tutor');
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════════════
+function handleRecAction(recId, type) {
+  const rec = state.recommendations.find(r => r.id === recId);
+  if (!rec) return;
+  if (type === 'assess' || type === 'practice') {
+    const params = new URLSearchParams();
+    if (rec.topics?.id) params.set('topic_id', rec.topics.id);
+    else if (rec.chapters?.id) params.set('chapter_id', rec.chapters.id);
+    window.location.href = `/dashboards/assessment.html?${params}`;
+  } else if (type === 'revise') {
+    showPage('subjects');
+  } else if (type === 'explore') {
+    showPage('subjects');
+  }
+  // Dismiss recommendation
+  apiFetch(`/api/v1/recommendations/${recId}/dismiss`, { method: 'PUT' }).catch(() => {});
+}
+
+async function apiFetch(url, opts = {}) {
+  const res = await fetch(url, {
+    headers: { 'Authorization': `Bearer ${state.token}`, 'Content-Type': 'application/json', ...(opts.headers || {}) },
+    ...opts,
+  });
+  if (!res.ok) {
+    if (res.status === 401) { localStorage.removeItem('em_token'); window.location.href = '/'; }
+    throw new Error(`HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+function showToast(msg, type = '') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+// Init curriculum selector pre-load
+(async () => {
+  try {
+    const [b, m] = await Promise.all([
+      fetch('/api/v1/curriculum/boards').then(r => r.json()),
+      fetch('/api/v1/curriculum/mediums').then(r => r.json()),
+    ]);
+    state.boards  = b.boards  || [];
+    state.mediums = m.mediums || [];
+  } catch {}
+})();
+</script>
+</body>
+</html>
