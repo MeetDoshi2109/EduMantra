@@ -54,6 +54,11 @@ router.post('/analyze', authenticate, async (req, res) => {
     const currentMap = {};
     (currentCompsRes.data || []).forEach(c => { currentMap[c.competency_id] = c; });
 
+    const masteryList = masteryRes.data || [];
+    const avgMastery = masteryList.length > 0
+      ? Math.round(masteryList.reduce((s, m) => s + (m.mastery_score || 0), 0) / masteryList.length)
+      : null;
+
     const levelOrder = { none: 0, beginner: 1, intermediate: 2, advanced: 3, expert: 4 };
     const gaps = [];
     let totalGapScore = 0;
@@ -61,7 +66,7 @@ router.post('/analyze', authenticate, async (req, res) => {
     // 3. Compute gaps
     for (const req_comp of (required || [])) {
       const curr = currentMap[req_comp.competency_id];
-      // Correctly derive current level from score (fix dead-code bug where all branches returned 'beginner')
+      // Derive current level from competency profile or student mastery rolling average
       let currentLevel = 'none';
       if (curr) {
         const s = curr.score || 0;
@@ -69,12 +74,17 @@ router.post('/analyze', authenticate, async (req, res) => {
         else if (s >= 60) currentLevel = curr.current_level || 'intermediate';
         else if (s >= 30) currentLevel = curr.current_level || 'beginner';
         else              currentLevel = curr.current_level || 'none';
+      } else if (avgMastery !== null) {
+        // Fallback to student's academic mastery in STEM practice
+        if (avgMastery >= 80)      currentLevel = 'advanced';
+        else if (avgMastery >= 60) currentLevel = 'intermediate';
+        else if (avgMastery >= 35) currentLevel = 'beginner';
       }
-      const requiredLevel = req_comp.required_level || 'intermediate'; // default intermediate, not advanced
+
+      const requiredLevel = req_comp.required_level || 'intermediate';
       const reqNum = levelOrder[requiredLevel] ?? 2;
       const curNum = levelOrder[currentLevel] ?? 0;
       const gapNum = Math.max(0, reqNum - curNum);
-      // Gap score: proportion of required levels still missing, scaled 0-100
       const gapScore = reqNum > 0 ? Math.min(100, Math.round((gapNum / reqNum) * 100)) : 0;
       totalGapScore += gapScore;
 
@@ -102,6 +112,17 @@ router.post('/analyze', authenticate, async (req, res) => {
       ? Math.round(totalGapScore / Math.max(required.length, 1))
       : 0;
 
+    // Check prior report for trending delta
+    const { data: prevReports } = await supabaseAdmin
+      .from('skill_gap_reports')
+      .select('overall_gap_score, generated_at')
+      .eq('user_id', userId)
+      .order('generated_at', { ascending: false })
+      .limit(1);
+
+    const prevGapScore = prevReports?.[0]?.overall_gap_score ?? null;
+    const gapScoreDelta = prevGapScore !== null ? overallGapScore - prevGapScore : 0;
+
     // 4. Generate AI insights
     let aiInsights = {
       summary: `Analyzed ${required.length} STEM core competencies. Identified ${gaps.length} areas for conceptual reinforcement.`,
@@ -111,6 +132,11 @@ router.post('/analyze', authenticate, async (req, res) => {
         hours: 3 + idx * 2,
       })),
       recommended_actions: {},
+      trending: {
+        previous_score: prevGapScore,
+        delta: gapScoreDelta,
+        trend: gapScoreDelta < 0 ? 'improving' : gapScoreDelta > 0 ? 'expanding' : 'stable',
+      },
     };
 
     try {

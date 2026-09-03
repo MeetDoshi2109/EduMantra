@@ -179,35 +179,43 @@ async function handleGetRecommendations(req, res) {
     res.json(generated);
   } catch (err) {
     logger.error('Failed to get or generate recommendations:', err.message);
-    // Return high quality STEM fallback recommendations so student is never blocked
+    const grade = parseInt(req.profile?.grade, 10) || 8;
+    const isSenior = grade >= 9;
+
     res.json({
       recommendations: [
         {
           id: 'rec_math_1',
           type: 'practice',
-          title: 'Integers & Arithmetic Properties',
-          description: 'Master addition, subtraction, and multiplication of signed numbers with real-world STEM problem sets.',
+          title: isSenior ? 'Quadratic Equations & Polynomial Roots' : 'Integers & Algebraic Expressions',
+          description: isSenior
+            ? 'Practice solving quadratic equations using factorisation and quadratic formula.'
+            : 'Master operations on positive and negative numbers with real-world STEM problem sets.',
           priority: 'high',
-          estimated_minutes: 15,
+          estimated_minutes: isSenior ? 25 : 15,
           rationale: 'Fundamental mathematical prerequisite for higher algebra and physical sciences.',
         },
         {
           id: 'rec_sci_1',
           type: 'explore',
-          title: 'Nutrition in Plants & Photosynthesis',
-          description: 'Explore chlorophyll absorption, cellular respiration, and chloroplast energy cycles.',
+          title: isSenior ? 'Newtonian Mechanics & Equations of Motion' : 'Forces, Friction & Energy Transformation',
+          description: isSenior
+            ? 'Derive and apply v = u + at and s = ut + 0.5at² to kinematic scenarios.'
+            : 'Explore how forces interact to cause acceleration and equilibrium in physical systems.',
           priority: 'medium',
           estimated_minutes: 20,
-          rationale: 'Core biology foundational concept for understanding life processes.',
+          rationale: 'Core physics foundational concept essential for scientific reasoning.',
         },
         {
           id: 'rec_cs_1',
           type: 'practice',
-          title: 'Python Loops & Sequential Logic',
-          description: 'Write for-loops and while-loops to automate numerical calculations and process data arrays.',
+          title: isSenior ? 'Python Functions, Recursion & Algorithmic Complexity' : 'Python Loops & Sequential Logic',
+          description: isSenior
+            ? 'Write modular functions with parameters and analyze execution efficiency.'
+            : 'Write loops to automate calculations and process arrays of scientific measurements.',
           priority: 'medium',
-          estimated_minutes: 25,
-          rationale: 'Core programming milestone for computational STEM mastery.',
+          estimated_minutes: isSenior ? 30 : 20,
+          rationale: 'Essential milestone for computational STEM mastery and automation.',
         }
       ]
     });
@@ -229,6 +237,39 @@ router.post('/generate', authenticate, async (req, res) => {
   } catch (err) {
     logger.error('Recommendation generation failed', { error: err.message });
     res.status(500).json({ error: 'Failed to generate recommendations', detail: err.message });
+  }
+});
+
+// ── POST /api/v1/recommendations/:id/complete ───────────────
+// Student marks recommendation complete, triggering learning progress
+router.post('/:id/complete', authenticate, async (req, res) => {
+  try {
+    const recId = req.params.id;
+    const { data: rec } = await supabaseAdmin
+      .from('student_recommendations')
+      .update({ is_dismissed: true, completed_at: new Date().toISOString() })
+      .eq('id', recId)
+      .eq('student_id', req.profile.id)
+      .select()
+      .single();
+
+    // Log progress if concept attached
+    if (rec?.concept_id) {
+      try {
+        await supabaseAdmin.from('learning_hours_log').insert({
+          user_id: req.profile.id,
+          concept_id: rec.concept_id,
+          topic_id: rec.topic_id,
+          subject_id: rec.subject_id,
+          hours_spent: (rec.metadata?.estimated_minutes || 15) / 60,
+          activity_type: 'recommendation_completed',
+        });
+      } catch (_) {}
+    }
+
+    res.json({ success: true, message: 'Recommendation marked as completed!' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to complete recommendation', detail: err.message });
   }
 });
 

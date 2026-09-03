@@ -99,14 +99,31 @@ router.post('/generate',
         concept: conceptRes.data?.title,
       };
 
-      // Generate questions via AI service
-      const generated = await AI.generateQuestions(rawText, {
-        numQuestions: Number(num_questions),
-        difficulty,
-        questionTypes: Array.isArray(question_types) ? question_types : [question_types],
-        language,
-        curriculumContext,
-      });
+      // Generate questions via AI service (handling mixed difficulty split)
+      let generated = [];
+      const qTypes = Array.isArray(question_types) ? question_types : [question_types];
+
+      if (difficulty === 'mixed') {
+        const total = Number(num_questions);
+        const easyCount = Math.max(1, Math.floor(total / 3));
+        const medCount  = Math.max(1, Math.floor(total / 3));
+        const hardCount = Math.max(1, total - easyCount - medCount);
+
+        const [easyQ, medQ, hardQ] = await Promise.all([
+          AI.generateQuestions(rawText, { numQuestions: easyCount, difficulty: 'easy', questionTypes: qTypes, language, curriculumContext }).catch(() => []),
+          AI.generateQuestions(rawText, { numQuestions: medCount,  difficulty: 'medium', questionTypes: qTypes, language, curriculumContext }).catch(() => []),
+          AI.generateQuestions(rawText, { numQuestions: hardCount, difficulty: 'hard', questionTypes: qTypes, language, curriculumContext }).catch(() => []),
+        ]);
+        generated = [...easyQ, ...medQ, ...hardQ];
+      } else {
+        generated = await AI.generateQuestions(rawText, {
+          numQuestions: Number(num_questions),
+          difficulty,
+          questionTypes: qTypes,
+          language,
+          curriculumContext,
+        });
+      }
 
       if (!generated.length) {
         return res.status(500).json({ error: 'AI did not generate any questions. Try providing more content.' });
@@ -130,9 +147,9 @@ router.post('/generate',
         options:        question.options || null,
         correct_answer: question.correct_answer,
         explanation:    question.explanation || '',
-        difficulty:     question.difficulty || difficulty,
+        difficulty:     question.difficulty || (difficulty === 'mixed' ? 'medium' : difficulty),
         language,
-        tags:           question.tags || [],
+        tags:           [...(question.tags || []), ...(question.bloom_level ? [`bloom:${question.bloom_level}`] : [])],
         ai_generated:   true,
         created_by:     req.profile.id,
         // Auto-approve if valid and AI confidence is high
@@ -436,6 +453,26 @@ router.put('/:id',
       res.json({ question: data });
     } catch (err) {
       res.status(500).json({ error: 'Failed to update question' });
+    }
+  }
+);
+
+// ── DELETE /api/v1/questions/:id ─────────────────────────────
+// Soft delete an obsolete or low-quality question
+router.delete('/:id',
+  authenticate,
+  authorize('instructor', 'organization_admin', 'developer'),
+  async (req, res) => {
+    try {
+      const { error } = await supabaseAdmin
+        .from('question_bank')
+        .update({ is_active: false })
+        .eq('id', req.params.id);
+
+      if (error) return res.status(400).json({ error: error.message });
+      res.json({ message: 'Question archived/deleted successfully' });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to delete question' });
     }
   }
 );

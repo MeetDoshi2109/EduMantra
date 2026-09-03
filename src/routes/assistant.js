@@ -109,6 +109,37 @@ router.post('/chat', authenticate, async (req, res) => {
   }
 });
 
+// ── POST /api/v1/assistant/chat/stream ───────────────────
+router.post('/chat/stream', authenticate, async (req, res) => {
+  const { message, session_id, subject_id } = req.body;
+  if (!message?.trim()) return res.status(422).json({ error: 'message is required' });
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  if (typeof res.flushHeaders === 'function') res.flushHeaders();
+
+  try {
+    let fullReply = '';
+    await AI.tutorChatStream([{ role: 'user', content: message }], {
+      full_name: req.profile?.full_name || 'Student',
+      class: req.profile?.grade ? `Class ${req.profile.grade}` : 'School Student',
+      board: req.profile?.board || 'CBSE',
+      subject: subject_id ? 'STEM' : 'STEM (Math, Science, Coding)',
+      language: req.profile?.preferred_language || 'en',
+    }, (chunk) => {
+      fullReply += chunk;
+      res.write(`data: ${JSON.stringify({ chunk })}\n\n`);
+    });
+
+    res.write(`data: ${JSON.stringify({ done: true, session_id: session_id || ('sess_' + Date.now()) })}\n\n`);
+    res.end();
+  } catch (err) {
+    res.write(`data: ${JSON.stringify({ error: err.message, done: true })}\n\n`);
+    res.end();
+  }
+});
+
 // ── GET /api/v1/assistant/sessions ──────────────────────
 router.get('/sessions', authenticate, async (req, res) => {
   try {

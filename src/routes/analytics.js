@@ -15,7 +15,7 @@ router.get('/student', authenticate, async (req, res) => {
       try { return await fn(); } catch (_) { return { data: null }; }
     };
 
-    const [enrollments, attempts, hours, pathways, gaps, notifications] = await Promise.all([
+    const [enrollments, attempts, hours, pathways, gaps, notifications, adaptiveSessions] = await Promise.all([
       safeQuery(() => supabaseAdmin.from('course_enrollments')
         .select('status, progress_pct, igot_courses(title, thumbnail_url, duration_hours)')
         .eq('user_id', userId)),
@@ -25,9 +25,8 @@ router.get('/student', authenticate, async (req, res) => {
         .order('created_at', { ascending: false })
         .limit(10)),
       safeQuery(() => supabaseAdmin.from('learning_hours_log')
-        .select('hours_spent, activity_type, logged_at')
+        .select('hours_spent, duration_mins, activity_type, logged_at')
         .eq('user_id', userId)),
-      // Use .limit(1) + array instead of .single() to avoid errors on empty table
       safeQuery(() => supabaseAdmin.from('learning_pathways')
         .select('title, total_hours, target_completion, pathway_items(id)')
         .eq('user_id', userId)
@@ -41,6 +40,11 @@ router.get('/student', authenticate, async (req, res) => {
         .limit(1)),
       safeQuery(() => supabaseAdmin.from('notifications')
         .select('*').eq('user_id', userId).eq('is_read', false).limit(5)),
+      safeQuery(() => supabaseAdmin.from('adaptive_sessions')
+        .select('id, score, questions_answered, questions_correct, started_at, completed_at, status')
+        .eq('student_id', userId)
+        .eq('status', 'completed')
+        .order('completed_at', { ascending: false })),
     ]);
 
     // Flatten pathway/gap from array to single object
@@ -48,12 +52,60 @@ router.get('/student', authenticate, async (req, res) => {
     const gap     = { data: (gaps.data     || [])[0] || null };
 
     const enroll = enrollments.data || [];
-    const totalHours = (hours.data || []).reduce((s, h) => s + parseFloat(h.hours_spent || 0), 0);
+    // Sum hours spent (supporting both hours_spent and duration_mins / 60)
+    const totalHours = (hours.data || []).reduce((s, h) => {
+      const val = parseFloat(h.hours_spent) || (h.duration_mins ? parseFloat(h.duration_mins) / 60 : 0);
+      return s + val;
+    }, 0);
+
     const completedCourses = enroll.filter(e => e.status === 'completed').length;
     const inProgressCourses = enroll.filter(e => e.status === 'in_progress').length;
     const avgScore = (attempts.data || []).length > 0
       ? Math.round((attempts.data || []).reduce((s, a) => s + (a.score || 0), 0) / attempts.data.length)
       : 0;
+
+    const completedAdaptive = adaptiveSessions.data || [];
+    const avgAdaptiveScore = completedAdaptive.length > 0
+      ? Math.round(completedAdaptive.reduce((s, sess) => s + (sess.score || 0), 0) / completedAdaptive.length)
+      : 0;
+
+    // Calculate active days streak
+    const activeDates = new Set();
+    completedAdaptive.forEach(s => { if (s.completed_at) activeDates.add(s.completed_at.split('T')[0]); });
+    (hours.data || []).forEach(h => { if (h.logged_at) activeDates.add(h.logged_at.split('T')[0]); });
+
+    let currentStreak = 0;
+    const now = new Date();
+    for (let i = 0; i < 60; i++) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const ds = d.toISOString().split('T')[0];
+      if (activeDates.has(ds)) {
+        currentStreak++;
+      } else if (i === 0) {
+        // Today might not have activity yet, continue check for yesterday
+        continue;
+      } else {
+        break;
+      }
+    }
+
+    // 7-day performance trend
+    const performanceTrend7d = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const daySessions = completedAdaptive.filter(s => s.completed_at && s.completed_at.startsWith(dateStr));
+      const avg = daySessions.length
+        ? Math.round(daySessions.reduce((sum, s) => sum + (s.score || 0), 0) / daySessions.length)
+        : null;
+      performanceTrend7d.push({
+        date: dateStr,
+        avg_score: avg,
+        sessions_count: daySessions.length,
+      });
+    }
 
     res.json({
       stats: {
@@ -62,17 +114,60 @@ router.get('/student', authenticate, async (req, res) => {
         in_progress_courses: inProgressCourses,
         total_learning_hours: Math.round(totalHours * 10) / 10,
         avg_assessment_score: avgScore,
-        skill_gap_score: gap.data?.overall_gap_score || null,
+        total_adaptive_sessions: completedAdaptive.length,
+        avg_adaptive_score: avgAdaptiveScore,
+        learning_streak_days: currentStreak,
+        skill_gap_score: gap.data?.overall_gap_score ?? null,
         unread_notifications: (notifications.data || []).length,
       },
       recent_courses: enroll.slice(0, 5),
       recent_attempts: attempts.data || [],
+      recent_adaptive_sessions: completedAdaptive.slice(0, 5),
+      performance_trend_7d: performanceTrend7d,
       latest_pathway: pathway.data,
       latest_gap_report: gap.data,
       notifications: notifications.data || [],
     });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch student analytics' });
+  }
+});
+
+// ── GET /api/v1/analytics/student/streak ──────────────────
+router.get('/student/streak', authenticate, async (req, res) => {
+  const userId = req.profile.id;
+  try {
+    const { data: sessions } = await supabaseAdmin
+      .from('adaptive_sessions')
+      .select('completed_at')
+      .eq('student_id', userId)
+      .eq('status', 'completed')
+      .order('completed_at', { ascending: false });
+
+    const activeDates = new Set((sessions || []).map(s => s.completed_at && s.completed_at.split('T')[0]).filter(Boolean));
+
+    let streak = 0;
+    const now = new Date();
+    for (let i = 0; i < 60; i++) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const ds = d.toISOString().split('T')[0];
+      if (activeDates.has(ds)) {
+        streak++;
+      } else if (i === 0) {
+        continue;
+      } else {
+        break;
+      }
+    }
+
+    res.json({
+      streak_days: streak,
+      active_days_count: activeDates.size,
+      active_dates: Array.from(activeDates).slice(0, 30),
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch streak' });
   }
 });
 

@@ -9,6 +9,7 @@ const path = require('path');
 const { PORT, CORS_ORIGINS, RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX, NODE_ENV } = require('./config/env');
 const logger = require('./config/logger');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
+const requestId = require('./middleware/requestId');
 
 // ── Existing Routes ───────────────────────────────────────────
 const authRoutes        = require('./routes/auth');
@@ -58,6 +59,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(compression());
+app.use(requestId);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev', {
@@ -73,6 +75,19 @@ const limiter = rateLimit({
   message: { error: 'Too many requests, please try again later.' },
 });
 app.use('/api', limiter);
+
+// Strict rate limiter for computationally intensive AI generation / tutoring
+const aiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 20, // 20 calls/min
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'AI rate limit reached. Please pause for a moment before sending more requests.' },
+});
+app.use('/api/v1/tutor/chat', aiLimiter);
+app.use('/api/v1/assistant/chat', aiLimiter);
+app.use('/api/v1/questions/generate', aiLimiter);
+app.use('/api/v1/assessments/generate', aiLimiter);
 
 // ── Static frontend ────────────────────────────────────────
 app.use(express.static(path.join(__dirname, '../public')));

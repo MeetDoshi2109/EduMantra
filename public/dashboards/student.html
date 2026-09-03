@@ -1841,49 +1841,96 @@ function startNewTutorChat() {
   setHtml('botAvatarIcon', L.cpu(14));
 }
 
+function formatTutorText(txt) {
+  if (!txt) return '';
+  return txt
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code style="background:rgba(99,102,241,0.15);padding:2px 5px;border-radius:4px;font-family:monospace">$1</code>')
+    .replace(/\n/g, '<br>');
+}
+
 async function sendChat() {
   const inp = document.getElementById('chatInput');
   const msg = inp.value.trim();
   if (!msg) return;
   inp.value = '';
   appendMsg('user', msg);
-  appendMsg('assistant', '<em style="color:var(--ink-3)">Thinking…</em>', 'typing');
+
+  const bubbleDiv = appendMsg('assistant', '<em style="color:var(--ink-3)">Thinking…</em>', 'streaming-msg');
+  const contentEl = bubbleDiv.querySelector('.chat-bubble');
+  const token = localStorage.getItem('edumantra_token') || sessionStorage.getItem('edumantra_token');
+  const subContext = document.getElementById('tutorSubjectContext')?.value || null;
 
   try {
-    const subContext = document.getElementById('tutorSubjectContext')?.value || null;
-    const d = await Api.post('/assistant/chat', {
-      message: msg,
-      session_id: chatSessionId,
-      subject_id: subContext,
+    const res = await fetch('/api/v1/tutor/chat/stream', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({
+        message: msg,
+        session_id: chatSessionId,
+        subject_id: subContext,
+      }),
     });
 
-    chatSessionId = d.session_id;
-    document.getElementById('typing')?.remove();
-    appendMsg('assistant', d.reply || 'I am ready to assist with your STEM questions! What would you like to explore next?');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const reader = res.body?.getReader();
+    if (!reader) throw new Error('Streaming not supported');
+
+    const decoder = new TextDecoder();
+    let accumulated = '';
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.chunk) {
+              accumulated += data.chunk;
+              contentEl.innerHTML = formatTutorText(accumulated);
+              const wrap = document.getElementById('chatMsgs');
+              if (wrap) wrap.scrollTop = wrap.scrollHeight;
+            }
+            if (data.session_id) chatSessionId = data.session_id;
+          } catch (_) {}
+        }
+      }
+    }
+
+    if (!accumulated) {
+      contentEl.innerHTML = formatTutorText('I am ready to help with your STEM studies. What formula, concept, or code shall we examine?');
+    }
   } catch (e) {
-    console.error('Tutor chat error:', e);
-    document.getElementById('typing')?.remove();
-    appendMsg('assistant', `Sorry, I encountered an issue (${e.message || 'connection error'}). Please try again.`);
+    console.warn('Tutor stream fallback:', e.message);
+    try {
+      const d = await Api.post('/tutor/chat', {
+        message: msg,
+        session_id: chatSessionId,
+        subject_id: subContext,
+      });
+      chatSessionId = d.session_id;
+      contentEl.innerHTML = formatTutorText(d.reply || 'I am ready to assist with your STEM questions!');
+    } catch (err) {
+      contentEl.textContent = `Sorry, I encountered an issue (${err.message}). Please try again.`;
+    }
   }
 }
 
 async function sendDirectTutorPrompt(prompt) {
-  appendMsg('assistant', '<em style="color:var(--ink-3)">Thinking…</em>', 'typing');
-  try {
-    const subContext = document.getElementById('tutorSubjectContext')?.value || null;
-    const d = await Api.post('/assistant/chat', {
-      message: prompt,
-      session_id: chatSessionId,
-      subject_id: subContext,
-    });
-    chatSessionId = d.session_id;
-    document.getElementById('typing')?.remove();
-    appendMsg('assistant', d.reply || 'Here is what you need to know about this concept.');
-  } catch (e) {
-    console.error('Direct tutor prompt error:', e);
-    document.getElementById('typing')?.remove();
-    appendMsg('assistant', `Sorry, I encountered an issue (${e.message || 'connection error'}). Please try again.`);
-  }
+  const inp = document.getElementById('chatInput');
+  if (inp) inp.value = prompt;
+  await sendChat();
 }
 
 function appendMsg(role, content, id) {
@@ -1896,6 +1943,7 @@ function appendMsg(role, content, id) {
     : `<div class="chat-avatar">${L.cpu ? L.cpu(14) : '🤖'}</div><div class="chat-bubble">${content}</div>`;
   wrap.appendChild(div);
   wrap.scrollTop = wrap.scrollHeight;
+  return div;
 }
 
 // ── Objectives ────────────────────────────────────────────

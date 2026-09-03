@@ -381,6 +381,203 @@ STRICT STEM SCOPE & GUARDRAILS:
 }
 
 /**
+ * Streaming caller for Gemini using Server-Sent Events.
+ */
+async function callGeminiStream(contents, systemInstruction = null, onChunk = () => {}, temperature = 0.5) {
+  const apiKey = getApiKey();
+  for (const model of FALLBACK_MODELS) {
+    try {
+      const url = `${GEMINI_BASE_URL}/${model}:streamGenerateContent?alt=sse&key=${apiKey}`;
+      const generationConfig = { temperature };
+      if (model.includes('3.1-flash') || model.includes('flash-lite')) {
+        generationConfig.thinkingConfig = { thinkingBudget: 0 };
+      }
+      const body = { contents, generationConfig };
+      if (systemInstruction) {
+        body.systemInstruction = { parts: [{ text: systemInstruction }] };
+      }
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) continue;
+
+      let fullText = '';
+      if (res.body && typeof res.body.getReader === 'function') {
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const jsonStr = line.slice(6).trim();
+              if (jsonStr) {
+                try {
+                  const parsed = JSON.parse(jsonStr);
+                  const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                  if (chunk) {
+                    fullText += chunk;
+                    onChunk(chunk);
+                  }
+                } catch (_) {}
+              }
+            }
+          }
+        }
+      } else {
+        const textData = await res.text();
+        const lines = textData.split('\n');
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const jsonStr = line.slice(6).trim();
+            if (jsonStr) {
+              try {
+                const parsed = JSON.parse(jsonStr);
+                const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                if (chunk) {
+                  fullText += chunk;
+                  onChunk(chunk);
+                }
+              } catch (_) {}
+            }
+          }
+        }
+      }
+
+      if (fullText) {
+        return { text: fullText, tokensUsed: Math.round(fullText.length / 4), modelUsed: model };
+      }
+    } catch (err) {
+      logger.warn(`Gemini streaming error with model ${model}:`, err.message);
+    }
+  }
+
+  // Fallback to regular callGemini
+  const fallback = await callGemini(contents, systemInstruction, false, temperature);
+  if (fallback.text) onChunk(fallback.text);
+  return fallback;
+}
+
+/**
+ * Streaming STEM Tutor Chat.
+ */
+async function tutorChatStream(messages, studentContext = {}, onChunk = () => {}) {
+  const { full_name, class: cls, board, subject, chapter, topic, concept, mastery, currentQuestion, language = 'en' } = studentContext;
+  const langNote = language === 'hi' ? 'Always respond in Hindi.' : language === 'gu' ? 'Always respond in Gujarati.' : 'Respond in English.';
+
+  const systemInstruction = `You are EduMantra STEM AI Tutor — an expert, encouraging, and friendly tutor specialized EXCLUSIVELY in STEM Education (Science, Technology, Engineering, and Mathematics) for school students.
+${langNote}
+
+Current student context:
+- Name: ${full_name || 'Student'}
+- Board: ${board || 'CBSE'} | Class: ${cls || 'School Level'}
+- Active STEM Subject: ${subject || 'STEM (Math, Science, Computer Science & IT)'}
+${chapter ? `- Chapter: ${chapter}` : ''}
+${topic ? `- Topic: ${topic}` : ''}
+${concept ? `- Concept: ${concept}` : ''}
+${mastery !== undefined ? `- Current mastery for this concept: ${mastery}%` : ''}
+${currentQuestion ? `- Currently working on problem: "${currentQuestion}"` : ''}
+
+STRICT STEM SCOPE & GUARDRAILS:
+1. You MUST ONLY answer questions related to STEM Education (Mathematics, Physics, Chemistry, Biology, Computer Science, Coding, Engineering).
+2. Refuse all non-STEM requests politely and guide student back to STEM.
+3. Use Socratic teaching: give hints, formulas, and step-by-step guidance without spoon-feeding final answers immediately.`;
+
+  const geminiContents = messages.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content || '' }],
+  }));
+
+  try {
+    return await callGeminiStream(geminiContents, systemInstruction, onChunk, 0.5);
+  } catch (err) {
+    const fallbackText = `Let's break this STEM concept down step by step. What formula or equation are you working with?`;
+    onChunk(fallbackText);
+    return { text: fallbackText, tokensUsed: 25 };
+  }
+}
+
+/**
+ * Generate 3-level progressive hint for a STEM problem.
+ * Level 1: Conceptual nudge / question
+ * Level 2: Relevant law, formula, or identity
+ * Level 3: Partial setup / step 1 calculation
+ */
+async function generateHint(question, hintLevel = 1, studentContext = {}) {
+  const levelNames = {
+    1: 'Gentle Nudge: Ask a guiding question or highlight the key concept without revealing the method.',
+    2: 'Core Formula / Principle: State the exact formula, rule, or scientific theorem needed.',
+    3: 'Step-by-step Setup: Show the first step of working and setup the equation, leaving the final arithmetic to the student.'
+  };
+
+  const prompt = `You are a STEM tutor providing a Level ${hintLevel} hint for a student problem.
+Hint Type: ${levelNames[hintLevel] || levelNames[1]}
+
+Question:
+"${question.question_text}"
+${question.options ? `Options: ${JSON.stringify(question.options)}` : ''}
+${question.explanation ? `Full Solution (for reference): ${question.explanation}` : ''}
+
+Provide ONLY the hint (2-3 concise sentences). Do NOT reveal the correct option letter or final numerical answer.`;
+
+  try {
+    const { text } = await callGemini(
+      [{ role: 'user', parts: [{ text: prompt }] }],
+      'You are a Socratic tutor. Guide the student to think, do not give away the final answer.',
+      false,
+      0.4
+    );
+    return { hint: text, hint_level: hintLevel };
+  } catch (_) {
+    const fallbackHints = {
+      1: "Think about the underlying definition and identify what quantities or variables are given.",
+      2: "Identify the standard mathematical or physical relation connecting the given variables.",
+      3: "Write down the formula, substitute the known values, and solve for the unknown variable."
+    };
+    return { hint: fallbackHints[hintLevel] || fallbackHints[1], hint_level: hintLevel };
+  }
+}
+
+/**
+ * Generate a Socratic follow-up challenge question to verify understanding.
+ */
+async function generateFollowUpQuestion(topic, concept, difficulty = 'medium') {
+  const prompt = `Generate a single quick conceptual follow-up multiple-choice question to test if a student truly understood ${concept || topic}.
+Return valid JSON:
+{
+  "question_text": "Brief conceptual question?",
+  "options": [
+    {"key": "A", "text": "Option A"},
+    {"key": "B", "text": "Option B"},
+    {"key": "C", "text": "Option C"},
+    {"key": "D", "text": "Option D"}
+  ],
+  "correct_answer": "A",
+  "explanation": "Brief explanation"
+}`;
+
+  try {
+    const { text } = await callGemini(
+      [{ role: 'user', parts: [{ text: prompt }] }],
+      'You are a STEM educator testing student comprehension.',
+      true,
+      0.5
+    );
+    return safeParseJson(text, null);
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
  * Generate AI-powered personalized recommendations based on mastery data.
  */
 async function generateRecommendations(masteryData) {
@@ -519,7 +716,11 @@ module.exports = {
   generateQuestions,
   validateQuestion,
   tutorChat,
+  tutorChatStream,
+  generateHint,
+  generateFollowUpQuestion,
   generateRecommendations,
   analyzePerformance,
   callGemini,
+  callGeminiStream,
 };
