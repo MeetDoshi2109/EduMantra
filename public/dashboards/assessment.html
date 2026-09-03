@@ -774,12 +774,38 @@ function launchConfetti() {
 }
 
 async function apiFetch(url, opts = {}) {
+  let curToken = localStorage.getItem('em_token');
   const res = await fetch(url, {
-    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...(opts.headers || {}) },
+    headers: { 'Authorization': `Bearer ${curToken}`, 'Content-Type': 'application/json', ...(opts.headers || {}) },
     ...opts,
   });
   if (!res.ok) {
-    if (res.status === 401) { localStorage.removeItem('em_token'); window.location.href = '/'; }
+    if (res.status === 401) {
+      const refreshToken = localStorage.getItem('em_refresh');
+      if (refreshToken) {
+        try {
+          const rRes = await fetch('/api/v1/auth/refresh', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: refreshToken })
+          });
+          if (rRes.ok) {
+            const data = await rRes.json();
+            if (data && data.access_token) {
+              localStorage.setItem('em_token', data.access_token);
+              if (data.refresh_token) localStorage.setItem('em_refresh', data.refresh_token);
+              const retryRes = await fetch(url, {
+                headers: { 'Authorization': `Bearer ${data.access_token}`, 'Content-Type': 'application/json', ...(opts.headers || {}) },
+                ...opts,
+              });
+              if (retryRes.ok) return retryRes.json();
+            }
+          }
+        } catch (_) {}
+      }
+      localStorage.removeItem('em_token');
+      if (window.location.pathname !== '/login.html') window.location.href = '/login.html';
+    }
     throw new Error(`HTTP ${res.status}`);
   }
   return res.json();

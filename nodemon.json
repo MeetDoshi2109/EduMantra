@@ -1,0 +1,18 @@
+{
+  "watch": ["src"],
+  "ext": "js,json",
+  "ignore": [
+    "public/*",
+    "scripts/*",
+    "question sample/*",
+    "supabase/*",
+    "*.log",
+    "logs/*",
+    ".git/*",
+    ".agents/*",
+    ".system_generated/*",
+    ".gemini/*",
+    "node_modules/*"
+  ],
+  "delay": 1500
+}

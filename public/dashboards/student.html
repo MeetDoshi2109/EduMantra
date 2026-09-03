@@ -105,6 +105,114 @@
   .opt-choice.correct { border-color:var(--accent)!important;background:rgba(0,229,160,0.15)!important;color:var(--accent); }
   .opt-choice.incorrect { border-color:var(--danger)!important;background:rgba(255,71,87,0.12)!important;color:var(--danger); }
   .stem-chip { display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;background:rgba(0,229,160,0.1);color:var(--accent);border-radius:99px;font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase; }
+
+  /* Floating Hint Window */
+  .hint-floating-window {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    width: 400px;
+    max-width: calc(100vw - 2rem);
+    max-height: 520px;
+    background: var(--surface-1);
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-lg);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: hintSlideIn .25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes hintSlideIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .hint-window-header {
+    padding: .75rem 1rem;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--hairline);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .hint-window-title {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-weight: 700;
+    font-size: .88rem;
+    color: var(--ink);
+  }
+  .hint-close-btn {
+    background: none;
+    border: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all .15s;
+  }
+  .hint-close-btn:hover {
+    color: var(--ink);
+    background: rgba(255,255,255,0.08);
+  }
+  .hint-window-body {
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+  }
+  .hint-content-box {
+    background: rgba(0, 229, 160, 0.05);
+    border: 1px solid rgba(0, 229, 160, 0.2);
+    border-radius: var(--r-md);
+    padding: .85rem;
+    font-size: .85rem;
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 70px;
+  }
+  .hint-tier-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: .35rem;
+  }
+  .btn-tier {
+    padding: .4rem .3rem;
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+    border: 1px solid var(--hairline);
+    color: var(--ink-3);
+    font-size: .72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    text-align: center;
+  }
+  .btn-tier:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+  }
+  .btn-tier.active {
+    background: rgba(0, 229, 160, 0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .hint-tutor-ask {
+    display: flex;
+    gap: .4rem;
+    margin-top: .25rem;
+    padding-top: .5rem;
+    border-top: 1px solid var(--hairline);
+  }
+  .hint-tutor-ask input {
+    font-size: .8rem;
+    padding: .4rem .6rem;
+  }
 </style>
 </head>
 <body>
@@ -394,10 +502,41 @@
           <div id="pracQuestionBody"></div>
           <div id="pracFeedbackArea" style="margin-top:1rem;display:none"></div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--hairline)">
-            <button class="btn btn-secondary" onclick="askTutorAboutCurrentQuestion()">💬 Hint / Ask Tutor</button>
+            <button class="btn btn-secondary" onclick="askTutorAboutCurrentQuestion()">💡 Hint / Ask Tutor</button>
             <div style="display:flex;gap:.5rem">
               <button class="btn btn-primary" id="btnSubmitAnswer" onclick="submitCurrentAnswer()">Check Answer</button>
               <button class="btn btn-primary" id="btnNextQuestion" onclick="loadNextQuestion()" style="display:none">Next Question →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Small Window for Hints (No tab switching!) -->
+        <div id="practiceHintModal" class="hint-floating-window" style="display:none;">
+          <div class="hint-window-header">
+            <div class="hint-window-title">
+              <span>💡</span>
+              <span>AI Tutor Hint</span>
+              <span class="badge badge-active" id="hintTierBadge" style="font-size:0.68rem">Tier 1 • Nudge</span>
+            </div>
+            <button class="hint-close-btn" onclick="closePracticeHint()" title="Close Hint Window">✕</button>
+          </div>
+          <div class="hint-window-body">
+            <div class="hint-tier-actions">
+              <button class="btn-tier active" id="btnTier1" onclick="loadTieredHint(1)">1. Gentle Nudge</button>
+              <button class="btn-tier" id="btnTier2" onclick="loadTieredHint(2)">2. Key Formula</button>
+              <button class="btn-tier" id="btnTier3" onclick="loadTieredHint(3)">3. Step 1 Setup</button>
+            </div>
+            <div id="hintContentArea" class="hint-content-box">
+              <div id="hintLoadingSpinner" style="display:none;color:var(--accent);font-weight:600;font-size:0.8rem;margin-bottom:0.4rem">
+                ⚡ Generating tailored hint...
+              </div>
+              <div id="hintTextDisplay">
+                Click a tier above or ask the tutor below.
+              </div>
+            </div>
+            <div class="hint-tutor-ask">
+              <input type="text" id="hintCustomQuestionInput" class="input" placeholder="Ask tutor a quick question…" onkeydown="if(event.key==='Enter')askQuickHintClarification()">
+              <button class="btn btn-primary btn-sm" onclick="askQuickHintClarification()" style="padding:0.35rem 0.75rem;font-size:0.75rem">Ask</button>
             </div>
           </div>
         </div>
@@ -1378,6 +1517,14 @@ function askTutorForSubject() {
 
 // ── Adaptive Practice Engine Runner ───────────────────────
 async function loadPracticePage(presetSubjectId = null, presetChapterId = null) {
+  // If an active session is in progress and user did not choose a new subject, keep runner active
+  if (currContext.activePracticeSession && currContext.currentQuestion && !presetSubjectId) {
+    document.getElementById('practiceSetupCard').style.display = 'none';
+    document.getElementById('practiceRunner').style.display = 'block';
+    document.getElementById('practiceSummary').style.display = 'none';
+    return;
+  }
+
   resetPracticeSetup();
   const subSel = document.getElementById('prac-subject-sel');
   subSel.innerHTML = '<option value="">Loading STEM subjects…</option>';
@@ -1675,6 +1822,13 @@ async function submitCurrentAnswer() {
 
 async function loadNextQuestion() {
   const sessionId = currContext.activePracticeSession?.id;
+  if (!sessionId) return;
+  const nextBtn = document.getElementById('btnNextQuestion');
+  if (nextBtn) {
+    nextBtn.disabled = true;
+    nextBtn.textContent = 'Loading question…';
+  }
+  closePracticeHint();
   try {
     const res = await Api.get(`/adaptive/sessions/${sessionId}/next`);
     if (res.session_complete || !res.next_question) {
@@ -1684,12 +1838,17 @@ async function loadNextQuestion() {
       renderCurrentQuestion();
     }
   } catch (e) {
-    finishPracticeSession(false);
+    Toast.error(e.message || 'Could not load next question. Please try again.');
+    if (nextBtn) {
+      nextBtn.disabled = false;
+      nextBtn.textContent = 'Retry Next Question →';
+    }
   }
 }
 
 async function finishPracticeSession(isManualEnd = false) {
   const sessionId = currContext.activePracticeSession?.id;
+  closePracticeHint();
   if (sessionId) {
     try {
       await Api.post(`/adaptive/sessions/${sessionId}/submit`, {});
@@ -1715,12 +1874,97 @@ async function finishPracticeSession(isManualEnd = false) {
   }
 }
 
+// ── Floating Hint Window Controller (No Tab Switching!) ──
+let currentHintTier = 1;
+
 function askTutorAboutCurrentQuestion() {
   const q = currContext.currentQuestion;
+  if (!q) {
+    Toast.info('Start a practice session first to view hints.');
+    return;
+  }
+  const modal = document.getElementById('practiceHintModal');
+  if (modal) {
+    modal.style.display = 'flex';
+  }
+  loadTieredHint(1);
+}
+
+function closePracticeHint() {
+  const modal = document.getElementById('practiceHintModal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function loadTieredHint(tier = 1) {
+  currentHintTier = tier;
+  const q = currContext.currentQuestion;
   if (!q) return;
-  goPage('assistant', pageHandlers);
-  appendMsg('user', `Can you explain the STEM concepts behind this question: "${q.question_text}"?`);
-  sendDirectTutorPrompt(`Help me understand this problem conceptually and provide a helpful hint without giving away the final answer: ${q.question_text}`);
+
+  [1, 2, 3].forEach(t => {
+    const btn = document.getElementById(`btnTier${t}`);
+    if (btn) btn.classList.toggle('active', t === tier);
+  });
+
+  const badge = document.getElementById('hintTierBadge');
+  const labels = {
+    1: 'Tier 1 • Gentle Nudge',
+    2: 'Tier 2 • Key Formula',
+    3: 'Tier 3 • Step 1 Setup',
+  };
+  if (badge) badge.textContent = labels[tier] || `Tier ${tier}`;
+
+  const textEl = document.getElementById('hintTextDisplay');
+  const spinEl = document.getElementById('hintLoadingSpinner');
+  if (spinEl) spinEl.style.display = 'block';
+  if (textEl) textEl.textContent = 'Analyzing question and preparing hint…';
+
+  try {
+    const res = await Api.post('/tutor/hint', {
+      question_id: q.id,
+      question_text: q.question_text,
+      concept: q.topic_id || '',
+      hint_level: tier,
+    });
+    if (spinEl) spinEl.style.display = 'none';
+    if (textEl) textEl.innerHTML = `💡 ${res.hint || 'Focus on the fundamental definitions in this problem.'}`;
+  } catch (e) {
+    if (spinEl) spinEl.style.display = 'none';
+    if (textEl) {
+      if (tier === 1) {
+        textEl.innerHTML = `💡 <strong>Gentle Nudge:</strong> Carefully identify the given quantities and what the question is asking you to determine.`;
+      } else if (tier === 2) {
+        textEl.innerHTML = `💡 <strong>Key Formula / Rule:</strong> Recall the core theorem or scientific principle governing this concept.`;
+      } else {
+        textEl.innerHTML = `💡 <strong>Step 1 Setup:</strong> Express known values in standard units, plug into the core formula, and solve for the target quantity.`;
+      }
+    }
+  }
+}
+
+async function askQuickHintClarification() {
+  const input = document.getElementById('hintCustomQuestionInput');
+  const q = currContext.currentQuestion;
+  if (!input || !input.value.trim() || !q) return;
+
+  const query = input.value.trim();
+  input.value = '';
+
+  const textEl = document.getElementById('hintTextDisplay');
+  const spinEl = document.getElementById('hintLoadingSpinner');
+  if (spinEl) spinEl.style.display = 'block';
+  if (textEl) textEl.textContent = `Consulting STEM Tutor: "${query}"…`;
+
+  try {
+    const res = await Api.post('/tutor/chat', {
+      message: `The student is working on this question: "${q.question_text}". They asked: "${query}". Provide a concise, 1-2 sentence guiding explanation without giving away the final answer choice.`,
+      question_id: q.id,
+    });
+    if (spinEl) spinEl.style.display = 'none';
+    if (textEl) textEl.innerHTML = `💬 <strong>Tutor:</strong> ${res.reply || res.content || 'Review the core rules of this topic.'}`;
+  } catch (e) {
+    if (spinEl) spinEl.style.display = 'none';
+    if (textEl) textEl.innerHTML = `💬 <strong>Tutor:</strong> Keep in mind the primary definition and rule out options that contradict known physical/mathematical laws.`;
+  }
 }
 
 // ── Mastery Page & Knowledge Gaps ─────────────────────────
