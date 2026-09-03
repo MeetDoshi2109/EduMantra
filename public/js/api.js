@@ -14,13 +14,40 @@ const Api = (() => {
     const cfg = { method, headers: h };
     if (body) cfg.body = isForm ? body : JSON.stringify(body);
     const r = await fetch(`${API}${path}`, cfg);
-    // On 401: if it's an auth endpoint, throw the error (don't logout).
-    // If it's a protected endpoint, the session expired — logout and redirect.
+    // On 401: try to refresh token once if refresh token is available
     if (r.status === 401) {
-      const e = await r.json().catch(() => ({}));
       const isAuthEndpoint = path.startsWith('/auth/');
-      if (!isAuthEndpoint) Auth.logout();
-      throw new Error(e.error || 'Invalid credentials');
+      const refreshToken = localStorage.getItem('em_refresh');
+      if (!isAuthEndpoint && refreshToken) {
+        try {
+          const refreshRes = await fetch(`${API}/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: refreshToken })
+          });
+          if (refreshRes.ok) {
+            const data = await refreshRes.json();
+            if (data && data.access_token) {
+              localStorage.setItem('em_token', data.access_token);
+              if (data.refresh_token) localStorage.setItem('em_refresh', data.refresh_token);
+              // Retry request with new token
+              h['Authorization'] = `Bearer ${data.access_token}`;
+              const retryRes = await fetch(`${API}${path}`, { ...cfg, headers: h });
+              if (retryRes.ok) {
+                if (retryRes.status === 204) return null;
+                return retryRes.json();
+              }
+            }
+          }
+        } catch (_) {}
+      }
+      if (!isAuthEndpoint) {
+        if (window.location.pathname !== '/login.html' && window.location.pathname !== '/') {
+          Auth.logout();
+        }
+      }
+      const e = await r.json().catch(() => ({}));
+      throw new Error(e.error || 'Session expired. Please log in again.');
     }
     if (!r.ok) {
       const e = await r.json().catch(() => ({}));
@@ -51,10 +78,15 @@ const Auth = {
   loggedIn() { return !!localStorage.getItem('em_token'); },
   logout() {
     ['em_token','em_refresh','em_user'].forEach(k => localStorage.removeItem(k));
-    window.location.href = '/login.html';
+    if (window.location.pathname !== '/login.html' && window.location.pathname !== '/') {
+      window.location.href = '/login.html';
+    }
   },
   guard() {
-    if (!this.loggedIn()) { window.location.href = '/login.html'; return null; }
+    if (!this.loggedIn()) {
+      if (window.location.pathname !== '/login.html') window.location.href = '/login.html';
+      return null;
+    }
     return this.user();
   },
   redirect(u) {
