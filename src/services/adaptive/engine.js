@@ -1,4 +1,4 @@
-﻿/**
+/**
  * EduMantra Adaptive Assessment Engine — v2
  *
  * Improvements over v1:
@@ -109,14 +109,16 @@ async function selectQuestion(sessionState, conceptId = null, spacedConceptIds =
       for (const diff of tryDifficulties) {
         let q = supabaseAdmin
           .from("question_bank")
-          .select("id, question_text, question_type, options, difficulty, concept_id, topic_id")
+          .select("id, question_text, question_type, options, correct_answer, explanation, difficulty, concept_id, topic_id")
           .eq("validation_status", "approved")
           .eq("is_active", true)
           .eq("difficulty", diff)
           .eq("concept_id", srConceptId);
         if (shownQuestionIds.length > 0) q = q.not("id", "in", "(" + shownQuestionIds.join(",") + ")");
         const { data } = await q.limit(5);
-        if (data && data.length > 0) return data[Math.floor(Math.random() * data.length)];
+        if (data && data.length > 0) {
+          return await rephraseSelected(data[Math.floor(Math.random() * data.length)], session);
+        }
       }
     }
   }
@@ -134,26 +136,43 @@ async function selectQuestion(sessionState, conceptId = null, spacedConceptIds =
     for (const diff of tryDifficulties) {
       let query = supabaseAdmin
         .from("question_bank")
-        .select("id, question_text, question_type, options, difficulty, concept_id, topic_id")
+        .select("id, question_text, question_type, options, correct_answer, explanation, difficulty, concept_id, topic_id")
         .eq("validation_status", "approved")
         .eq("is_active", true)
         .eq("difficulty", diff);
       if (scope.type !== "any" && scope.val) query = query.eq(scope.type, scope.val);
       if (shownQuestionIds.length > 0) query = query.not("id", "in", "(" + shownQuestionIds.join(",") + ")");
       const { data: questions } = await query.limit(10);
-      if (questions && questions.length > 0) return questions[Math.floor(Math.random() * questions.length)];
+      if (questions && questions.length > 0) {
+        return await rephraseSelected(questions[Math.floor(Math.random() * questions.length)], session);
+      }
     }
   }
 
   // Final fallback
   let fallbackQuery = supabaseAdmin
     .from("question_bank")
-    .select("id, question_text, question_type, options, difficulty, concept_id, topic_id")
+    .select("id, question_text, question_type, options, correct_answer, explanation, difficulty, concept_id, topic_id")
     .eq("is_active", true);
   if (shownQuestionIds.length > 0) fallbackQuery = fallbackQuery.not("id", "in", "(" + shownQuestionIds.join(",") + ")");
   const { data: anyQ } = await fallbackQuery.limit(10);
-  if (anyQ && anyQ.length > 0) return anyQ[Math.floor(Math.random() * anyQ.length)];
+  if (anyQ && anyQ.length > 0) {
+    return await rephraseSelected(anyQ[Math.floor(Math.random() * anyQ.length)], session);
+  }
   return null;
+}
+
+async function rephraseSelected(question, session) {
+  if (!question) return question;
+  try {
+    const AI = require('../ai');
+    return await AI.rephraseAndContextualizeQuestion(question, {
+      chapter: session?.chapter_id || '',
+      topic: session?.topic_id || '',
+    });
+  } catch (_) {
+    return question;
+  }
 }
 
 /**
@@ -363,6 +382,7 @@ function calculatePerformanceSummary(deliveries, session) {
 module.exports = {
   selectQuestion,
   processAnswer,
+  evaluateAnswer: (question, studentAnswer) => require('../ai').evaluateStudentAnswer(question, studentAnswer),
   updateMastery,
   getMasteryLevel,
   detectGaps,
@@ -373,3 +393,4 @@ module.exports = {
   getConfidenceWeight,
   DIFFICULTY_ORDER,
 };
+

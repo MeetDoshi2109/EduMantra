@@ -1,0 +1,1329 @@
+[
+  {
+    "grade": 9,
+    "books": [
+      {
+        "title": "Ganita Manjari (Class 9)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Number Systems",
+            "topics": [
+              "Real numbers on number line",
+              "Irrational numbers and proofs",
+              "Laws of exponents for real numbers"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Polynomials",
+            "topics": [
+              "Zeroes of a polynomial",
+              "Remainder theorem and factor theorem",
+              "Algebraic identities factorisation"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Coordinate Geometry",
+            "topics": [
+              "Cartesian plane and quadrants",
+              "Plotting ordered pairs",
+              "Interpreting geometric graphs"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Linear Equations in Two Variables",
+            "topics": [
+              "Standard form ax + by + c = 0",
+              "Graph of linear equations",
+              "Simultaneous equations intuition"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Introduction to Euclid\u2019s Geometry",
+            "topics": [
+              "Euclid\u2019s axioms and postulates",
+              "Deductive mathematical logic",
+              "Non-Euclidean geometry intro"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Lines and Angles",
+            "topics": [
+              "Linear pair axiom",
+              "Vertically opposite angles",
+              "Parallel lines and transversals"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Triangles",
+            "topics": [
+              "Congruence criteria (SAS, ASA, AAS, SSS, RHS)",
+              "Isosceles triangle theorems",
+              "Triangle inequalities"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Quadrilaterals",
+            "topics": [
+              "Properties of parallelograms",
+              "Mid-point theorem and converse",
+              "Special quadrilaterals proofs"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Exploration (Class 9 Science)",
+        "subject": "science",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Exploration: Entering the World of Secondary Science",
+            "topics": [
+              "Interdisciplinary scientific method",
+              "Error analysis in measurement",
+              "Dimensional intuition"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Cell: The Building Block of Life",
+            "topics": [
+              "Plasma membrane and osmosis",
+              "Nucleus, chromosomes and DNA",
+              "Endoplasmic reticulum, Golgi, Mitochondria"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Tissues in Action",
+            "topics": [
+              "Meristematic and permanent plant tissues",
+              "Epithelial, connective, muscular and nervous tissues"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Describing Motion Around Us",
+            "topics": [
+              "Distance and displacement",
+              "Uniform and non-uniform speed",
+              "Equations of motion derivation"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Exploring Mixtures and their Separation",
+            "topics": [
+              "Homogeneous and heterogeneous mixtures",
+              "Concentration of solutions",
+              "Chromatography and distillation"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "How Forces Affect Motion",
+            "topics": [
+              "Newton\u2019s first law and inertia",
+              "Newton\u2019s second law (F = ma)",
+              "Newton\u2019s third law and momentum conservation"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Work, Energy, and Simple Machines",
+            "topics": [
+              "Scientific definition of work",
+              "Kinetic energy and potential energy",
+              "Law of conservation of energy"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Journey Inside the Atom",
+            "topics": [
+              "Thomson, Rutherford and Bohr models",
+              "Protons, neutrons and electrons",
+              "Valency and atomic mass"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Atomic Foundations of Matter",
+            "topics": [
+              "Laws of chemical combination",
+              "Dalton\u2019s atomic theory",
+              "Molecular mass and formula units"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Sound Waves: Characteristics and Applications",
+            "topics": [
+              "Longitudinal waves and compressions",
+              "Wavelength, frequency, amplitude and velocity",
+              "Ultrasound and SONAR"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Reproduction: How Life Continues",
+            "topics": [
+              "Asexual fission, budding, fragmentation",
+              "Sexual reproduction mechanics",
+              "Cellular division (mitosis/meiosis)"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Patterns in Life: Diversity and Classification",
+            "topics": [
+              "Five kingdom classification",
+              "Plant divisions (Thallophyta to Angiosperms)",
+              "Animal phyla"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "Earth as a System: Energy, Matter, and Life",
+            "topics": [
+              "Biogeochemical cycles",
+              "Atmospheric greenhouse dynamics",
+              "Human ecological impact"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Information Technology 402 (Class 9)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Digital Documentation & Spreadsheets",
+            "topics": [
+              "Word processing styles and formatting",
+              "Spreadsheet formulas and functions",
+              "Digital presentation design",
+              "Cyber safety and ethics"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 10,
+    "books": [
+      {
+        "title": "NCERT Mathematics (Class 10)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Real Numbers",
+            "topics": [
+              "Fundamental theorem of arithmetic",
+              "Irrationality proofs for \u221a2, \u221a3, \u221a5",
+              "Decimal expansions"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Polynomials",
+            "topics": [
+              "Geometrical meaning of zeroes",
+              "Relationship between zeroes and coefficients",
+              "Cubic polynomials"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Pair of Linear Equations in Two Variables",
+            "topics": [
+              "Graphical method of solution",
+              "Substitution and elimination methods",
+              "Consistency conditions"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Quadratic Equations",
+            "topics": [
+              "Standard form ax\u00b2 + bx + c = 0",
+              "Factorisation method",
+              "Quadratic formula and discriminant (b\u00b2 - 4ac)"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Arithmetic Progressions",
+            "topics": [
+              "nth term formula a + (n-1)d",
+              "Sum of first n terms formula",
+              "Real-world AP modeling"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Triangles",
+            "topics": [
+              "Basic proportionality theorem (Thales)",
+              "Similarity criteria (AAA, SSS, SAS)",
+              "Areas of similar triangles"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Coordinate Geometry",
+            "topics": [
+              "Distance formula \u221a((x\u2082-x\u2081)\u00b2 + (y\u2082-y\u2081)\u00b2)",
+              "Section formula and midpoint formula",
+              "Area of triangle coordinate formula"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Introduction to Trigonometry",
+            "topics": [
+              "Trigonometric ratios (sin, cos, tan, cosec, sec, cot)",
+              "Values at 0\u00b0, 30\u00b0, 45\u00b0, 60\u00b0, 90\u00b0",
+              "Identities (sin\u00b2\u03b8 + cos\u00b2\u03b8 = 1)"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Some Applications of Trigonometry",
+            "topics": [
+              "Line of sight and horizontal line",
+              "Angle of elevation and depression",
+              "Heights and distances problems"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Circles",
+            "topics": [
+              "Tangent to a circle",
+              "Radius perpendicular to tangent at point of contact",
+              "Lengths of tangents from external point are equal"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Areas Related to Circles",
+            "topics": [
+              "Sector area (\u03b8/360 * \u03c0r\u00b2)",
+              "Segment area",
+              "Areas of combinations of plane figures"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Surface Areas and Volumes",
+            "topics": [
+              "Surface area of combination of solids",
+              "Volume of combination of solids",
+              "Conversion of solid shapes"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "Statistics",
+            "topics": [
+              "Mean of grouped data (direct, assumed mean, step deviation)",
+              "Mode of grouped data",
+              "Median of grouped data"
+            ]
+          },
+          {
+            "num": 14,
+            "title": "Probability",
+            "topics": [
+              "Theoretical probability P(E) = n(E)/n(S)",
+              "Elementary and complementary events",
+              "Impossible and sure events"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "NCERT Science (Class 10)",
+        "subject": "science",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Chemical Reactions and Equations",
+            "topics": [
+              "Balancing chemical equations",
+              "Combination, decomposition, displacement, double displacement",
+              "Oxidation and reduction (redox)",
+              "Corrosion and rancidity"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Acids, Bases and Salts",
+            "topics": [
+              "Chemical properties of acids and bases",
+              "pH scale and universal indicator",
+              "Salts: bleaching powder, baking soda, washing soda, Plaster of Paris"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Metals and Non-metals",
+            "topics": [
+              "Physical and chemical properties",
+              "Reactivity series and ionic bonding",
+              "Extraction of metals and refining"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Carbon and its Compounds",
+            "topics": [
+              "Covalent bonding and tetravalency of carbon",
+              "Homologous series and functional groups",
+              "Combustion, oxidation, addition, substitution",
+              "Ethanol and ethanoic acid"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Life Processes",
+            "topics": [
+              "Autotrophic and heterotrophic nutrition",
+              "Aerobic and anaerobic respiration",
+              "Human circulatory and lymphatic systems",
+              "Excretion in humans and nephron structure"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Control and Coordination",
+            "topics": [
+              "Neuron structure and reflex arc",
+              "Human brain parts and functions",
+              "Plant hormones (auxin, gibberellin, cytokinin)",
+              "Endocrine glands and hormones"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "How do Organisms Reproduce?",
+            "topics": [
+              "Asexual modes: fission, budding, spore formation, vegetative propagation",
+              "Sexual reproduction in flowering plants",
+              "Human male and female reproductive systems",
+              "Reproductive health and contraception"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Heredity",
+            "topics": [
+              "Mendelian inheritance laws (monohybrid & dihybrid cross)",
+              "Sex determination in humans (XX/XY)",
+              "Genetic variation"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Light \u2014 Reflection and Refraction",
+            "topics": [
+              "Spherical mirrors: focal length, mirror formula, magnification",
+              "Refraction through glass slab and Snell\u2019s law",
+              "Lens formula and power of a lens (P = 1/f)"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "The Human Eye and the Colourful World",
+            "topics": [
+              "Structure and accommodation of human eye",
+              "Defects of vision (myopia, hypermetropia, presbyopia)",
+              "Dispersion of white light through prism",
+              "Atmospheric refraction and Tyndall effect"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Electricity",
+            "topics": [
+              "Electric current and potential difference (V = W/Q)",
+              "Ohm\u2019s law (V = IR) and resistance factors",
+              "Resistors in series and parallel",
+              "Joule\u2019s heating law and electric power (P = VI = I\u00b2R)"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Magnetic Effects of Electric Current",
+            "topics": [
+              "Magnetic field lines and Oersted experiment",
+              "Right-hand thumb rule and solenoid field",
+              "Fleming\u2019s left-hand rule and electric motor",
+              "Electromagnetic induction and Fleming\u2019s right-hand rule"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "Our Environment",
+            "topics": [
+              "Ecosystem components and food chains",
+              "10 percent energy flow law",
+              "Biomagnification",
+              "Ozone layer depletion and solid waste management"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Information Technology 402 (Class 10)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Database Management Systems & Advanced Tools",
+            "topics": [
+              "Relational database concepts (keys, tables, queries)",
+              "SQL DDL and DML commands",
+              "Advanced spreadsheets and macros",
+              "Cyber safety and workplace ergonomics"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 11,
+    "books": [
+      {
+        "title": "NCERT Mathematics (Class 11)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Sets",
+            "topics": [
+              "Subsets and power sets",
+              "Venn diagrams",
+              "Union, intersection and difference of sets",
+              "Complement of a set"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Relations and Functions",
+            "topics": [
+              "Cartesian products",
+              "Relations, domain and range",
+              "Functions: polynomial, rational, modulus, signum, greatest integer"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Trigonometric Functions",
+            "topics": [
+              "Radian measure and degree measure",
+              "Trigonometric signs in quadrants",
+              "Compound angle formulas (sin(A\u00b1B), cos(A\u00b1B))",
+              "Trigonometric equations"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Complex Numbers and Quadratic Equations",
+            "topics": [
+              "Imaginary unit i and complex numbers",
+              "Argand plane and modulus-argument form",
+              "Quadratic equations with complex roots"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Linear Inequalities",
+            "topics": [
+              "Algebraic solution of linear inequalities",
+              "Graphical representation in two variables"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Permutations and Combinations",
+            "topics": [
+              "Fundamental counting principle",
+              "Factorial notation",
+              "Permutations nPr formulas",
+              "Combinations nCr formulas"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Binomial Theorem",
+            "topics": [
+              "Binomial expansion for positive integral indices",
+              "General and middle terms",
+              "Applications of binomial theorem"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Sequences and Series",
+            "topics": [
+              "Arithmetic and Geometric Progressions (AP, GP)",
+              "General term and sum of n terms",
+              "Geometric Mean (GM) and Arithmetic Mean (AM)"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Straight Lines",
+            "topics": [
+              "Slope of a line (m = tan\u03b8)",
+              "Point-slope, slope-intercept, intercept forms",
+              "Angle between two lines",
+              "Distance of a point from a line"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Conic Sections",
+            "topics": [
+              "Circles standard equation",
+              "Parabolas focus and directrix",
+              "Ellipses major and minor axes",
+              "Hyperbolas eccentricity"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Introduction to Three-Dimensional Geometry",
+            "topics": [
+              "Coordinate axes and planes in 3D",
+              "Distance formula in 3D",
+              "Section formula in 3D space"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Limits and Derivatives",
+            "topics": [
+              "Intuitive idea of limits and standard limits",
+              "First principle of differentiation",
+              "Derivative formulas of polynomials and trigonometric functions"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "Statistics",
+            "topics": [
+              "Measures of dispersion",
+              "Mean deviation about mean and median",
+              "Variance and standard deviation of frequency distributions"
+            ]
+          },
+          {
+            "num": 14,
+            "title": "Probability",
+            "topics": [
+              "Sample space and events",
+              "Axiomatic approach to probability",
+              "Addition theorem of probability"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "NCERT Physics (Class 11)",
+        "subject": "physics",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Units and Measurements",
+            "topics": [
+              "SI base and derived units",
+              "Dimensional analysis and applications",
+              "Errors, accuracy and significant figures"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Motion in a Straight Line",
+            "topics": [
+              "Position, path length and displacement",
+              "Instantaneous velocity and acceleration",
+              "Kinematic equations for uniformly accelerated motion"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Motion in a Plane",
+            "topics": [
+              "Scalars and vectors addition and resolution",
+              "Dot and cross products of vectors",
+              "Projectile motion analysis",
+              "Uniform circular motion"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Laws of Motion",
+            "topics": [
+              "Newton\u2019s first, second and third laws of motion",
+              "Momentum and impulse",
+              "Friction laws and banking of roads"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Work, Energy and Power",
+            "topics": [
+              "Work-energy theorem",
+              "Conservative and non-conservative forces",
+              "Potential energy of a spring",
+              "Collisions in 1D and 2D"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "System of Particles and Rotational Motion",
+            "topics": [
+              "Centre of mass of a two-particle system",
+              "Torque and angular momentum conservation",
+              "Moment of inertia and radius of gyration"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Gravitation",
+            "topics": [
+              "Kepler\u2019s laws of planetary motion",
+              "Universal law of gravitation",
+              "Acceleration due to gravity variation with altitude and depth",
+              "Escape velocity and orbital speed"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Mechanical Properties of Solids",
+            "topics": [
+              "Stress-strain curve and Hooke\u2019s law",
+              "Young\u2019s modulus, shear modulus, bulk modulus"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Mechanical Properties of Fluids",
+            "topics": [
+              "Pascal\u2019s law and hydraulic machines",
+              "Bernoulli\u2019s theorem and streamline flow",
+              "Surface tension and viscosity"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Thermal Properties of Matter",
+            "topics": [
+              "Thermal expansion of solids, liquids, gases",
+              "Calorimetry and specific heat capacity",
+              "Conduction, convection and blackbody radiation (Wien/Stefan)"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Thermodynamics",
+            "topics": [
+              "Zeroth law of thermodynamics and temperature",
+              "First law of thermodynamics (\u0394Q = \u0394U + \u0394W)",
+              "Second law of thermodynamics and heat engines"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Kinetic Theory",
+            "topics": [
+              "Equation of state of a perfect gas",
+              "Kinetic theory assumptions and pressure equation",
+              "Degrees of freedom and equipartition of energy"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "Oscillations",
+            "topics": [
+              "Simple harmonic motion (SHM) kinematics",
+              "Energy in SHM: kinetic and potential",
+              "Simple pendulum period derivation"
+            ]
+          },
+          {
+            "num": 14,
+            "title": "Waves",
+            "topics": [
+              "Transverse and longitudinal progressive waves",
+              "Speed of sound in gases (Laplace correction)",
+              "Superposition principle, standing waves, beats and Doppler effect"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "NCERT Chemistry (Class 11)",
+        "subject": "chemistry",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Some Basic Concepts of Chemistry",
+            "topics": [
+              "Mole concept and molar masses",
+              "Stoichiometry and limiting reagent",
+              "Molarity, molality, mole fraction"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Structure of Atom",
+            "topics": [
+              "Bohr model and emission spectra",
+              "de Broglie dual nature and Heisenberg uncertainty",
+              "Quantum numbers and electronic configurations"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Classification of Elements and Periodicity",
+            "topics": [
+              "Modern periodic law and table layout",
+              "Periodic trends: atomic radii, ionization enthalpy, electron gain enthalpy"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Chemical Bonding and Molecular Structure",
+            "topics": [
+              "Octet rule and Lewis dot structures",
+              "VSEPR theory and geometry of molecules",
+              "Hybridization (sp, sp\u00b2, sp\u00b3) and Molecular Orbital Theory"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Chemical Thermodynamics",
+            "topics": [
+              "State functions and First law of thermodynamics",
+              "Enthalpy (\u0394H) of reaction, formation, combustion",
+              "Second law, Entropy (S) and Gibbs Free Energy (\u0394G)"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Equilibrium",
+            "topics": [
+              "Law of chemical equilibrium and Kc/Kp",
+              "Le Chatelier\u2019s principle",
+              "Ionic equilibrium: pH, buffers and solubility product (Ksp)"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Redox Reactions",
+            "topics": [
+              "Oxidation number concept",
+              "Balancing redox reactions (ion-electron method)",
+              "Electrochemical cells overview"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Organic Chemistry: Basic Principles & Techniques",
+            "topics": [
+              "IUPAC nomenclature of organic compounds",
+              "Inductive, electromeric, resonance and hyperconjugation effects",
+              "Reaction intermediates: carbocations, carbanions, free radicals"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Hydrocarbons",
+            "topics": [
+              "Alkanes preparation and free radical halogenation",
+              "Alkenes: Markovnikov rule and ozonolysis",
+              "Alkynes and aromaticity of Benzene (H\u00fcckel rule)"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "NCERT Biology (Class 11)",
+        "subject": "biology",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Diversity in the Living World",
+            "topics": [
+              "Taxonomic categories and binomial nomenclature",
+              "Five kingdoms of Whittaker",
+              "Viruses, viroids and lichens"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Structural Organisation in Plants and Animals",
+            "topics": [
+              "Morphology of root, stem, leaf and flower",
+              "Plant anatomy: tissue systems in dicots and monocots",
+              "Animal tissues"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Cell: Structure and Function",
+            "topics": [
+              "Prokaryotic and eukaryotic cell structure",
+              "Biomolecules: carbohydrates, proteins, lipids, nucleic acids",
+              "Cell cycle and stages of mitosis and meiosis"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Plant Physiology",
+            "topics": [
+              "Photosynthesis: light reaction and Calvin cycle (C3/C4)",
+              "Cellular respiration: glycolysis and Krebs cycle",
+              "Plant growth regulators: auxins, gibberellins, abscisic acid"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Human Physiology",
+            "topics": [
+              "Breathing and gas exchange mechanics",
+              "Circulation and cardiac cycle",
+              "Nephron excretion mechanism",
+              "Nerve impulse conduction and muscle contraction"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Computer Science 083 (Class 11)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Computer Systems and Organisation",
+            "topics": [
+              "Computer architecture, memory hierarchy and Boolean logic",
+              "Number system conversions (Binary, Octal, Hexadecimal)"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Computational Thinking & Python Programming",
+            "topics": [
+              "Python syntax, tokens, mutable vs immutable types",
+              "Conditional statements and nested loops",
+              "Strings, lists, tuples and dictionary manipulations",
+              "User-defined functions, scope and modules"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Society, Law and Ethics",
+            "topics": [
+              "Cyber safety, digital footprints and intellectual property rights",
+              "Open source software and licensing",
+              "E-waste management and IT Act"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 12,
+    "books": [
+      {
+        "title": "NCERT Mathematics (Class 12)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Relations and Functions",
+            "topics": [
+              "Reflexive, symmetric and transitive relations",
+              "One-one (injective) and onto (surjective) functions",
+              "Composite functions and inverse functions"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Inverse Trigonometric Functions",
+            "topics": [
+              "Definition, range, domain and principal value branch",
+              "Properties and graphs of inverse trigonometric functions"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Matrices",
+            "topics": [
+              "Types of matrices and operations",
+              "Matrix multiplication and transpose properties",
+              "Symmetric and skew-symmetric matrices",
+              "Invertible matrices"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Determinants",
+            "topics": [
+              "Determinants of order up to 3x3",
+              "Minors and cofactors",
+              "Adjoint and inverse of a matrix",
+              "Solving system of linear equations using matrix inverse"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Continuity and Differentiability",
+            "topics": [
+              "Continuity and differentiability definitions",
+              "Chain rule, implicit and logarithmic differentiation",
+              "Rolle\u2019s and Mean Value Theorems"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Application of Derivatives",
+            "topics": [
+              "Rate of change of quantities",
+              "Increasing and decreasing functions",
+              "Maxima and minima (first and second derivative tests)"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Integrals",
+            "topics": [
+              "Integration by substitution, partial fractions and by parts",
+              "Definite integrals properties and fundamental theorem of calculus"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Application of Integrals",
+            "topics": [
+              "Area bounded by simple curves (lines, parabolas, circles, ellipses)",
+              "Area between two curves"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Differential Equations",
+            "topics": [
+              "Order and degree of differential equations",
+              "General and particular solutions",
+              "Separable variable and first-order linear differential equations"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Vector Algebra",
+            "topics": [
+              "Vectors and scalars, magnitude and direction cosines",
+              "Dot product and cross product of vectors",
+              "Projection of a vector"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Three-Dimensional Geometry",
+            "topics": [
+              "Direction cosines and direction ratios of a line",
+              "Cartesian and vector equations of lines",
+              "Shortest distance between two skew lines"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Linear Programming",
+            "topics": [
+              "Linear programming formulation",
+              "Graphical method of solution for two variables",
+              "Feasible and infeasible regions, optimal solutions"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "Probability",
+            "topics": [
+              "Conditional probability and multiplication theorem",
+              "Independent events",
+              "Bayes\u2019 theorem and total probability law",
+              "Random variables and probability distributions"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "NCERT Physics (Class 12)",
+        "subject": "physics",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Electrostatics",
+            "topics": [
+              "Coulomb\u2019s law and electric field lines",
+              "Gauss\u2019s law and applications (wire, sheet, sphere)",
+              "Electrostatic potential, equipotential surfaces",
+              "Capacitors and energy stored in capacitance"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Current Electricity",
+            "topics": [
+              "Drift velocity and Ohm\u2019s law",
+              "Resistivity and temperature dependence",
+              "Kirchhoff\u2019s laws and Wheatstone bridge circuit"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Magnetism & Electromagnetic Induction",
+            "topics": [
+              "Biot-Savart law and Ampere\u2019s circuital law",
+              "Force on moving charge and Lorentz force",
+              "Faraday\u2019s law of induction and Lenz\u2019s law",
+              "Alternating current (AC) generator, transformer and LCR circuits"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Electromagnetic Waves",
+            "topics": [
+              "Displacement current and Maxwell\u2019s equations",
+              "Electromagnetic spectrum characteristics and uses"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Optics",
+            "topics": [
+              "Refraction at spherical surfaces and lens maker formula",
+              "Prism dispersion and optical instruments (microscope, telescope)",
+              "Wave optics: Huygens principle, interference (Young\u2019s double slit), diffraction"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Dual Nature of Radiation and Matter",
+            "topics": [
+              "Photoelectric effect and Einstein\u2019s photoelectric equation",
+              "de Broglie wavelength of matter waves"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Atoms & Nuclei",
+            "topics": [
+              "Rutherford alpha-scattering and Bohr model hydrogen spectra",
+              "Nuclear composition, mass defect and binding energy",
+              "Nuclear fission and fusion"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Semiconductor Electronics",
+            "topics": [
+              "Intrinsic and extrinsic semiconductors (p-type and n-type)",
+              "p-n junction diode: forward and reverse bias",
+              "Rectifiers and logic gates fundamentals"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "NCERT Chemistry (Class 12)",
+        "subject": "chemistry",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Solutions",
+            "topics": [
+              "Types of solutions and concentration units",
+              "Raoult\u2019s law for volatile solutes",
+              "Colligative properties: osmotic pressure, boiling point elevation, freezing point depression",
+              "van \u2019t Hoff factor"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Electrochemistry",
+            "topics": [
+              "Galvanic cells and standard electrode potentials",
+              "Nernst equation and equilibrium constant relation",
+              "Kohlrausch\u2019s law and electrolysis"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Chemical Kinetics",
+            "topics": [
+              "Rate of reaction and rate law",
+              "Order and molecularity of reactions",
+              "Integrated rate equations (zero and first order)",
+              "Arrhenius equation and activation energy"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "d and f Block Elements & Coordination Compounds",
+            "topics": [
+              "Transition elements electronic configuration and oxidation states",
+              "Lanthanoids and actinoids overview",
+              "Werner\u2019s coordination theory and IUPAC naming",
+              "Crystal Field Theory (CFT) and isomerism in complexes"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Haloalkanes and Haloarenes",
+            "topics": [
+              "SN1 and SN2 nucleophilic substitution mechanisms",
+              "Optical isomerism and chirality",
+              "Electrophilic substitution of haloarenes"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Alcohols, Phenols and Ethers",
+            "topics": [
+              "Preparation and acidity of alcohols and phenols",
+              "Esterification, hydroboration-oxidation and Reimer-Tiemann reaction",
+              "Williamson ether synthesis"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Aldehydes, Ketones, Carboxylic Acids & Amines",
+            "topics": [
+              "Nucleophilic addition to carbonyl group",
+              "Aldol condensation and Cannizzaro reaction",
+              "Carboxylic acid acidity and derivatives",
+              "Amines classification, basic character and Diazonium salts"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Biomolecules",
+            "topics": [
+              "Carbohydrates: monosaccharides (glucose/fructose) and polysaccharides",
+              "Proteins: peptide bond, primary/secondary/tertiary structures",
+              "Nucleic acids: DNA, RNA double helix and genetic code"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "NCERT Biology (Class 12)",
+        "subject": "biology",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Reproduction",
+            "topics": [
+              "Sexual reproduction in flowering plants: pollination, double fertilisation",
+              "Human male and female reproductive anatomy",
+              "Gametogenesis, menstrual cycle and pregnancy",
+              "Reproductive health technologies (IVF, ZIFT, GIFT)"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Genetics and Evolution",
+            "topics": [
+              "Mendelian principles, incomplete dominance, co-dominance",
+              "Molecular basis of inheritance: DNA replication, transcription, translation",
+              "Human Genome Project and DNA fingerprinting",
+              "Darwinian evolution and Hardy-Weinberg equilibrium"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Biology in Human Welfare",
+            "topics": [
+              "Common infectious diseases: malaria, typhoid, pneumonia, AIDS",
+              "Innate and acquired immunity",
+              "Microbes in sewage treatment, biogas and biofertilizers"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Biotechnology",
+            "topics": [
+              "Recombinant DNA technology: restriction enzymes, cloning vectors, PCR",
+              "Applications in agriculture (Bt cotton) and medicine (genetically engineered insulin, gene therapy)"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Ecology and Environment",
+            "topics": [
+              "Population ecology and growth models",
+              "Ecosystem structure, productivity and nutrient cycles",
+              "Biodiversity loss, conservation hotspots and National Parks"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Computer Science 083 (Class 12)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Computational Thinking & Python Programming-2",
+            "topics": [
+              "Python review, functions and recursion",
+              "Text file, binary file and CSV file handling",
+              "Data structures: linear list, Stack (LIFO) implementation"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Computer Networks",
+            "topics": [
+              "Evolution of networking, LAN, MAN, WAN",
+              "Network topologies (star, bus, tree) and transmission media",
+              "Protocols: TCP/IP, HTTP, FTP, DNS, VoIP",
+              "Network security and firewalls"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Database Management & SQL-Python Connectivity",
+            "topics": [
+              "Relational data model concepts and keys",
+              "SQL DDL and DML commands (SELECT, WHERE, GROUP BY, HAVING, JOIN)",
+              "Python database connectivity (MySQL/PostgreSQL connector)",
+              "Executing queries and fetching results in Python"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

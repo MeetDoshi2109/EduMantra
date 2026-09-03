@@ -1,0 +1,749 @@
+[
+  {
+    "grade": 1,
+    "books": [
+      {
+        "title": "Joyful Mathematics (Class 1)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Finding the Furry Cat!",
+            "topics": [
+              "Pre-number concepts",
+              "Spatial positions",
+              "Near and far",
+              "Inside and outside"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "What is Long? What is Round?",
+            "topics": [
+              "2D shapes",
+              "Length comparison",
+              "Round and non-round shapes"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Mango Treat",
+            "topics": [
+              "Numbers 1 to 9",
+              "Counting and numerals",
+              "One more and one less",
+              "Ordering numbers"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Making 10",
+            "topics": [
+              "Numbers 10 to 20",
+              "Tens and ones grouping",
+              "Number bonds of 10"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "How Many?",
+            "topics": [
+              "Single-digit addition",
+              "Single-digit subtraction",
+              "Word situations"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Vegetable Farm",
+            "topics": [
+              "Counting collections",
+              "Comparing quantities",
+              "Addition and subtraction in context"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Lina\u2019s Family",
+            "topics": [
+              "Counting people and objects",
+              "Simple patterns",
+              "Family-context problems"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Fun with Numbers",
+            "topics": [
+              "Number sequences",
+              "Counting forward and backward",
+              "Number relations"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Utsav",
+            "topics": [
+              "Repeating patterns",
+              "Colour sequencing",
+              "Shapes in festivals"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "How do I Spend my Day?",
+            "topics": [
+              "Daily routine",
+              "Sequencing events",
+              "Days of the week",
+              "Time language"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "How Many Times?",
+            "topics": [
+              "Repeated addition",
+              "Equal groups",
+              "Counting in groups"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "How Much Can We Spend?",
+            "topics": [
+              "Coins and notes",
+              "Recognising denominations",
+              "Simple buying situations"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "So Many Toys",
+            "topics": [
+              "Data collection",
+              "Grouping and comparing",
+              "Classification"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "The World Around Us (Class 1)",
+        "subject": "science",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Living and Non-living Things",
+            "topics": [
+              "Characteristics of living things",
+              "Natural vs man-made",
+              "Observation"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Plants and Animals Around Us",
+            "topics": [
+              "Common trees and flowers",
+              "Domestic and wild animals",
+              "Animal sounds"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Food, Water and Cleanliness",
+            "topics": [
+              "Healthy food choices",
+              "Sources of water",
+              "Personal hygiene and cleanliness"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Inquiry & Environment Observation",
+            "topics": [
+              "Observing weather",
+              "Sorting objects",
+              "Communicating findings"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Digital Foundations (Class 1)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Computers Around Us",
+            "topics": [
+              "Computer and tablet parts",
+              "Mouse and touch basics",
+              "Safe screen habits"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 2,
+    "books": [
+      {
+        "title": "Joyful Mathematics (Class 2)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "A Day at the Beach",
+            "topics": [
+              "Counting in groups",
+              "Repeated groups",
+              "Early multiplication intuition"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Shapes Around Us",
+            "topics": [
+              "3D shapes",
+              "Faces, edges and corners",
+              "Solids in everyday life"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Fun with Numbers",
+            "topics": [
+              "Numbers to 100",
+              "Place value",
+              "Comparison and sequencing"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Shadow Story (Togalu)",
+            "topics": [
+              "2D shapes",
+              "Silhouettes",
+              "Shape recognition",
+              "Visual reasoning"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Playing with Lines",
+            "topics": [
+              "Straight and curved lines",
+              "Horizontal and vertical",
+              "Positional language"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Decoration for Festival",
+            "topics": [
+              "Repeating patterns",
+              "Symmetry arrangements",
+              "Extending patterns"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Rani\u2019s Gift",
+            "topics": [
+              "Length comparison",
+              "Informal measurement",
+              "Introduction to standard units"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Grouping and Sharing",
+            "topics": [
+              "Equal sharing",
+              "Fair share division",
+              "Equal grouping"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Which Season is it?",
+            "topics": [
+              "Months and calendar",
+              "Seasons of India",
+              "Days and dates"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Fun at the Fair",
+            "topics": [
+              "Money and coins",
+              "Addition and subtraction in context",
+              "Shopping problems"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Data Handling",
+            "topics": [
+              "Sorting data",
+              "Tally recording",
+              "Picture representations"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "The World Around Us (Class 2)",
+        "subject": "science",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Plant Life & Animal Habits",
+            "topics": [
+              "Parts of plants",
+              "Animal homes and food",
+              "Care for living beings"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Water, Air and Weather",
+            "topics": [
+              "Uses of water",
+              "Clean air",
+              "Seasonal changes"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Materials and Observation",
+            "topics": [
+              "Properties of everyday materials",
+              "Classifying solids and liquids",
+              "Simple experiments"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Digital Basics (Class 2)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Using Digital Devices Safely",
+            "topics": [
+              "Starting and stopping devices",
+              "Keyboard keys",
+              "Simple drawing tools",
+              "Asking for help online"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 3,
+    "books": [
+      {
+        "title": "Maths Mela (Class 3)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "What\u2019s in a Name?",
+            "topics": [
+              "Number sense",
+              "Names and representations",
+              "Counting and comparison"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Toy Joy",
+            "topics": [
+              "Counting in groups",
+              "Addition and subtraction",
+              "Mathematical communication"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Double Century",
+            "topics": [
+              "Numbers to 200 and beyond",
+              "Place value",
+              "Estimation strategies"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Vacation with My Nani Maa",
+            "topics": [
+              "Operations in real-life contexts",
+              "Travel reasoning",
+              "Time and money"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Fun with Shapes",
+            "topics": [
+              "2D shapes",
+              "Sides and corners",
+              "Line symmetry",
+              "Spatial reasoning"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "House of Hundreds-I",
+            "topics": [
+              "Hundreds, tens and ones",
+              "Place value charts",
+              "Addition and subtraction"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Raksha Bandhan",
+            "topics": [
+              "Patterns",
+              "Sharing in groups",
+              "Contextual arithmetic"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Fair Share",
+            "topics": [
+              "Equal sharing",
+              "Division concepts",
+              "Fractions as fair parts"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "House of Hundreds-II",
+            "topics": [
+              "Larger numbers",
+              "Regrouping across place values",
+              "Estimation"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Fun at Class Party!",
+            "topics": [
+              "Multiplication as repeated addition",
+              "Measurement in recipes",
+              "Word problems"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Filling and Lifting",
+            "topics": [
+              "Capacity and weight",
+              "Standard units: litres and kilograms",
+              "Practical estimation"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Give and Take",
+            "topics": [
+              "Addition and subtraction strategies",
+              "Mental maths shortcuts",
+              "Multi-step problems"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "Time Goes On",
+            "topics": [
+              "Clock reading and minutes",
+              "Duration and elapsed time",
+              "Calendar calculation"
+            ]
+          },
+          {
+            "num": 14,
+            "title": "The Surajkund Fair",
+            "topics": [
+              "Market arithmetic",
+              "Pattern recognition",
+              "Handling data in tables"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Our Wondrous World (Class 3)",
+        "subject": "science",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Family and Friends",
+            "topics": [
+              "Family relationships",
+              "Helping each other",
+              "Diversity in communities"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Plants Around Us",
+            "topics": [
+              "Herbs, shrubs and trees",
+              "Leaf varieties and chlorophyll",
+              "Plant uses"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Water in Our Lives",
+            "topics": [
+              "Sources of water",
+              "Water conservation",
+              "Water cycle in nature"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Food and Health",
+            "topics": [
+              "Nutritious foods",
+              "Cooking methods",
+              "Food storage and hygiene"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Materials and Making Things",
+            "topics": [
+              "Natural vs synthetic materials",
+              "Pottery, weaving and building",
+              "Waste management"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Digital Literacy & Block Coding (Class 3)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Computer Skills & ScratchJr",
+            "topics": [
+              "Keyboarding and files",
+              "Scratch sequence blocks",
+              "Event triggers",
+              "Digital safety"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 4,
+    "books": [
+      {
+        "title": "Maths Mela (Class 4)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Shapes Around Us",
+            "topics": [
+              "2D and 3D shapes",
+              "Faces, edges and corners",
+              "Spatial visualization"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Hide and Seek",
+            "topics": [
+              "Position and distance",
+              "Grid coordinates",
+              "Reading maps"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Pattern Around Us",
+            "topics": [
+              "Number patterns",
+              "Geometric tessellation",
+              "Rule generation"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Thousands Around Us",
+            "topics": [
+              "Numbers up to 10,000",
+              "Place value and expanded form",
+              "Ordering and rounding"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Sharing and Measuring",
+            "topics": [
+              "Division algorithms",
+              "Fractions on number lines",
+              "Measurement applications"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Measuring Length",
+            "topics": [
+              "Metres, centimetres and kilometres",
+              "Unit conversions",
+              "Estimating length"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "The Cleanest Village",
+            "topics": [
+              "Data collection",
+              "Environmental arithmetic",
+              "Problem solving"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Weigh it, Pour it",
+            "topics": [
+              "Mass in grams and kg",
+              "Capacity in ml and litres",
+              "Balance scales"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Equal Groups",
+            "topics": [
+              "Multiplication tables",
+              "Arrays and grouping",
+              "Multiplication word problems"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Elephants, Tigers and Leopards",
+            "topics": [
+              "Wildlife data interpretation",
+              "Pictographs and bar-style charts",
+              "Reasoning"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Fun with Symmetry",
+            "topics": [
+              "Line symmetry",
+              "Rotational symmetry",
+              "Symmetrical shapes"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Ticking Clocks and Turning Calendar",
+            "topics": [
+              "12-hour and 24-hour clocks",
+              "Schedules and timetables",
+              "Leap years"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "The Transport Museum",
+            "topics": [
+              "Distance, speed and time intuition",
+              "Ticketing and travel budgeting"
+            ]
+          },
+          {
+            "num": 14,
+            "title": "Data Handling",
+            "topics": [
+              "Frequency tables",
+              "Bar charts",
+              "Interpreting survey data"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Our Wondrous World (Class 4)",
+        "subject": "science",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Living Together in Ecosystems",
+            "topics": [
+              "Animal shelters",
+              "Birds and nests",
+              "Insects and community living"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Food, Digestion and Health",
+            "topics": [
+              "Nutrients in food",
+              "Digestion path",
+              "Clean drinking water"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "How Things Work",
+            "topics": [
+              "Simple levers",
+              "Wheels and axles",
+              "Friction in action"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Earth, Weather and Seasons",
+            "topics": [
+              "Air pressure intuition",
+              "Rainfall and evaporation",
+              "Seasonal cycles"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Scratch Coding & Digital Literacy (Class 4)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Scratch Animations & Safe Browsing",
+            "topics": [
+              "Scratch sprites and backdrops",
+              "Loops and conditional blocks",
+              "Password safety",
+              "Phishing awareness"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

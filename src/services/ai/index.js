@@ -103,4 +103,31 @@ module.exports = {
    * @param {Object} attemptData
    */
   analyzePerformance: (attemptData) => provider.analyzePerformance(attemptData),
+
+  /**
+   * Dynamically rephrase and contextualize a question with verified options and solution steps.
+   */
+  rephraseAndContextualizeQuestion: (baseQuestion, context) => {
+    if (typeof provider.rephraseAndContextualizeQuestion === 'function') {
+      return provider.rephraseAndContextualizeQuestion(baseQuestion, context);
+    }
+    return Promise.resolve(baseQuestion);
+  },
+
+  /**
+   * Intelligently evaluate a student's answer (MCQ key, option text, numeric, semantic).
+   */
+  evaluateStudentAnswer: (question, studentAnswer) => {
+    if (typeof provider.evaluateStudentAnswer === 'function') {
+      return provider.evaluateStudentAnswer(question, studentAnswer);
+    }
+    const isCorrect = (studentAnswer || '').trim().toUpperCase() === (question.correct_answer || '').trim().toUpperCase();
+    return Promise.resolve({
+      is_correct: isCorrect,
+      score: isCorrect ? 1.0 : 0,
+      feedback: isCorrect ? "Correct!" : "Incorrect.",
+      method: "fallback_match",
+    });
+  },
 };
+

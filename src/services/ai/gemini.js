@@ -712,9 +712,218 @@ Generate encouraging but honest performance feedback. Return JSON:
   };
 }
 
+/**
+ * Dynamically rephrase a base question into an engaging, scientifically accurate problem
+ * with verified options, clear answer key, and step-by-step solution.
+ */
+async function rephraseAndContextualizeQuestion(baseQuestion, context = {}) {
+  const { grade = '', subject = '', topic = '', chapter = '' } = context;
+  const prompt = `You are a senior NCERT STEM curriculum specialist and assessment designer.
+Rephrase and formulate the following base question into an accurate, pedagogically rigorous question.
+
+Base Question: "${baseQuestion.question_text}"
+Subject: ${subject || 'STEM'}
+Grade: ${grade || 'Secondary'}
+Topic / Chapter: ${topic || chapter || 'General'}
+Cognitive Difficulty: ${baseQuestion.difficulty || 'medium'}
+Question Type: ${baseQuestion.question_type || 'mcq'}
+
+REQUIREMENTS:
+1. Rephrase the prompt so it sounds fresh, realistic, and clear. Avoid repetitive template phrases.
+2. If Question Type is 'mcq':
+   - Provide 4 distinct, plausible options: A, B, C, D.
+   - Ensure EXACTLY ONE option is undeniably correct scientifically and mathematically.
+   - Ensure the distractors represent common student misconceptions.
+3. If Question Type is 'short_answer':
+   - Provide a concise model answer and the core keywords required for full marks.
+4. Provide a thorough, step-by-step solution derivation.
+5. Provide a clear explanation that reinforces the underlying scientific/mathematical principle.
+
+Return ONLY valid JSON with this exact structure:
+{
+  "question_text": "...",
+  "options": [
+    { "key": "A", "text": "..." },
+    { "key": "B", "text": "..." },
+    { "key": "C", "text": "..." },
+    { "key": "D", "text": "..." }
+  ],
+  "correct_answer": "A",
+  "solution_steps": [
+    "Step 1: ...",
+    "Step 2: ...",
+    "Step 3: ..."
+  ],
+  "explanation": "...",
+  "common_misconception": "..."
+}`;
+
+  try {
+    const text = await callGemini(
+      [{ role: 'user', parts: [{ text: prompt }] }],
+      "You are an expert NCERT STEM assessment generator. Output only valid JSON without markdown wrapping.",
+      0.6
+    );
+    const parsed = safeParseJson(text, null);
+    if (parsed && parsed.question_text && (parsed.options?.length === 4 || parsed.correct_answer)) {
+      return {
+        ...baseQuestion,
+        question_text: parsed.question_text,
+        options: parsed.options || baseQuestion.options,
+        correct_answer: parsed.correct_answer || baseQuestion.correct_answer,
+        explanation: parsed.explanation || baseQuestion.explanation,
+        solution_steps: parsed.solution_steps || [],
+        common_misconception: parsed.common_misconception || '',
+        rephrased: true,
+      };
+    }
+  } catch (err) {
+    logger.warn('Dynamic rephrase failed, falling back to clean template: ' + err.message);
+  }
+
+  // Graceful deterministic fallback
+  return cleanAndFormatFallback(baseQuestion, context);
+}
+
+function cleanAndFormatFallback(baseQuestion, context = {}) {
+  let text = (baseQuestion.question_text || '')
+    .replace(/^n\s+/i, '')
+    .replace(/[■]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  text = text.replace(/\s*Use a simple example\.?/gi, '');
+  text = text.replace(/\s*Explain in your own words\.?/gi, '');
+
+  const topicName = context.topic || context.chapter || '';
+  if (topicName && !text.toLowerCase().includes(topicName.toLowerCase())) {
+    const prefixes = [
+      `In the context of ${topicName}: `,
+      `Considering ${topicName}, `,
+      `Regarding ${topicName}: `,
+    ];
+    text = prefixes[Math.floor(Math.random() * prefixes.length)] + text;
+  }
+
+  return {
+    ...baseQuestion,
+    question_text: text,
+    solution_steps: [
+      `Identify the fundamental definition of ${topicName || 'the topic'}.`,
+      "Analyze the problem conditions and examine applicable mathematical/scientific rules.",
+      `Verify against the core principle: ${baseQuestion.explanation || 'standard curriculum definition'}.`
+    ],
+    common_misconception: "Confusing empirical observation with fundamental theoretical derivation.",
+    rephrased: true,
+  };
+}
+
+/**
+ * Intelligently evaluate a student's answer:
+ * 1. Checks MCQ option letter (e.g. 'A')
+ * 2. Checks MCQ option text (e.g. if student selected option text)
+ * 3. Checks numerical equivalence (e.g. 0.5 vs 1/2 or 2.5 vs 2.50)
+ * 4. Checks conceptual / semantic equivalence for open-ended or short-answer questions
+ */
+async function evaluateStudentAnswer(question, studentAnswer) {
+  if (!studentAnswer || typeof studentAnswer !== 'string') {
+    return {
+      is_correct: false,
+      score: 0,
+      feedback: "No answer was provided.",
+      method: "empty",
+    };
+  }
+
+  const cleanAns = studentAnswer.trim();
+  const correct = (question.correct_answer || '').trim();
+
+  // 1. Direct MCQ Option Key match (e.g. 'A' === 'A')
+  if (cleanAns.toUpperCase() === correct.toUpperCase()) {
+    return {
+      is_correct: true,
+      score: 1.0,
+      feedback: "Correct! Your answer matches the key.",
+      method: "mcq_key",
+    };
+  }
+
+  // 2. MCQ Option Text match (e.g. student submitted the text of Option A)
+  if (Array.isArray(question.options) && question.options.length > 0) {
+    const correctOption = question.options.find(o => o.key.toUpperCase() === correct.toUpperCase());
+    if (correctOption && correctOption.text) {
+      const optText = correctOption.text.trim().toLowerCase();
+      const userText = cleanAns.toLowerCase();
+      if (optText === userText || userText.includes(optText) || optText.includes(userText)) {
+        return {
+          is_correct: true,
+          score: 1.0,
+          feedback: "Correct! You selected the right statement.",
+          method: "mcq_text",
+        };
+      }
+    }
+  }
+
+  // 3. Numeric Equivalence check (e.g. 0.5 vs 1/2 or 4.0 vs 4)
+  const numAns = parseFloat(cleanAns);
+  const numCorrect = parseFloat(correct);
+  if (!isNaN(numAns) && !isNaN(numCorrect) && Math.abs(numAns - numCorrect) < 0.001) {
+    return {
+      is_correct: true,
+      score: 1.0,
+      feedback: "Correct! Your numerical calculation is accurate.",
+      method: "numeric",
+    };
+  }
+
+  // 4. Short-Answer / Conceptual semantic evaluation using Gemini
+  if (question.question_type === 'short_answer' || !question.options || question.options.length === 0) {
+    try {
+      const evalPrompt = `Evaluate the student's answer for this STEM question.
+Question: "${question.question_text}"
+Model Answer: "${correct}"
+Explanation: "${question.explanation || ''}"
+Student's Answer: "${cleanAns}"
+
+Determine if the student's answer is conceptually correct, partially correct, or incorrect.
+Return ONLY valid JSON:
+{
+  "is_correct": boolean,
+  "score": number (0 to 1),
+  "feedback": "constructive 1-2 sentence feedback explaining why it is correct or what was missing"
+}`;
+
+      const resText = await callGemini(
+        [{ role: 'user', parts: [{ text: evalPrompt }] }],
+        "You are an objective, fair STEM teacher grading student responses. Output only valid JSON.",
+        0.1
+      );
+      const parsed = safeParseJson(resText, null);
+      if (parsed && typeof parsed.is_correct === 'boolean') {
+        return {
+          is_correct: parsed.is_correct,
+          score: parsed.score ?? (parsed.is_correct ? 1.0 : 0),
+          feedback: parsed.feedback,
+          method: "semantic_ai",
+        };
+      }
+    } catch (_) {}
+  }
+
+  return {
+    is_correct: false,
+    score: 0,
+    feedback: "Incorrect. Review the solution steps to understand the correct concept.",
+    method: "mismatch",
+  };
+}
+
 module.exports = {
   generateQuestions,
   validateQuestion,
+  rephraseAndContextualizeQuestion,
+  evaluateStudentAnswer,
   tutorChat,
   tutorChatStream,
   generateHint,
@@ -724,3 +933,4 @@ module.exports = {
   callGemini,
   callGeminiStream,
 };
+

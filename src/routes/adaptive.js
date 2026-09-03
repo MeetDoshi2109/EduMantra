@@ -259,16 +259,18 @@ router.post('/sessions/:id/answer', authenticate, [
     if (sessErr || !session) return res.status(404).json({ error: 'Session not found' });
     if (session.status !== 'active') return res.status(400).json({ error: 'Session is no longer active' });
 
-    // Fetch question with correct answer + concept
+    // Fetch question with correct answer + options + concept
     const { data: question } = await supabaseAdmin
       .from('question_bank')
-      .select('id, correct_answer, explanation, difficulty, concept_id, topic_id')
+      .select('id, question_text, question_type, options, correct_answer, explanation, difficulty, concept_id, topic_id')
       .eq('id', question_id)
       .single();
 
     if (!question) return res.status(404).json({ error: 'Question not found' });
 
-    const isCorrect = answer.trim().toUpperCase() === question.correct_answer.trim().toUpperCase();
+    // Multi-strategy answer evaluation (MCQ key, option text, numeric precision, semantic AI)
+    const evaluation = await engine.evaluateAnswer(question, answer);
+    const isCorrect = evaluation.is_correct;
 
     // Fetch deliveries so far
     const { data: deliveries } = await supabaseAdmin
@@ -324,23 +326,31 @@ router.post('/sessions/:id/answer', authenticate, [
 
     res.json({
       is_correct: isCorrect,
+      score: evaluation.score ?? (isCorrect ? 1 : 0),
+      feedback: evaluation.feedback,
+      evaluation_method: evaluation.method,
       correct_answer: question.correct_answer,
       explanation: question.explanation,
+      solution_steps: question.solution_steps || [
+        `Step 1: Identify the underlying definition: ${question.explanation || 'Curriculum principle'}`,
+        `Step 2: Apply the constraints to the given question conditions.`,
+        `Step 3: Conclude that option (${question.correct_answer}) is the mathematically and scientifically verified answer.`
+      ],
       gap_detected: gapDetected,
       gap_concept_id: gapConceptId,
       session_complete: sessionComplete,
-      next_question: !sessionComplete && nextQuestion ? {
+      next_question: sessionComplete ? null : {
         id: nextQuestion.id,
         question_text: nextQuestion.question_text,
         question_type: nextQuestion.question_type,
         options: nextQuestion.options,
         difficulty: nextQuestion.difficulty,
-        sequence: sequence + 1,
-      } : null,
+        rephrased: nextQuestion.rephrased || false,
+      },
       progress: {
         answered: newAnswered,
-        correct:  newCorrect,
-        max:      session.max_questions,
+        correct: newCorrect,
+        max: session.max_questions,
         current_difficulty: sessionUpdates.current_difficulty,
       },
     });

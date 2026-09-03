@@ -1,0 +1,961 @@
+[
+  {
+    "grade": 5,
+    "books": [
+      {
+        "title": "Maths Mela (Class 5)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "We the Travellers-I",
+            "topics": [
+              "Large numbers in travel",
+              "Distance estimation",
+              "Multi-step reasoning"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Fractions",
+            "topics": [
+              "Equivalent fractions",
+              "Comparing fractions",
+              "Addition and subtraction of fractions"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Angles as Turns",
+            "topics": [
+              "Right, acute and obtuse angles",
+              "Protractor use",
+              "Angles in clock hands"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "We the Travellers-II",
+            "topics": [
+              "Speed, distance and time relations",
+              "Travel budgeting",
+              "Map scales"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Far and Near",
+            "topics": [
+              "Perspective and elevation views",
+              "Scale drawings",
+              "Spatial coordinates"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "The Dairy Farm",
+            "topics": [
+              "Fractions in capacity",
+              "Multiplication and division in agriculture",
+              "Data tables"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Shapes and Patterns",
+            "topics": [
+              "Tessellations",
+              "Rotational symmetry patterns",
+              "Border designs"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Weight and Capacity",
+            "topics": [
+              "Decimal representation of weights",
+              "Volume estimation",
+              "Word problems"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Coconut Farm",
+            "topics": [
+              "Area of rectangular fields",
+              "Perimeter calculation",
+              "Agricultural economics"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Symmetrical Designs",
+            "topics": [
+              "Reflection lines",
+              "Mandala and rangoli geometry",
+              "Rotations"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Grandmother\u2019s Quilt",
+            "topics": [
+              "Fractional grids",
+              "Area of composite shapes",
+              "Geometric reasoning"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Racing Seconds",
+            "topics": [
+              "Stopwatch timing",
+              "Speed comparisons",
+              "Interpreting sports times"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "Animal Jumps",
+            "topics": [
+              "Number line coordinates",
+              "Least common multiples intuition",
+              "Patterns"
+            ]
+          },
+          {
+            "num": 14,
+            "title": "Maps and Locations",
+            "topics": [
+              "Cardinal directions",
+              "Grid references",
+              "Interpreting city maps"
+            ]
+          },
+          {
+            "num": 15,
+            "title": "Data Through Pictures",
+            "topics": [
+              "Bar graphs",
+              "Pie chart intuition",
+              "Drawing inferences from charts"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Our Wondrous World (Class 5)",
+        "subject": "science",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Water Resources & Rivers",
+            "topics": [
+              "River systems of India",
+              "Groundwater depletion",
+              "Water purification"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Energy, Machines and Work",
+            "topics": [
+              "Forms of energy",
+              "Pulleys and inclined planes",
+              "Renewable energy"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Earth, Biosphere & Conservation",
+            "topics": [
+              "Ecosystem balance",
+              "Forest conservation",
+              "Combating pollution"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Digital Productivity & Computational Thinking (Class 5)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Spreadsheets, Scratch Variables & Safety",
+            "topics": [
+              "Basic spreadsheet formulas",
+              "Scratch variables and score counters",
+              "Information literacy",
+              "Digital footprints"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 6,
+    "books": [
+      {
+        "title": "Ganita Prakash (Class 6)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Patterns in Mathematics",
+            "topics": [
+              "Odd and even rules",
+              "Square and cube numbers",
+              "Visual and algebraic patterns"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Lines and Angles",
+            "topics": [
+              "Points, rays, segments",
+              "Acute, obtuse, right, reflex angles",
+              "Protractor measurement"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Number Play",
+            "topics": [
+              "Divisibility rules",
+              "Palindromes and Kaprekar constants",
+              "Number theory puzzles"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Data Handling and Presentation",
+            "topics": [
+              "Tally frequency tables",
+              "Pictographs",
+              "Bar graphs and scaling"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Prime Time",
+            "topics": [
+              "Prime and composite numbers",
+              "Prime factorisation",
+              "HCF and LCM algorithms"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Perimeter and Area",
+            "topics": [
+              "Perimeter of polygons",
+              "Area of squares and rectangles",
+              "Composite shapes"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Fractions",
+            "topics": [
+              "Proper, improper and mixed fractions",
+              "Equivalent fractions",
+              "Operations on fractions"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Playing with Constructions",
+            "topics": [
+              "Ruler and compass constructions",
+              "Circle drawing",
+              "Perpendicular bisectors"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Symmetry",
+            "topics": [
+              "Line symmetry",
+              "Rotational symmetry of order n",
+              "Symmetry in nature and art"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "The Other Side of Zero",
+            "topics": [
+              "Integers on number line",
+              "Absolute value",
+              "Addition and subtraction of integers"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Curiosity (Class 6 Science)",
+        "subject": "science",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "The Wonderful World of Science",
+            "topics": [
+              "Scientific inquiry method",
+              "Formulating hypotheses",
+              "Branches of science"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Diversity in the Living World",
+            "topics": [
+              "Habitats and adaptation",
+              "Classification of plants and animals",
+              "Biodiversity"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Mindful Eating: A Path to a Healthy Body",
+            "topics": [
+              "Macronutrients and micronutrients",
+              "Balanced diet",
+              "Deficiency diseases"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Exploring Magnets",
+            "topics": [
+              "Magnetic materials",
+              "Poles of a magnet",
+              "Magnetic compass and Earth magnetism"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Measurement of Length and Motion",
+            "topics": [
+              "SI units of length",
+              "Reference points",
+              "Types of motion: rectilinear, circular, periodic"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Materials Around Us",
+            "topics": [
+              "Solids, liquids, gases",
+              "Transparency, solubility, hardness",
+              "Classifying matter"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Temperature and its Measurement",
+            "topics": [
+              "Clinical and laboratory thermometers",
+              "Celsius and Fahrenheit scales",
+              "Heat vs temperature"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Changes Around Us: States of Water",
+            "topics": [
+              "Evaporation and condensation",
+              "Melting and freezing",
+              "The global water cycle"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Methods of Separation in Everyday Life",
+            "topics": [
+              "Sieving, sedimentation, decantation",
+              "Filtration and evaporation",
+              "Separating mixtures"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Living Creatures: Exploring Characteristics",
+            "topics": [
+              "Respiration, excretion, response to stimuli",
+              "Life cycles",
+              "Cellular basis of life"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Nature\u2019s Treasures",
+            "topics": [
+              "Soil, minerals and water resources",
+              "Renewable vs non-renewable",
+              "Conservation"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Beyond Earth",
+            "topics": [
+              "The Solar System and planets",
+              "Moon phases",
+              "Telescopes and space missions"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Computer Foundations & Python (Class 6)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Algorithms and Python Introduction",
+            "topics": [
+              "Algorithms and flowcharts",
+              "Python print, variables and data types",
+              "Conditionals if-else",
+              "Cyber safety and passwords"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 7,
+    "books": [
+      {
+        "title": "Ganita Prakash (Class 7)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Large Numbers Around Us",
+            "topics": [
+              "Number representation",
+              "Place value up to crores",
+              "Scientific notation estimation"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Arithmetic Expressions",
+            "topics": [
+              "BODMAS / PEMDAS order of operations",
+              "Brackets simplification",
+              "Algebraic evaluation"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "A Peek Beyond the Point",
+            "topics": [
+              "Decimal operations",
+              "Converting fractions to decimals",
+              "Real-world measurement decimals"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Expressions using Letter-Numbers",
+            "topics": [
+              "Variables and constants",
+              "Algebraic terms and coefficients",
+              "Linear expressions"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Parallel and Intersecting Lines",
+            "topics": [
+              "Transversals",
+              "Alternate and corresponding angles",
+              "Interior angle properties"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Number Play",
+            "topics": [
+              "Divisibility by 7, 11, 13",
+              "Magic squares and cryptarithms",
+              "Logical deduction"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "A Tale of Three Intersecting Lines",
+            "topics": [
+              "Triangle classification",
+              "Angle sum property (180\u00b0)",
+              "Exterior angle theorem"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Working with Fractions",
+            "topics": [
+              "Fraction multiplication",
+              "Reciprocals and fraction division",
+              "Word problems"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Perimeter and Area",
+            "topics": [
+              "Area of triangles and parallelograms",
+              "Circumference and area of circles",
+              "Composite regions"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Symmetry",
+            "topics": [
+              "Rotational symmetry order and angle",
+              "Lines of symmetry in polygons",
+              "Applications in art"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "The Circle",
+            "topics": [
+              "Radius, diameter, chord, arc, sector",
+              "Pi (\u03c0) approximation",
+              "Compass constructions"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Ratio and Proportion",
+            "topics": [
+              "Equivalent ratios",
+              "Unitary method",
+              "Direct proportion",
+              "Percentages"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "Visualising Solid Shapes",
+            "topics": [
+              "3D polyhedron nets",
+              "Euler\u2019s formula (F + V - E = 2)",
+              "Isometric sketches"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Curiosity (Class 7 Science)",
+        "subject": "science",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "The Ever-Evolving World of Science",
+            "topics": [
+              "Evidence-based thinking",
+              "Scientific revolutions",
+              "Formulating models"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Exploring Substances: Acidic, Basic, and Neutral",
+            "topics": [
+              "Litmus and natural indicators",
+              "pH scale concept",
+              "Neutralisation reaction"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Electricity: Circuits and their Components",
+            "topics": [
+              "Circuit diagrams and symbols",
+              "Series and parallel basics",
+              "Conductors and insulators"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "The World of Metals and Non-metals",
+            "topics": [
+              "Physical properties of metals",
+              "Reactivity with oxygen and water",
+              "Corrosion basics"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Changes Around Us: Physical and Chemical",
+            "topics": [
+              "Reversible vs irreversible",
+              "Rusting of iron",
+              "Chemical reaction evidence"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Adolescence: A Stage of Growth and Change",
+            "topics": [
+              "Puberty and endocrine hormones",
+              "Nutritional requirements",
+              "Hygiene"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Heat Transfer in Nature",
+            "topics": [
+              "Conduction in solids",
+              "Convection currents in fluids",
+              "Thermal radiation"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Measurement of Time and Motion",
+            "topics": [
+              "Simple pendulum time period",
+              "Speed = distance / time",
+              "Distance-time graphs"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "Life Processes in Animals",
+            "topics": [
+              "Human digestive system",
+              "Circulatory system and heart",
+              "Excretion and kidneys"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Life Processes in Plants",
+            "topics": [
+              "Autotrophic nutrition & photosynthesis",
+              "Xylem and phloem transport",
+              "Transpiration"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Light: Shadows and Reflections",
+            "topics": [
+              "Rectilinear propagation of light",
+              "Laws of reflection",
+              "Plane and spherical mirrors"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Earth, Moon, and the Sun",
+            "topics": [
+              "Orbital mechanics",
+              "Solar and lunar eclipses",
+              "Equinoxes and solstices"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Python Programming & Data Skills (Class 7)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Python Control Structures & Web Basics",
+            "topics": [
+              "Python for-loops and while-loops",
+              "Custom functions (def)",
+              "HTML webpage structure",
+              "Cybersecurity and phishing"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 8,
+    "books": [
+      {
+        "title": "Ganita Prakash Part I & II (Class 8)",
+        "subject": "math",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "A Square and A Cube",
+            "topics": [
+              "Square roots via prime factorisation",
+              "Division method for roots",
+              "Cube roots"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "Power Play",
+            "topics": [
+              "Laws of exponents",
+              "Negative and zero exponents",
+              "Standard scientific notation"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "A Story of Numbers",
+            "topics": [
+              "History of zero and numerals",
+              "Rational number properties",
+              "Number density"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Quadrilaterals",
+            "topics": [
+              "Angle sum of quadrilaterals (360\u00b0)",
+              "Parallelograms, rhombi, trapeziums",
+              "Geometric proofs"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Number Play",
+            "topics": [
+              "Divisibility tests",
+              "Cryptarithmetic puzzles",
+              "Algebraic number tricks"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "We Distribute, Yet Things Multiply",
+            "topics": [
+              "Distributive law in algebra",
+              "Multiplying polynomials",
+              "Geometric area models"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Proportional Reasoning-1",
+            "topics": [
+              "Ratios and rates",
+              "Direct variation",
+              "Unitary method in STEM problems"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Fractions in Disguise",
+            "topics": [
+              "Converting decimals, percentages, fractions",
+              "Fractional exponents intuition"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "The Baudhayana-Pythagoras Theorem",
+            "topics": [
+              "Pythagorean theorem proof",
+              "Pythagorean triplets",
+              "Indian mathematical contributions"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Proportional Reasoning-2",
+            "topics": [
+              "Profit and loss percentage",
+              "Simple and compound interest",
+              "Inverse variation"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Exploring Some Geometric Themes",
+            "topics": [
+              "Constructing special quadrilaterals",
+              "Polyhedron cross-sections",
+              "Tessellations"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "Tales by Dots and Lines",
+            "topics": [
+              "Cartesian coordinate plotting",
+              "Linear graphs",
+              "Mean, median and mode"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "Algebra Play",
+            "topics": [
+              "Algebraic identities (a+b)\u00b2, (a-b)\u00b2, a\u00b2-b\u00b2",
+              "Factorisation of polynomials",
+              "Linear equations"
+            ]
+          },
+          {
+            "num": 14,
+            "title": "Area",
+            "topics": [
+              "Area of trapeziums and general quadrilaterals",
+              "Surface area and volume of cubes and cylinders"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Curiosity (Class 8 Science)",
+        "subject": "science",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Exploring the Investigative World of Science",
+            "topics": [
+              "Controlled scientific experiments",
+              "Independent and dependent variables",
+              "Data analysis"
+            ]
+          },
+          {
+            "num": 2,
+            "title": "The Invisible Living World: Beyond Our Naked Eye",
+            "topics": [
+              "Cell structure and organelles",
+              "Microorganisms: bacteria, fungi, viruses",
+              "Microbial fermentation"
+            ]
+          },
+          {
+            "num": 3,
+            "title": "Health: The Ultimate Treasure",
+            "topics": [
+              "Communicable diseases and vectors",
+              "Vaccines and antibiotics",
+              "Immunity and hygiene"
+            ]
+          },
+          {
+            "num": 4,
+            "title": "Electricity: Magnetic and Heating Effects",
+            "topics": [
+              "Joule heating effect",
+              "Electromagnets and relays",
+              "Electric motors principle"
+            ]
+          },
+          {
+            "num": 5,
+            "title": "Exploring Forces",
+            "topics": [
+              "Contact vs non-contact forces",
+              "Static, sliding and rolling friction",
+              "Pressure in fluids"
+            ]
+          },
+          {
+            "num": 6,
+            "title": "Pressure, Winds, Storms, and Cyclones",
+            "topics": [
+              "Atmospheric pressure",
+              "High and low pressure systems",
+              "Cyclone formation and disaster safety"
+            ]
+          },
+          {
+            "num": 7,
+            "title": "Particulate Nature of Matter",
+            "topics": [
+              "Kinetic molecular theory",
+              "States of matter molecular model",
+              "Diffusion and Brownian motion"
+            ]
+          },
+          {
+            "num": 8,
+            "title": "Nature of Matter: Elements, Compounds, and Mixtures",
+            "topics": [
+              "Chemical symbols and formulas",
+              "Pure substances vs mixtures",
+              "Separation techniques"
+            ]
+          },
+          {
+            "num": 9,
+            "title": "The Amazing World of Solutes, Solvents, and Solutions",
+            "topics": [
+              "Saturated solutions",
+              "Solubility curves",
+              "Colloids and suspensions"
+            ]
+          },
+          {
+            "num": 10,
+            "title": "Light: Mirrors and Lenses",
+            "topics": [
+              "Refraction of light",
+              "Convex and concave lenses",
+              "Image formation equations"
+            ]
+          },
+          {
+            "num": 11,
+            "title": "Keeping Time with the Skies",
+            "topics": [
+              "Constellations and Pole Star",
+              "Comets, asteroids and meteors",
+              "Artificial satellites and ISRO"
+            ]
+          },
+          {
+            "num": 12,
+            "title": "How Nature Works in Harmony",
+            "topics": [
+              "Carbon and nitrogen cycles",
+              "Food webs and trophic levels",
+              "Ecological balance"
+            ]
+          },
+          {
+            "num": 13,
+            "title": "Our Home: Earth, a Unique Life Sustaining Planet",
+            "topics": [
+              "Ozone layer protection",
+              "Greenhouse effect and climate change",
+              "Sustainable resources"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Python Programming & Problem Solving (Class 8)",
+        "subject": "cs_it",
+        "chapters": [
+          {
+            "num": 1,
+            "title": "Data Structures, Automation & AI Concepts",
+            "topics": [
+              "Python lists, tuples and dictionaries",
+              "Modular function design",
+              "Spreadsheet statistics",
+              "AI/ML concepts and robotics"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
