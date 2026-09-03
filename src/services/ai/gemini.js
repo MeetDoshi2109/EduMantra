@@ -222,6 +222,7 @@ ${langNote}
 
 Rules:
 - Questions must be directly answerable from the provided content
+- Categorize each question by cognitive complexity (Bloom's Taxonomy: remember, understand, apply, analyse, evaluate, create)
 - No questions about author, book name, or publication details
 - Use simple, age-appropriate language for the class level
 - Ensure options are plausible distractors, not obviously wrong
@@ -232,7 +233,7 @@ Question types to use: ${typeInstructions}
 
 Content:
 """
-${contentText.slice(0, 6000)}
+${contentText.slice(0, 12000)}
 """
 
 Return valid JSON with this schema:
@@ -250,6 +251,7 @@ Return valid JSON with this schema:
       "correct_answer": "A",
       "explanation": "Brief, student-friendly explanation",
       "difficulty": "${difficulty}",
+      "bloom_level": "apply",
       "tags": ["optional","topic","tags"]
     }
   ]

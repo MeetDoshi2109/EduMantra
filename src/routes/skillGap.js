@@ -61,33 +61,46 @@ router.post('/analyze', authenticate, async (req, res) => {
     // 3. Compute gaps
     for (const req_comp of (required || [])) {
       const curr = currentMap[req_comp.competency_id];
-      const currentLevel = curr?.current_level || (curr?.score >= 80 ? 'advanced' : curr?.score >= 50 ? 'intermediate' : curr?.score >= 20 ? 'beginner' : 'beginner');
-      const requiredLevel = req_comp.required_level || 'advanced';
-      const gapNum = Math.max(0, (levelOrder[requiredLevel] || 3) - (levelOrder[currentLevel] || 1));
-      const gapScore = Math.min(100, Math.round((gapNum / 4) * 100));
+      // Correctly derive current level from score (fix dead-code bug where all branches returned 'beginner')
+      let currentLevel = 'none';
+      if (curr) {
+        const s = curr.score || 0;
+        if (s >= 80)      currentLevel = curr.current_level || 'advanced';
+        else if (s >= 60) currentLevel = curr.current_level || 'intermediate';
+        else if (s >= 30) currentLevel = curr.current_level || 'beginner';
+        else              currentLevel = curr.current_level || 'none';
+      }
+      const requiredLevel = req_comp.required_level || 'intermediate'; // default intermediate, not advanced
+      const reqNum = levelOrder[requiredLevel] ?? 2;
+      const curNum = levelOrder[currentLevel] ?? 0;
+      const gapNum = Math.max(0, reqNum - curNum);
+      // Gap score: proportion of required levels still missing, scaled 0-100
+      const gapScore = reqNum > 0 ? Math.min(100, Math.round((gapNum / reqNum) * 100)) : 0;
       totalGapScore += gapScore;
 
-      let severity = 'low';
+      let severity = 'none';
       if (gapNum >= 3) severity = 'critical';
       else if (gapNum === 2) severity = 'high';
       else if (gapNum === 1) severity = 'medium';
+      else if (gapNum === 0) severity = 'low';
 
       if (gapNum > 0 || !curr) {
         gaps.push({
-          competency_id: req_comp.competency_id,
-          name: req_comp.competency_framework?.name || 'STEM Competency',
-          domain: req_comp.competency_framework?.domain || 'technical',
-          current_level: currentLevel,
+          competency_id:  req_comp.competency_id,
+          name:           req_comp.competency_framework?.name || 'STEM Competency',
+          domain:         req_comp.competency_framework?.domain || 'technical',
+          current_level:  currentLevel,
           required_level: requiredLevel,
-          gap_score: gapScore || 25,
+          gap_score:      gapScore,
           severity,
+          recommended_action: `Complete targeted practice on ${req_comp.competency_framework?.name || 'this competency'} fundamentals to advance from ${currentLevel} to ${requiredLevel} level.`,
         });
       }
     }
 
-    const overallGapScore = required.length
-      ? Math.round(totalGapScore / required.length)
-      : (gaps.length > 0 ? 35 : 0);
+    const overallGapScore = gaps.length > 0
+      ? Math.round(totalGapScore / Math.max(required.length, 1))
+      : 0;
 
     // 4. Generate AI insights
     let aiInsights = {
@@ -143,13 +156,13 @@ router.post('/analyze', authenticate, async (req, res) => {
       try {
         await supabaseAdmin.from('skill_gap_details').insert(
           gaps.map(g => ({
-            report_id: report.id,
-            competency_id: g.competency_id,
-            current_level: g.current_level,
-            required_level: g.required_level,
-            gap_score: g.gap_score,
-            severity: g.severity,
-            recommended_action: aiInsights.recommended_actions?.[g.name] || null,
+            report_id:          report.id,
+            competency_id:      g.competency_id,
+            current_level:      g.current_level,
+            required_level:     g.required_level,
+            gap_score:          g.gap_score,
+            severity:           g.severity,
+            recommended_action: g.recommended_action || null,
           }))
         );
       } catch (_) {}

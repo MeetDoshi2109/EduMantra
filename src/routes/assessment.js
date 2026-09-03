@@ -208,23 +208,25 @@ router.post('/:id/submit', authenticate, async (req, res) => {
     const score = questions.length > 0 ? Math.round((correct / questions.length) * 100) : 0;
     const passed = score >= (assessment?.passing_score || 60);
 
-    // AI personalised feedback
+    // AI personalised feedback via unified provider
     let aiFeedback = '';
-    if (OPENAI_API_KEY) {
-      try {
-        const incorrectCount = questions.length - correct;
-        const openai = getOpenAI();
-        if (!openai) throw new Error('no key');
-        const completion = await openai.chat.completions.create({
-          model: OPENAI_MODEL,
-          messages: [{
-            role: 'user',
-            content: `A learner scored ${score}% (${correct}/${questions.length} correct) on a "${assessment?.title}" assessment. They got ${incorrectCount} questions wrong. Write 2-3 sentences of personalized, encouraging feedback with specific study recommendations.`,
-          }],
-          max_tokens: 200,
-        });
-        aiFeedback = completion.choices[0].message.content;
-      } catch (_) { aiFeedback = passed ? 'Great work! Keep it up.' : 'Review the material and try again.'; }
+    try {
+      const incorrectCount = questions.length - correct;
+      const feedbackResult = await AI.analyzePerformance({
+        student: { class: req.profile.grade },
+        score,
+        total: questions.length,
+        correct,
+        topic_performance: [{
+          topic: assessment?.title || 'STEM Assessment',
+          correct,
+          total: questions.length,
+        }],
+        language: req.profile.preferred_language || 'en',
+      });
+      aiFeedback = feedbackResult.feedback || '';
+    } catch (_) {
+      aiFeedback = passed ? 'Great work! Keep it up.' : 'Review the material and try again.';
     }
 
     // Save attempt

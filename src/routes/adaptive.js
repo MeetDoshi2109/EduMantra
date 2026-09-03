@@ -125,6 +125,7 @@ router.post('/sessions/start', authenticate, [
     }
 
     const maxQ = max_questions || ADAPTIVE_MAX_QUESTIONS;
+    const initialDifficulty = await engine.getWarmUpDifficulty(req.profile.id, resolvedSubjectId);
 
     const { data: session, error } = await supabaseAdmin
       .from('adaptive_sessions')
@@ -137,20 +138,22 @@ router.post('/sessions/start', authenticate, [
         chapter_id:         resolvedChapterId,
         topic_id:           resolvedTopicId,
         status:             'active',
-        current_difficulty: 'medium',
+        current_difficulty: initialDifficulty,
         max_questions:      maxQ,
+        started_at:         new Date().toISOString(),
       })
       .select()
       .single();
 
     if (error) return res.status(400).json({ error: error.message });
 
-    // Get first question
+    // Get first question with warm-up difficulty and spaced repetition candidates
+    const spacedConcepts = await engine.getSpacedRepetitionConcepts(req.profile.id, resolvedSubjectId);
     const firstQuestion = await engine.selectQuestion({
       session,
       shownQuestionIds: [],
-      difficulty: 'medium',
-    }, resolvedConceptId);
+      difficulty: initialDifficulty,
+    }, resolvedConceptId, spacedConcepts);
 
     if (!firstQuestion) {
       // No questions available — complete session immediately
@@ -205,11 +208,12 @@ router.get('/sessions/:id/next', authenticate, async (req, res) => {
       return res.json({ next_question: null, message: 'Session complete — submit to see results' });
     }
 
+    const spacedConcepts = await engine.getSpacedRepetitionConcepts(session.student_id, session.subject_id);
     const nextQuestion = await engine.selectQuestion({
       session,
       shownQuestionIds: shownIds,
-      difficulty: session.current_difficulty || 'medium',
-    });
+      difficulty: session.current_difficulty || 'easy',
+    }, null, spacedConcepts);
 
     if (!nextQuestion) {
       return res.json({ next_question: null, message: 'No more questions available for this session' });
@@ -288,13 +292,13 @@ router.post('/sessions/:id/answer', authenticate, [
       hint_used,
     });
 
-    // Update question bank usage stats
+    // Update question bank usage stats via separate RPC calls (update() cannot call rpc() inline)
     try {
-      await supabaseAdmin.from('question_bank').update({
-        times_used: supabaseAdmin.rpc('increment', { row_id: question_id, column_name: 'times_used' }),
-        ...(isCorrect ? { times_correct: supabaseAdmin.rpc('increment', { row_id: question_id, column_name: 'times_correct' }) } : {}),
-      }).eq('id', question_id);
-    } catch (_) {} // Non-critical, ignore failures
+      await supabaseAdmin.rpc('increment_question_stat', { p_question_id: question_id, p_column: 'times_used' });
+      if (isCorrect) {
+        await supabaseAdmin.rpc('increment_question_stat', { p_question_id: question_id, p_column: 'times_correct' });
+      }
+    } catch (_) {} // Non-critical — stats update failure should never block the student
 
     // Process answer through adaptive engine
     const { nextQuestion, sessionUpdates, gapDetected, gapConceptId } = await engine.processAnswer(
@@ -420,16 +424,20 @@ router.post('/sessions/:id/submit', authenticate, async (req, res) => {
 
     await engine.updateMastery(req.profile.id, Object.values(conceptsEncountered), sessionId);
 
-    // Log learning activity
+    // Log learning activity — write both duration_mins and hours_spent so analytics can read either column
     try {
+      const durationMins = Math.round((Date.now() - new Date(session.started_at || Date.now()).getTime()) / 60000) || 0;
+      const hoursSpent = Math.round((durationMins / 60) * 100) / 100; // e.g. 0.50 hours
       await supabaseAdmin.from('learning_hours_log').insert({
-        user_id:    req.profile.id,
-        subject_id: session.subject_id,
-        chapter_id: session.chapter_id,
-        topic_id:   session.topic_id,
-        session_id: sessionId,
-        score:      performance.score,
-        duration_mins: Math.round((Date.now() - new Date(session.started_at).getTime()) / 60000),
+        user_id:       req.profile.id,
+        subject_id:    session.subject_id,
+        chapter_id:    session.chapter_id,
+        topic_id:      session.topic_id,
+        session_id:    sessionId,
+        score:         performance.score,
+        duration_mins: durationMins,
+        hours_spent:   hoursSpent,
+        activity_type: 'adaptive_practice',
       });
     } catch (_) {}
 
