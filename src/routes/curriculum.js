@@ -146,8 +146,26 @@ router.get('/books', optionalAuth, async (req, res) => {
     if (subjectId) query = query.eq('subject_id', subjectId);
     if (mediumId)  query = query.eq('medium_id', mediumId);
 
-    const { data, error } = await query;
+    let { data, error } = await query;
     if (error) return res.status(400).json({ error: error.message });
+
+    // Fallback: If no book found for this exact board/class, try subject_id alone
+    if ((!data || data.length === 0) && subjectId) {
+      const fallbackQuery = await supabaseAdmin
+        .from('books')
+        .select(`
+          id, title, publisher, edition, academic_year, cover_url,
+          boards(name, code), classes(grade, name), subjects(name, code), mediums(name, code)
+        `)
+        .eq('is_active', true)
+        .eq('subject_id', subjectId)
+        .order('title');
+
+      if (!fallbackQuery.error && fallbackQuery.data && fallbackQuery.data.length > 0) {
+        data = fallbackQuery.data;
+      }
+    }
+
     res.json({ books: data || [] });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch books', detail: err.message });

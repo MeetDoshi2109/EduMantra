@@ -43,51 +43,75 @@ function getNextDifficulty(currentDifficulty, wasCorrect, consecutiveCorrect, co
 }
 
 /**
- * Pick a question from the question bank that:
- * 1. Matches the required difficulty
- * 2. Is for the correct topic/concept scope
- * 3. Has not been shown in this session
- * 4. Is approved
- *
- * Falls back to adjacent difficulties if no exact match.
+ * Pick a question from the question bank with progressive scoping and difficulty fallbacks:
+ * 1. Scope cascade: concept_id -> topic_id -> chapter_id -> subject_id -> class_id -> global
+ * 2. Difficulty cascade: requested difficulty -> other difficulties
+ * 3. Excludes already shown question IDs
  */
 async function selectQuestion(sessionState, conceptId = null) {
-  const { session, shownQuestionIds, difficulty } = sessionState;
+  const { session, shownQuestionIds = [], difficulty = 'medium' } = sessionState;
 
   const tryDifficulties = [difficulty];
   const dIdx = DIFFICULTY_ORDER.indexOf(difficulty);
-  if (dIdx > 0)                              tryDifficulties.push(DIFFICULTY_ORDER[dIdx - 1]);
-  if (dIdx < DIFFICULTY_ORDER.length - 1)   tryDifficulties.push(DIFFICULTY_ORDER[dIdx + 1]);
+  if (dIdx > 0)                            tryDifficulties.push(DIFFICULTY_ORDER[dIdx - 1]);
+  if (dIdx < DIFFICULTY_ORDER.length - 1) tryDifficulties.push(DIFFICULTY_ORDER[dIdx + 1]);
 
-  for (const diff of tryDifficulties) {
-    let query = supabaseAdmin
-      .from('question_bank')
-      .select('id, question_text, question_type, options, difficulty, concept_id, topic_id')
-      .eq('validation_status', 'approved')
-      .eq('is_active', true)
-      .eq('difficulty', diff);
+  const cleanConceptId = cleanUuid(conceptId);
+  const cleanTopicId   = cleanUuid(session?.topic_id);
+  const cleanChapterId = cleanUuid(session?.chapter_id);
+  const cleanSubjectId = cleanUuid(session?.subject_id);
+  const cleanClassId   = cleanUuid(session?.class_id);
 
-    const cleanConceptId = cleanUuid(conceptId);
-    const cleanTopicId = cleanUuid(session?.topic_id);
-    const cleanChapterId = cleanUuid(session?.chapter_id);
+  // Progressive scopes to try
+  const scopes = [];
+  if (cleanConceptId) scopes.push({ type: 'concept_id', val: cleanConceptId });
+  if (cleanTopicId)   scopes.push({ type: 'topic_id',   val: cleanTopicId });
+  if (cleanChapterId) scopes.push({ type: 'chapter_id', val: cleanChapterId });
+  if (cleanSubjectId) scopes.push({ type: 'subject_id', val: cleanSubjectId });
+  if (cleanClassId)   scopes.push({ type: 'class_id',   val: cleanClassId });
+  scopes.push({ type: 'any', val: null }); // Global fallback
 
-    if (cleanConceptId)          query = query.eq('concept_id', cleanConceptId);
-    else if (cleanTopicId) query = query.eq('topic_id', cleanTopicId);
-    else if (cleanChapterId) query = query.eq('chapter_id', cleanChapterId);
+  for (const scope of scopes) {
+    for (const diff of tryDifficulties) {
+      let query = supabaseAdmin
+        .from('question_bank')
+        .select('id, question_text, question_type, options, difficulty, concept_id, topic_id')
+        .eq('validation_status', 'approved')
+        .eq('is_active', true)
+        .eq('difficulty', diff);
 
-    if (shownQuestionIds.length > 0) {
-      query = query.not('id', 'in', `(${shownQuestionIds.join(',')})`);
-    }
+      if (scope.type !== 'any' && scope.val) {
+        query = query.eq(scope.type, scope.val);
+      }
 
-    const { data: questions } = await query.limit(10);
+      if (shownQuestionIds.length > 0) {
+        query = query.not('id', 'in', `(${shownQuestionIds.join(',')})`);
+      }
 
-    if (questions && questions.length > 0) {
-      // Random selection among candidates to avoid always giving same question
-      return questions[Math.floor(Math.random() * questions.length)];
+      const { data: questions } = await query.limit(10);
+
+      if (questions && questions.length > 0) {
+        return questions[Math.floor(Math.random() * questions.length)];
+      }
     }
   }
 
-  return null; // No more questions available
+  // Final attempt: any approved question not yet shown (any difficulty)
+  let fallbackQuery = supabaseAdmin
+    .from('question_bank')
+    .select('id, question_text, question_type, options, difficulty, concept_id, topic_id')
+    .eq('is_active', true);
+
+  if (shownQuestionIds.length > 0) {
+    fallbackQuery = fallbackQuery.not('id', 'in', `(${shownQuestionIds.join(',')})`);
+  }
+
+  const { data: anyQuestions } = await fallbackQuery.limit(10);
+  if (anyQuestions && anyQuestions.length > 0) {
+    return anyQuestions[Math.floor(Math.random() * anyQuestions.length)];
+  }
+
+  return null;
 }
 
 /**

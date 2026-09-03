@@ -29,20 +29,19 @@ const validate = (req, res, next) => {
 
 // ── POST /api/v1/adaptive/sessions/start ────────────────────
 router.post('/sessions/start', authenticate, [
-  body('topic_id').optional().isUUID(),
-  body('chapter_id').optional().isUUID(),
-  body('assessment_id').optional().isUUID(),
+  body('concept_id').optional(),
+  body('topic_id').optional(),
+  body('chapter_id').optional(),
+  body('subject_id').optional(),
+  body('assessment_id').optional(),
 ], validate, async (req, res) => {
   const {
-    topic_id, chapter_id, subject_id, board_id, class_id,
+    concept_id, topic_id, chapter_id, subject_id, board_id, class_id,
     assessment_id, max_questions,
   } = req.body;
 
-  if (!topic_id && !chapter_id && !assessment_id) {
-    return res.status(422).json({ error: 'Provide topic_id, chapter_id, or assessment_id' });
-  }
-
   try {
+    let resolvedConceptId = cleanUuid(concept_id);
     let resolvedTopicId   = cleanUuid(topic_id);
     let resolvedChapterId = cleanUuid(chapter_id);
     let resolvedSubjectId = cleanUuid(subject_id);
@@ -50,31 +49,78 @@ router.post('/sessions/start', authenticate, [
     let resolvedClassId   = cleanUuid(class_id) || cleanUuid(req.profile.class_id);
     let resolvedAssessmentId = cleanUuid(assessment_id);
 
+    // If concept_id provided, resolve topic and chapter hierarchy
+    if (resolvedConceptId && (!resolvedTopicId || !resolvedChapterId)) {
+      const { data: concept } = await supabaseAdmin
+        .from('concepts')
+        .select('id, topic_id, topics(id, chapter_id, chapters(id, subject_id, book_id, books(subject_id, class_id, board_id)))')
+        .eq('id', resolvedConceptId).single();
+
+      if (concept) {
+        resolvedTopicId   = cleanUuid(concept.topic_id) || resolvedTopicId;
+        resolvedChapterId = cleanUuid(concept.topics?.chapter_id) || resolvedChapterId;
+        resolvedSubjectId = cleanUuid(concept.topics?.chapters?.subject_id) || cleanUuid(concept.topics?.chapters?.books?.subject_id) || resolvedSubjectId;
+        resolvedClassId   = cleanUuid(concept.topics?.chapters?.books?.class_id) || resolvedClassId;
+        resolvedBoardId   = cleanUuid(concept.topics?.chapters?.books?.board_id) || resolvedBoardId;
+      }
+    }
+
+    // If topic_id provided, resolve chapter and subject hierarchy
     if (resolvedTopicId && (!resolvedChapterId || !resolvedSubjectId)) {
       const { data: topic } = await supabaseAdmin
         .from('topics')
-        .select('id, chapter_id, chapters(id, book_id, books(subject_id, class_id, board_id))')
+        .select('id, chapter_id, chapters(id, subject_id, book_id, books(subject_id, class_id, board_id))')
         .eq('id', resolvedTopicId).single();
 
       if (topic) {
-        resolvedChapterId = cleanUuid(topic.chapter_id);
-        resolvedSubjectId = cleanUuid(topic.chapters?.books?.subject_id);
+        resolvedChapterId = cleanUuid(topic.chapter_id) || resolvedChapterId;
+        resolvedSubjectId = cleanUuid(topic.chapters?.subject_id) || cleanUuid(topic.chapters?.books?.subject_id) || resolvedSubjectId;
         resolvedClassId   = cleanUuid(topic.chapters?.books?.class_id) || resolvedClassId;
         resolvedBoardId   = cleanUuid(topic.chapters?.books?.board_id) || resolvedBoardId;
       }
     }
 
-    // If still no topic or chapter provided (e.g. random practice mode), find the first available
+    // If chapter_id provided, resolve subject hierarchy
+    if (resolvedChapterId && !resolvedSubjectId) {
+      const { data: chapter } = await supabaseAdmin
+        .from('chapters')
+        .select('id, subject_id, book_id, books(subject_id, class_id, board_id)')
+        .eq('id', resolvedChapterId).single();
+
+      if (chapter) {
+        resolvedSubjectId = cleanUuid(chapter.subject_id) || cleanUuid(chapter.books?.subject_id) || resolvedSubjectId;
+        resolvedClassId   = cleanUuid(chapter.books?.class_id) || resolvedClassId;
+        resolvedBoardId   = cleanUuid(chapter.books?.board_id) || resolvedBoardId;
+      }
+    }
+
+    // If subject_id provided, find first available chapter & topic if none selected
+    if (resolvedSubjectId && !resolvedChapterId) {
+      const { data: books } = await supabaseAdmin
+        .from('books')
+        .select('id, chapters(id, topics(id))')
+        .eq('subject_id', resolvedSubjectId)
+        .limit(1);
+
+      if (books?.[0]?.chapters?.[0]) {
+        resolvedChapterId = books[0].chapters[0].id;
+        if (books[0].chapters[0].topics?.[0]) {
+          resolvedTopicId = books[0].chapters[0].topics[0].id;
+        }
+      }
+    }
+
+    // If still no topic or chapter provided (e.g. random quick practice), pick from available subjects
     if (!resolvedTopicId && !resolvedChapterId && !resolvedAssessmentId) {
       const { data: firstTopic } = await supabaseAdmin
         .from('topics')
-        .select('id, chapter_id, chapters(id, book_id, books(subject_id, class_id, board_id))')
+        .select('id, chapter_id, chapters(id, subject_id, book_id, books(subject_id, class_id, board_id))')
         .limit(1);
 
       if (firstTopic?.[0]) {
-        resolvedTopicId = firstTopic[0].id;
+        resolvedTopicId   = firstTopic[0].id;
         resolvedChapterId = firstTopic[0].chapter_id;
-        resolvedSubjectId = cleanUuid(firstTopic[0].chapters?.books?.subject_id) || resolvedSubjectId;
+        resolvedSubjectId = cleanUuid(firstTopic[0].chapters?.subject_id) || cleanUuid(firstTopic[0].chapters?.books?.subject_id) || resolvedSubjectId;
       }
     }
 
@@ -104,7 +150,7 @@ router.post('/sessions/start', authenticate, [
       session,
       shownQuestionIds: [],
       difficulty: 'medium',
-    });
+    }, resolvedConceptId);
 
     if (!firstQuestion) {
       // No questions available — complete session immediately

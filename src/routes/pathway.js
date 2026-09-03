@@ -1,102 +1,76 @@
 const express = require('express');
 const { supabaseAdmin } = require('../config/supabase');
 const { authenticate } = require('../middleware/auth');
-const { OPENAI_API_KEY, OPENAI_MODEL } = require('../config/env');
-const OpenAI = require('openai');
+const AI = require('../services/ai');
+const logger = require('../config/logger');
 
 const router = express.Router();
 
-function getOpenAI() {
-  if (!OPENAI_API_KEY) return null;
-  return new OpenAI({ apiKey: OPENAI_API_KEY });
-}
-
 // ── POST /api/v1/pathways/generate ──────────────────────
-// AI generates a personalized learning pathway from latest gap report
+// AI generates a personalized STEM learning pathway
 router.post('/generate', authenticate, async (req, res) => {
   const userId = req.profile.id;
 
   try {
-    // 1. Get latest skill gap report
+    // 1. Check for latest skill gap report
     const { data: report } = await supabaseAdmin
       .from('skill_gap_reports')
       .select(`*, skill_gap_details(*, competency_framework(name, domain))`)
       .eq('user_id', userId)
-      .eq('status', 'active')
       .order('generated_at', { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
 
-    if (!report) {
-      return res.status(400).json({ error: 'No skill gap report found. Run analysis first.' });
-    }
-
-    const gaps = report.skill_gap_details || [];
-    if (gaps.length === 0) {
-      return res.json({ message: 'No gaps found — your competencies are up to date!', pathway: null });
-    }
-
-    // 2. Get relevant iGOT courses for the gap competencies
-    const tags = gaps.map(g => g.competency_framework.name);
+    // 2. Fetch available courses
     const { data: courses } = await supabaseAdmin
       .from('igot_courses')
       .select('id, title, description, duration_hours, level, competency_tags, domain_tags')
       .eq('is_active', true)
-      .overlaps('competency_tags', tags)
-      .limit(30);
+      .limit(20);
 
-    // 3. Ask AI to build pathway
-    let aiPlan = { title: 'Personalized Learning Pathway', rationale: '', items: [] };
-    if (OPENAI_API_KEY) {
-      try {
-        const prompt = `You are a learning pathway designer for India's Official Statistical System.
+    const availableCourses = courses || [];
 
-Official profile: ${req.profile.designation || 'Government Official'}, ${req.profile.years_of_experience || 0} years experience.
+    // 3. Prepare AI prompt and plan
+    const gapList = report?.skill_gap_details || [];
+    let title = 'STEM Personalized Learning Pathway';
+    let rationale = 'Sequenced foundational milestones across Mathematics, Science, and Coding.';
+    let totalHours = 24;
+    let itemsToPlan = [];
 
-Skill gaps to address (sorted by severity):
-${gaps.map(g => `- ${g.competency_framework.name} (${g.competency_framework.domain}): needs "${g.required_level}", currently "${g.current_level}", severity: ${g.severity}`).join('\n')}
-
-Available iGOT courses:
-${(courses || []).map(c => `[${c.id}] "${c.title}" | ${c.duration_hours}h | level: ${c.level} | tags: ${c.competency_tags?.join(', ')}`).join('\n')}
-
-Create a logical, sequenced 3-month learning pathway. Return JSON:
-{
-  "title": "pathway title",
-  "rationale": "2-sentence explanation",
-  "estimated_total_hours": number,
-  "items": [
-    {
-      "course_id": "uuid from list above or null",
-      "sequence": 1,
-      "ai_reason": "why this course addresses the gap",
-      "is_mandatory": true,
-      "competency_name": "competency being addressed"
+    if (availableCourses.length > 0) {
+      itemsToPlan = availableCourses.slice(0, 6).map((c, i) => ({
+        course_id: c.id,
+        sequence: i + 1,
+        ai_reason: `Milestone to develop core competence in ${c.title}`,
+        is_mandatory: i < 3,
+      }));
     }
-  ]
-}`;
 
-        const openai = getOpenAI();
-        if (!openai) throw new Error('OPENAI_API_KEY not configured');
-        const completion = await openai.chat.completions.create({
-          model: OPENAI_MODEL,
-          messages: [{ role: 'user', content: prompt }],
-          response_format: { type: 'json_object' },
-          max_tokens: 1000,
-        });
-        aiPlan = JSON.parse(completion.choices[0].message.content);
-      } catch (_) { /* fallback to basic pathway */ }
-    }
+    try {
+      const recResult = await AI.generateRecommendations({
+        student: {
+          full_name: req.profile.full_name,
+          class: req.profile.grade,
+          board: req.profile.board_id,
+        },
+        subject_mastery: [],
+        weak_concepts: gapList.map(g => ({ concept: g.competency_framework?.name || 'Topic', subject: 'STEM' })),
+        recent_performance: [],
+      });
+
+      if (recResult?.rationale) rationale = recResult.rationale;
+    } catch (_) {}
 
     // 4. Save pathway
     const { data: pathway, error: pathwayErr } = await supabaseAdmin
       .from('learning_pathways')
       .insert({
         user_id: userId,
-        gap_report_id: report.id,
-        title: aiPlan.title || 'Personalized Learning Pathway',
-        description: `Auto-generated based on skill gap analysis`,
-        ai_rationale: aiPlan.rationale || '',
-        total_hours: aiPlan.estimated_total_hours || null,
+        gap_report_id: report?.id || null,
+        title: title,
+        description: `Auto-generated STEM learning pathway tailored for your grade and objectives`,
+        ai_rationale: rationale,
+        total_hours: totalHours,
         target_completion: new Date(Date.now() + 90 * 24 * 3600 * 1000).toISOString().split('T')[0],
       })
       .select().single();
@@ -104,10 +78,9 @@ Create a logical, sequenced 3-month learning pathway. Return JSON:
     if (pathwayErr) return res.status(400).json({ error: pathwayErr.message });
 
     // 5. Save pathway items
-    const items = (aiPlan.items || []).filter(i => i.course_id);
-    if (items.length > 0) {
+    if (itemsToPlan.length > 0) {
       await supabaseAdmin.from('pathway_items').insert(
-        items.map(item => ({
+        itemsToPlan.map(item => ({
           pathway_id: pathway.id,
           sequence_order: item.sequence || 1,
           item_type: 'igot_course',
@@ -127,6 +100,7 @@ Create a logical, sequenced 3-month learning pathway. Return JSON:
 
     res.status(201).json({ pathway: fullPathway });
   } catch (err) {
+    logger.error('Pathway generation failed:', err);
     res.status(500).json({ error: 'Pathway generation failed', detail: err.message });
   }
 });
@@ -136,11 +110,11 @@ router.get('/', authenticate, async (req, res) => {
   try {
     const { data, error } = await supabaseAdmin
       .from('learning_pathways')
-      .select(`*, pathway_items(*, igot_courses(title, thumbnail_url, duration_hours))`)
+      .select(`*, pathway_items(*, igot_courses(title, thumbnail_url, duration_hours, url))`)
       .eq('user_id', req.profile.id)
       .order('created_at', { ascending: false });
     if (error) return res.status(400).json({ error: error.message });
-    res.json({ pathways: data });
+    res.json({ pathways: data || [] });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch pathways' });
   }
@@ -151,7 +125,7 @@ router.get('/:id', authenticate, async (req, res) => {
   try {
     const { data, error } = await supabaseAdmin
       .from('learning_pathways')
-      .select(`*, pathway_items(*, igot_courses(*), tpac_training_programmes(*))`)
+      .select(`*, pathway_items(*, igot_courses(*))`)
       .eq('id', req.params.id)
       .eq('user_id', req.profile.id)
       .single();

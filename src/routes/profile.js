@@ -28,7 +28,7 @@ router.get('/', authenticate, async (req, res) => {
 // ── PUT /api/v1/profile ─────────────────────────────────
 router.put('/', authenticate, [
   body('full_name').optional().trim().notEmpty(),
-  body('phone').optional().isMobilePhone(),
+  body('phone').optional({ values: 'falsy' }),
   body('preferred_language').optional().isLength({ min: 2, max: 5 }),
   body('years_of_experience').optional().isInt({ min: 0 }),
 ], validate, async (req, res) => {

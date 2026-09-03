@@ -1,41 +1,58 @@
 const express = require('express');
 const { supabaseAdmin } = require('../config/supabase');
-const { authenticate, authorize } = require('../middleware/auth');
-const { OPENAI_API_KEY, OPENAI_MODEL } = require('../config/env');
-const OpenAI = require('openai');
+const { authenticate } = require('../middleware/auth');
+const AI = require('../services/ai');
+const logger = require('../config/logger');
 
 const router = express.Router();
 
-// Lazy — only instantiated when a request actually needs AI
-// so a missing OPENAI_API_KEY doesn't crash the server on startup
-function getOpenAI() {
-  if (!OPENAI_API_KEY) return null;
-  return new OpenAI({ apiKey: OPENAI_API_KEY });
-}
+const cleanUuid = v => (v && typeof v === 'string' && v !== 'null' && v !== 'undefined' && v.trim().length > 0 ? v.trim() : null);
 
 // ── POST /api/v1/skill-gap/analyze ──────────────────────
-// Generate an AI-powered skill gap report for the requesting user
+// Generate an AI-powered STEM skill gap report for the requesting student
 router.post('/analyze', authenticate, async (req, res) => {
   const userId = req.profile.id;
-  const jobRoleId = req.body.job_role_id || req.profile.job_role_id;
+  const jobRoleId = cleanUuid(req.body.job_role_id || req.profile.job_role_id);
 
   try {
-    // 1. Get required competencies for the job role
-    const { data: required, error: reqErr } = await supabaseAdmin
-      .from('job_role_competencies')
-      .select(`*, competency_framework(name, domain, description)`)
-      .eq('job_role_id', jobRoleId);
-    if (reqErr) return res.status(400).json({ error: reqErr.message });
+    let required = [];
 
-    // 2. Get user's current competencies
-    const { data: current, error: curErr } = await supabaseAdmin
-      .from('user_competency_profiles')
-      .select(`*, competency_framework(name, domain)`)
-      .eq('user_id', userId);
-    if (curErr) return res.status(400).json({ error: curErr.message });
+    if (jobRoleId) {
+      const { data: jobComps } = await supabaseAdmin
+        .from('job_role_competencies')
+        .select(`*, competency_framework(id, name, domain, description, required_level)`)
+        .eq('job_role_id', jobRoleId);
+      required = jobComps || [];
+    }
+
+    // If student or no job role specified, evaluate against STEM competencies framework
+    if (required.length === 0) {
+      const { data: allComps } = await supabaseAdmin
+        .from('competency_framework')
+        .select('id, name, domain, description, required_level')
+        .limit(12);
+
+      required = (allComps || []).map(c => ({
+        competency_id: c.id,
+        required_level: c.required_level || 'advanced',
+        competency_framework: c,
+      }));
+    }
+
+    // 2. Get student's current competencies and mastery data
+    const [currentCompsRes, masteryRes] = await Promise.all([
+      supabaseAdmin
+        .from('user_competency_profiles')
+        .select(`*, competency_framework(id, name, domain)`)
+        .eq('user_id', userId),
+      supabaseAdmin
+        .from('student_mastery')
+        .select(`mastery_score, is_gap, concepts(title), subjects(name)`)
+        .eq('student_id', userId),
+    ]);
 
     const currentMap = {};
-    (current || []).forEach(c => { currentMap[c.competency_id] = c; });
+    (currentCompsRes.data || []).forEach(c => { currentMap[c.competency_id] = c; });
 
     const levelOrder = { none: 0, beginner: 1, intermediate: 2, advanced: 3, expert: 4 };
     const gaps = [];
@@ -44,25 +61,25 @@ router.post('/analyze', authenticate, async (req, res) => {
     // 3. Compute gaps
     for (const req_comp of (required || [])) {
       const curr = currentMap[req_comp.competency_id];
-      const currentLevel = curr?.current_level || 'none';
-      const requiredLevel = req_comp.required_level;
-      const gapNum = Math.max(0, levelOrder[requiredLevel] - levelOrder[currentLevel]);
-      const gapScore = (gapNum / 4) * 100;
+      const currentLevel = curr?.current_level || (curr?.score >= 80 ? 'advanced' : curr?.score >= 50 ? 'intermediate' : curr?.score >= 20 ? 'beginner' : 'beginner');
+      const requiredLevel = req_comp.required_level || 'advanced';
+      const gapNum = Math.max(0, (levelOrder[requiredLevel] || 3) - (levelOrder[currentLevel] || 1));
+      const gapScore = Math.min(100, Math.round((gapNum / 4) * 100));
       totalGapScore += gapScore;
 
       let severity = 'low';
-      if (gapNum >= 4) severity = 'critical';
-      else if (gapNum >= 3) severity = 'high';
-      else if (gapNum >= 2) severity = 'medium';
+      if (gapNum >= 3) severity = 'critical';
+      else if (gapNum === 2) severity = 'high';
+      else if (gapNum === 1) severity = 'medium';
 
-      if (gapNum > 0) {
+      if (gapNum > 0 || !curr) {
         gaps.push({
           competency_id: req_comp.competency_id,
-          name: req_comp.competency_framework.name,
-          domain: req_comp.competency_framework.domain,
+          name: req_comp.competency_framework?.name || 'STEM Competency',
+          domain: req_comp.competency_framework?.domain || 'technical',
           current_level: currentLevel,
           required_level: requiredLevel,
-          gap_score: gapScore,
+          gap_score: gapScore || 25,
           severity,
         });
       }
@@ -70,71 +87,80 @@ router.post('/analyze', authenticate, async (req, res) => {
 
     const overallGapScore = required.length
       ? Math.round(totalGapScore / required.length)
-      : 0;
+      : (gaps.length > 0 ? 35 : 0);
 
-    // 4. AI narrative insights
-    let aiInsights = {};
-    if (OPENAI_API_KEY && gaps.length > 0) {
-      try {
-        const prompt = `You are an expert learning advisor for India's Official Statistical System.
-A government official has the following skill gaps:
-${gaps.map(g => `- ${g.name} (${g.domain}): currently "${g.current_level}", needs "${g.required_level}", severity: ${g.severity}`).join('\n')}
+    // 4. Generate AI insights
+    let aiInsights = {
+      summary: `Analyzed ${required.length} STEM core competencies. Identified ${gaps.length} areas for conceptual reinforcement.`,
+      priorities: gaps.slice(0, 3).map((g, idx) => ({
+        area: g.name,
+        action: `Complete interactive practice problem sets on ${g.name} fundamentals.`,
+        hours: 3 + idx * 2,
+      })),
+      recommended_actions: {},
+    };
 
-Provide:
-1. A brief executive summary (2-3 sentences)
-2. Top 3 priority areas to address
-3. Specific recommended actions for each gap
-4. Estimated learning time to close gaps
+    try {
+      const recResult = await AI.generateRecommendations({
+        student: {
+          full_name: req.profile.full_name,
+          class: req.profile.grade,
+          board: req.profile.board_id,
+        },
+        subject_mastery: [],
+        weak_concepts: gaps.map(g => ({ concept: g.name, subject: g.domain, mastery: 100 - g.gap_score })),
+        recent_performance: [],
+      });
 
-Respond as JSON: { summary, priorities: [{area, action, hours}], recommended_actions }`;
-
-        const openai = getOpenAI();
-        if (!openai) throw new Error('OPENAI_API_KEY not configured');
-        const completion = await openai.chat.completions.create({
-          model: OPENAI_MODEL,
-          messages: [{ role: 'user', content: prompt }],
-          response_format: { type: 'json_object' },
-          max_tokens: 800,
-        });
-        aiInsights = JSON.parse(completion.choices[0].message.content);
-      } catch (aiErr) {
-        aiInsights = { summary: 'AI insights temporarily unavailable.', priorities: [] };
+      if (recResult?.rationale) {
+        aiInsights.summary = recResult.rationale;
       }
-    }
+      if (Array.isArray(recResult?.recommendations)) {
+        aiInsights.priorities = recResult.recommendations.slice(0, 3).map((r, i) => ({
+          area: r.title || r.concept || 'Focus Area',
+          action: r.description || 'Practice daily questions.',
+          hours: (i + 1) * 2,
+        }));
+      }
+    } catch (_) {}
 
     // 5. Save report
     const { data: report, error: reportErr } = await supabaseAdmin
       .from('skill_gap_reports')
       .insert({
         user_id: userId,
-        job_role_id: jobRoleId,
+        job_role_id: jobRoleId || null,
         summary: aiInsights.summary || `${gaps.length} skill gaps identified.`,
         overall_gap_score: overallGapScore,
         ai_insights: aiInsights,
       })
       .select().single();
+
     if (reportErr) return res.status(400).json({ error: reportErr.message });
 
     // 6. Save gap details
     if (gaps.length > 0) {
-      await supabaseAdmin.from('skill_gap_details').insert(
-        gaps.map(g => ({
-          report_id: report.id,
-          competency_id: g.competency_id,
-          current_level: g.current_level,
-          required_level: g.required_level,
-          gap_score: g.gap_score,
-          severity: g.severity,
-          recommended_action: aiInsights.recommended_actions?.[g.name] || null,
-        }))
-      );
+      try {
+        await supabaseAdmin.from('skill_gap_details').insert(
+          gaps.map(g => ({
+            report_id: report.id,
+            competency_id: g.competency_id,
+            current_level: g.current_level,
+            required_level: g.required_level,
+            gap_score: g.gap_score,
+            severity: g.severity,
+            recommended_action: aiInsights.recommended_actions?.[g.name] || null,
+          }))
+        );
+      } catch (_) {}
     }
 
     res.json({
-      report: { ...report, gaps, ai_insights: aiInsights },
+      report: { ...report, gaps, details: gaps, ai_insights: aiInsights },
     });
   } catch (err) {
-    res.status(500).json({ error: 'Skill gap analysis failed' });
+    logger.error('Skill gap analysis error:', err);
+    res.status(500).json({ error: 'Skill gap analysis failed', detail: err.message });
   }
 });
 
@@ -147,7 +173,7 @@ router.get('/reports', authenticate, async (req, res) => {
       .eq('user_id', req.profile.id)
       .order('generated_at', { ascending: false });
     if (error) return res.status(400).json({ error: error.message });
-    res.json({ reports: data });
+    res.json({ reports: data || [] });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch reports' });
   }
@@ -169,7 +195,7 @@ router.get('/reports/:id', authenticate, async (req, res) => {
       .select(`*, competency_framework(name, domain, description)`)
       .eq('report_id', req.params.id);
 
-    res.json({ report: { ...report, details } });
+    res.json({ report: { ...report, details: details || [] } });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch report' });
   }

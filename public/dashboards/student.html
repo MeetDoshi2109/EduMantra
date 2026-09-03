@@ -204,7 +204,7 @@
           <h1 class="page-title" id="welcomeHeading">Welcome back!</h1>
           <p class="page-subtitle">Your STEM mastery and adaptive practice overview.</p>
         </div>
-        <button class="btn btn-primary" onclick="goPage('practice',pageHandlers)">
+        <button class="btn btn-primary" onclick="startQuickPractice()">
           <span id="continueIcon"></span> Start Quick Practice
         </button>
       </div>
@@ -273,6 +273,23 @@
             <button class="btn btn-ghost btn-sm" onclick="goPage('pathway',pageHandlers)">View path</button>
           </div>
           <div id="pathwayPreview"></div>
+        </div>
+      </div>
+
+      <div class="bento g2" style="margin-bottom:1.25rem">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Enrolled Courses & Modules</div><div class="card-subtitle">Your technical and STEM course progress</div></div>
+            <button class="btn btn-ghost btn-sm" onclick="goPage('courses',pageHandlers)">Browse all</button>
+          </div>
+          <div id="activeCoursesList"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Recent Quiz Attempts</div><div class="card-subtitle">Latest performance records</div></div>
+            <button class="btn btn-ghost btn-sm" onclick="goPage('assessments',pageHandlers)">Take a quiz</button>
+          </div>
+          <div id="recentAttempts"></div>
         </div>
       </div>
     </div>
@@ -1279,12 +1296,74 @@ function backToCurriculumSubjects() {
 function startAdaptiveForSubject() {
   if (!currContext.selectedSubject) return;
   goPage('practice', pageHandlers);
-  loadPracticePage(currContext.selectedSubject.id);
+  const payload = {
+    subject_id: currContext.selectedSubject.id,
+    board_id:   currContext.board?.id || null,
+    class_id:   currContext.class?.id || null,
+    max_questions: 10,
+  };
+  Api.post('/adaptive/sessions/start', payload).then(res => {
+    if (res.session && res.next_question) {
+      currContext.activePracticeSession = res.session;
+      currContext.currentQuestion = res.next_question;
+      document.getElementById('practiceSetupCard').style.display = 'none';
+      document.getElementById('practiceRunner').style.display = 'block';
+      document.getElementById('practiceSummary').style.display = 'none';
+      renderCurrentQuestion();
+    } else {
+      loadPracticePage(currContext.selectedSubject.id);
+    }
+  }).catch(e => {
+    loadPracticePage(currContext.selectedSubject.id);
+  });
 }
 
 function startAdaptiveForChapter(chapterId) {
   goPage('practice', pageHandlers);
-  loadPracticePage(currContext.selectedSubject?.id, chapterId);
+  const payload = {
+    chapter_id: chapterId,
+    subject_id: currContext.selectedSubject?.id || null,
+    board_id:   currContext.board?.id || null,
+    class_id:   currContext.class?.id || null,
+    max_questions: 10,
+  };
+  Api.post('/adaptive/sessions/start', payload).then(res => {
+    if (res.session && res.next_question) {
+      currContext.activePracticeSession = res.session;
+      currContext.currentQuestion = res.next_question;
+      document.getElementById('practiceSetupCard').style.display = 'none';
+      document.getElementById('practiceRunner').style.display = 'block';
+      document.getElementById('practiceSummary').style.display = 'none';
+      renderCurrentQuestion();
+    } else {
+      loadPracticePage(currContext.selectedSubject?.id, chapterId);
+    }
+  }).catch(e => {
+    loadPracticePage(currContext.selectedSubject?.id, chapterId);
+  });
+}
+
+function startQuickPractice() {
+  goPage('practice', pageHandlers);
+  const payload = {
+    board_id: currContext.board?.id || null,
+    class_id: currContext.class?.id || null,
+    max_questions: 10,
+  };
+  Api.post('/adaptive/sessions/start', payload).then(res => {
+    if (res.session && res.next_question) {
+      currContext.activePracticeSession = res.session;
+      currContext.currentQuestion = res.next_question;
+      document.getElementById('practiceSetupCard').style.display = 'none';
+      document.getElementById('practiceRunner').style.display = 'block';
+      document.getElementById('practiceSummary').style.display = 'none';
+      renderCurrentQuestion();
+    } else {
+      loadPracticePage();
+    }
+  }).catch(e => {
+    loadPracticePage();
+  });
 }
 
 function askTutorForSubject() {
@@ -1340,13 +1419,13 @@ async function onPracticeSubjectChange(presetChapterId = null) {
     const books = bRes.books || [];
 
     if (!books.length) {
-      chSel.innerHTML = '<option value="">No chapters found</option>';
+      chSel.innerHTML = '<option value="">All Topics in Subject</option>';
       return;
     }
 
     const chRes = await Api.get(`/curriculum/chapters?book_id=${books[0].id}`);
     const chapters = chRes.chapters || [];
-    chSel.innerHTML = '<option value="">Select chapter…</option>' +
+    chSel.innerHTML = '<option value="">All Chapters</option>' +
       chapters.map(ch => `<option value="${ch.id}" ${presetChapterId === ch.id ? 'selected' : ''}>${ch.chapter_number ? ch.chapter_number + '. ' : ''}${ch.title}</option>`).join('');
 
     if (presetChapterId) {
@@ -1385,11 +1464,6 @@ async function launchPracticeSession() {
   const chId  = document.getElementById('prac-chapter-sel').value;
   const topId = document.getElementById('prac-topic-sel').value;
 
-  if (!subId && !chId && !topId) {
-    Toast.error('Please select a STEM subject to start practicing');
-    return;
-  }
-
   const payload = {
     subject_id: subId || null,
     chapter_id: chId  || null,
@@ -1407,7 +1481,7 @@ async function launchPracticeSession() {
     currContext.currentQuestion = res.next_question;
 
     if (!currContext.currentQuestion) {
-      Toast.info(res.message || 'No questions available for this specific topic yet.');
+      Toast.info(res.message || 'Preparing adaptive practice session…');
       return;
     }
 
@@ -1423,13 +1497,19 @@ async function launchPracticeSession() {
 
 function launchPracticeForTopic(topicId) {
   goPage('practice', pageHandlers);
-  const payload = { topic_id: topicId, max_questions: 10 };
+  const payload = {
+    topic_id: topicId,
+    board_id: currContext.board?.id || null,
+    class_id: currContext.class?.id || null,
+    max_questions: 10,
+  };
   Api.post('/adaptive/sessions/start', payload).then(res => {
     if (res.session && res.next_question) {
       currContext.activePracticeSession = res.session;
       currContext.currentQuestion = res.next_question;
       document.getElementById('practiceSetupCard').style.display = 'none';
       document.getElementById('practiceRunner').style.display = 'block';
+      document.getElementById('practiceSummary').style.display = 'none';
       renderCurrentQuestion();
     } else {
       Toast.info(res.message || 'No questions for this topic yet');
@@ -1439,16 +1519,46 @@ function launchPracticeForTopic(topicId) {
 
 function launchPracticeForConcept(conceptId) {
   goPage('practice', pageHandlers);
-  const payload = { max_questions: 10 };
+  const payload = {
+    concept_id: conceptId || null,
+    board_id: currContext.board?.id || null,
+    class_id: currContext.class?.id || null,
+    max_questions: 10,
+  };
   Api.post('/adaptive/sessions/start', payload).then(res => {
     if (res.session && res.next_question) {
       currContext.activePracticeSession = res.session;
       currContext.currentQuestion = res.next_question;
       document.getElementById('practiceSetupCard').style.display = 'none';
       document.getElementById('practiceRunner').style.display = 'block';
+      document.getElementById('practiceSummary').style.display = 'none';
       renderCurrentQuestion();
+    } else {
+      Toast.info(res.message || 'Loading practice session…');
     }
   }).catch(e => Toast.error(e.message));
+}
+
+function parseQuestionOptions(opts) {
+  if (!opts) return [];
+  if (Array.isArray(opts)) {
+    return opts.map((opt, idx) => {
+      if (typeof opt === 'string') {
+        return { key: String.fromCharCode(65 + idx), text: opt };
+      }
+      return {
+        key: opt.key || String.fromCharCode(65 + idx),
+        text: opt.text || opt.value || (typeof opt === 'object' ? JSON.stringify(opt) : String(opt))
+      };
+    });
+  }
+  if (typeof opts === 'object') {
+    return Object.entries(opts).map(([k, v]) => ({
+      key: String(k).toUpperCase(),
+      text: typeof v === 'object' ? (v.text || JSON.stringify(v)) : String(v)
+    }));
+  }
+  return [];
 }
 
 function renderCurrentQuestion() {
@@ -1463,7 +1573,7 @@ function renderCurrentQuestion() {
   document.getElementById('btnNextQuestion').style.display = 'none';
   document.getElementById('pracFeedbackArea').style.display = 'none';
 
-  const qNum = (q.question_number || 1);
+  const qNum = (q.sequence || q.question_number || 1);
   const maxQ = (currContext.activePracticeSession?.max_questions || 10);
   document.getElementById('pracProgressLabel').textContent = `Question ${qNum} of ${maxQ}`;
   document.getElementById('pracProgressBar').style.width = `${(qNum / maxQ) * 100}%`;
@@ -1473,7 +1583,7 @@ function renderCurrentQuestion() {
   diffBadge.className = `badge ${q.difficulty === 'hard' ? 'badge-red' : q.difficulty === 'easy' ? 'badge-active' : 'badge-amber'}`;
 
   const bodyEl = document.getElementById('pracQuestionBody');
-  const options = Array.isArray(q.options) ? q.options : [];
+  const options = parseQuestionOptions(q.options);
 
   bodyEl.innerHTML = `
     <div style="font-size:1.05rem;font-weight:600;color:var(--ink);margin-bottom:1.25rem;line-height:1.5">
