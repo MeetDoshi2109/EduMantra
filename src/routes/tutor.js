@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Curriculum-Grounded STEM Tutor Routes
  * POST   /api/v1/tutor/chat              — send message to tutor
  * POST   /api/v1/tutor/chat/stream       — stream message via SSE
@@ -247,27 +247,40 @@ router.post('/chat/stream', authenticate, [
 // ── POST /api/v1/tutor/hint ─────────────────────────────────
 // Get a tiered Socratic hint (Level 1: Nudge, Level 2: Formula/Rule, Level 3: Setup step)
 router.post('/hint', authenticate, [
-  body('question_id').isUUID().withMessage('valid question_id is required'),
+  body('question_id').optional().isString(),
+  body('question_text').optional().isString(),
   body('hint_level').optional().isInt({ min: 1, max: 3 }),
 ], validate, async (req, res) => {
-  const { question_id, hint_level = 1 } = req.body;
+  const { question_id, question_text, hint_level = 1 } = req.body;
 
   try {
-    const { data: question, error } = await supabaseAdmin
-      .from('question_bank')
-      .select('id, question_text, options, explanation, difficulty')
-      .eq('id', question_id)
-      .single();
+    let question = null;
+    if (question_id && typeof question_id === 'string' && question_id.length > 20) {
+      const { data } = await supabaseAdmin
+        .from('question_bank')
+        .select('id, question_text, options, explanation, difficulty')
+        .eq('id', question_id)
+        .single();
+      question = data;
+    }
 
-    if (error || !question) return res.status(404).json({ error: 'Question not found' });
+    if (!question && question_text) {
+      question = {
+        id: question_id || 'dyn',
+        question_text: question_text,
+        difficulty: 'medium',
+      };
+    }
+
+    if (!question) return res.status(400).json({ error: 'Either question_id or question_text is required' });
 
     const hintData = await AI.generateHint(question, Number(hint_level), {
-      class: req.profile.grade,
-      language: req.profile.preferred_language || 'en',
+      class: req.profile?.grade || req.profile?.class_id,
+      language: req.profile?.preferred_language || 'en',
     });
 
     res.json({
-      question_id,
+      question_id: question.id,
       hint_level: Number(hint_level),
       hint: hintData.hint,
     });
